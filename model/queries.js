@@ -4,6 +4,16 @@
 const db_name = "Noisy";
 var { Person, Location, Review } = require("./Model");
 var { MongoUtils: MU } = require("./mongoUtils");
+
+async function forgotPass(_newPass, _email) {
+  // TODO create instace of mail client
+  // TODO Send mail with new password
+  // TODO create a new field in user's document in user collections
+  // that will contain the oldpassword.
+  // Whenever the user connects with new password, put the oldpassword in oldPasswird field
+  // in user's document (in DB) and put instead the hash of _newPass
+}
+
 /**
  * Returns the amount of reviews for a single
  * location.
@@ -19,10 +29,29 @@ async function amountReviewsLocation(MC, lid) {}
  *
  * @param {MongoClient} MC  connected mongo client
  * @param {Array<string>} labels labels to be searched for
+ * @param {Array<string>} area specifies city/country
  * @returns {Array<string>} locationID
  * */
-async function locationByLabel(MC, labels) {}
-
+async function locationByLabel(MC, labels, area) {}
+/**
+ * Returns the location that its name contains text, in an certain area.
+ * if area is null -> search in all areas
+ * @param {MongoClient} MC  connected mongo client
+ * @param {Array<string>} area specifies city/country
+ * @param {string} _text user search text
+ * @returns {Array<string>} locationID
+ * */
+async function locationByText(MC, area, _text) {}
+/**
+ * Returns the location with certain lables
+ *
+ * @param {MongoClient} MC  connected mongo client
+ * @param {Array<string>} labels labels to be searched for
+ * @param {Array<string>} userLocation current GPS location of user
+ * @param {double}  radius maximal radius to search in
+ * @returns {Array<string>} locationID
+ * */
+async function locationByLabel(MC, labels, userLocation, radius) {}
 /**
  * Return a person object out of DB based on personID
  *
@@ -82,14 +111,13 @@ async function testing() {
   let uid = "62895832625ace8c5c715825";
   try {
     let p = await getPerson(M, uid);
-
     printPerson(p);
+
     let l = await getLocation(M, lid);
-    // TODO Problem with async functions
-    // doesnt print location
     printLocation(l);
   } catch (err) {
     // Do something
+    console.log(err);
   } finally {
     await M.closeConnection();
   }
@@ -103,7 +131,7 @@ function printPerson(p) {
 }
 function printLocation(l) {
   console.log(`ID: ${l._lid}`);
-  console.log(`\tname: ${p._name}`);
+  console.log(`\tname: ${l._name}`);
   console.log(`\tCoordinates: ${l._coordinates[0]},${l._coordinates[1]}`);
   console.log(
     `\tCountry: ${l._area[0]}, City: ${l._area[1]}, Street: ${l._area[2]} ${l._area[3]}`

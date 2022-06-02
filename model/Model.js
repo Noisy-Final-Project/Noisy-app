@@ -12,6 +12,7 @@ class Review {
    * @param ut - The text part of the review - input of user
    * @param usv - Sound Object of the recorded sound by the user.
    * @param uso - User sound opinion - based upon an opinion or labels.
+   * @param {Array<string>} labels - labels attached by the user.
    * */
   constructor(uid, lid, ut, usv, uso, labels) {
     this._userID = uid;
@@ -32,7 +33,7 @@ class Location {
    * Constructor for a location class
    * @param {string} lid locationID
    * @param {string} name name of the location
-   * @param {Array<Double>} x and y coordinates
+   * @param {Array<Double>} coordinates x and y coordinates
    * @param {Array<string>} area country,city,street,number*/
   constructor(lid, name, coordinates, area) {
     this._lid = lid;
