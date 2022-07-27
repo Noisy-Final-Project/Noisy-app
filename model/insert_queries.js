@@ -69,6 +69,9 @@ async function insertLocation(MC, name, coordinates, area) {
  * @param labels Used to Store the labels of the review.
  * @return A promise.
  *
+ * TODO should also insert automatically the date the review was created on
+ * Example:
+ * db.mycollection.insert({ 'created_on' : new Date() })
  *
  */
 async function insertReview(MC, uid, lid, ut, usv, uso, labels) {}

@@ -131,17 +131,16 @@ async function emailExists(MC, email) {
 /**
  * The findLocationByRadius function finds all locations within a radius of the given coordinates.
  *
- * 
+ *
  * @param MC Used to Connect to the mongodb database.
  * @param lt1 Used to Store the latitude of the user.
  * @param ln1 Used to Set the longitude of the user.
  * @param radius Used to Find the locations that are within a certain radius of the user's location.
  * @param locCountry Used to Filter the locations by country.
  * @return A list of locations within the radius.
- * 
- * @doc-author Trelent
+ *
  */
-async function findLocationByRadius(MC, lt1, ln1, radius,locCountry) {
+async function findLocationByRadius(MC, lt1, ln1, radius, locCountry) {
   //TODO This doesnt work.
   // This fetches the country of the location based on the lat,lon
   var locCountry = "";
@@ -181,24 +180,22 @@ async function findLocationByRadius(MC, lt1, ln1, radius,locCountry) {
   //     // Do something
   //   }
   //   return locationSet;
-  // } 
-    let nearbyLocations = await MC.client
-      .db(db_name)
-      .collection("locations")
-      .find();
-    
-    
-    while (await nearbyLocations.hasNext()) {
-      
-      let loc = await nearbyLocations.next()
-      let dbLocLt = loc["coordinates"][0]
-      let dbLocln = loc["coordinates"][1]
-      let distanceFromParameters = distCoordinates(lt1,ln1,dbLocLt, dbLocln)
-      if ( distanceFromParameters < radius){
-        locationSet.push(loc)
-      }
+  // }
+  let nearbyLocations = await MC.client
+    .db(db_name)
+    .collection("locations")
+    .find();
+
+  while (await nearbyLocations.hasNext()) {
+    let loc = await nearbyLocations.next();
+    let dbLocLt = loc["coordinates"][0];
+    let dbLocln = loc["coordinates"][1];
+    let distanceFromParameters = distCoordinates(lt1, ln1, dbLocLt, dbLocln);
+    if (distanceFromParameters < radius) {
+      locationSet.push(loc);
     }
-  
+  }
+
   return locationSet;
 }
 
@@ -296,9 +293,9 @@ async function testingLocDist() {
 
   let lt1 = 32.139782892460985;
   let ln1 = 34.79933707118085;
-  let lt2 = 32.146755638878304 
-  let ln2=34.81627421227488
-  let dist = distCoordinates(lt1,ln1,lt2,ln2)
+  let lt2 = 32.146755638878304;
+  let ln2 = 34.81627421227488;
+  let dist = distCoordinates(lt1, ln1, lt2, ln2);
   console.log(`Distance between points ${dist}`);
 
   let radius = 100000;
