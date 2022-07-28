@@ -18,17 +18,18 @@ var { emailExists: EE } = require("./fetching_queries");
  *
  *
  */
-async function insertUser(MC, _name, _dob, _email) {
+async function insertUser(MC, _name, _dob, _email, _hash) {
   var alreadyInDB = await EE(MC, _email);
   if (alreadyInDB == false) {
     const doc = {
       name: _name.trim().split(/\s+/),
       dob: _dob.split("/"),
       Email: _email,
+      passHash: _hash,
     };
     try {
       let p = await MC.client.db(db_name).collection("users").insertOne(doc);
-      // p.then(console.log("User was added"))
+      return true;
     } catch (err) {
       return false;
     }
@@ -40,20 +41,18 @@ async function insertUser(MC, _name, _dob, _email) {
   }
 }
 
-/**
- * The insertLocation function inserts a new location into the database.
- *
- *
- * @param MC Used to Connect to the mongodb database.
- * @param name Used to Store the name of the location.
- * @param coordinates Used to Store the coordinates of a location.
- * @param area Used to Determine the area of the location.
- * @return A promise.
- *
- *
- */
-async function insertLocation(MC, name, coordinates, area) {
+
+async function insertLocation(MC, _name, latitude,longtitude, _city, _street, _num,_category) {
   //TODO check if the location exists. check if there are businesses within a certain radius
+  let geoObject = {"type": "Point", "coordinates":[longtitude,latitude]}
+  let document = {name: _name, location:geoObject,area: [_city,_street,_num], category: _category}
+  let successful
+  let errMsg
+  try {
+  let p = await MC.client.db(db_name).collection("locations").insertOne(document).then( () => {successful = true}).catch(err => {successful = false; errMsg = err})
+  } catch (errors) {
+    
+  }
 }
 
 /**

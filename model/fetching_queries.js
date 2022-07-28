@@ -3,11 +3,8 @@
  * that will retrieve data
  * */
 const db_name = "Noisy";
-// const { StylePropType } = require("react-native-web-ui-components");
 var { Person, Location, Review } = require("./Model");
 var { MongoUtils: MU } = require("./mongoUtils");
-// global.fetch = require("node-fetch"); // set fetch for nodeJS
-var GeoCode = require("geo-coder").GeoCode;
 
 async function forgotPass(_newPass, _email) {
   // TODO create instace of mail client
@@ -140,63 +137,69 @@ async function emailExists(MC, email) {
  * @return A list of locations within the radius.
  *
  */
-async function findLocationByRadius(MC, lt1, ln1, radius, locCountry) {
-  //TODO This doesnt work.
-  // This fetches the country of the location based on the lat,lon
-  var locCountry = "";
+async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
+  // further information https://www.mongodb.com/docs/manual/geospatial-queries/
+  //  *IMPORTANT* for each point: [longitude,latitude]
   var locationSet = [];
+  let geoJSON = { type: "Point", coordinates: [ln1, lt1] };
 
-  // var geocode = new GeoCode();
-  // await geocode.reverse(lt1, ln1).then((result) => {
-  //   locCountry = result["raw"]["address"]["country"];
-  // });
+  let geoQuery = {
+    location: {
+      $near: {
+        $geometry: geoJSON,
+        $maxDistance: maxDistance,
+        $minDistance: minimalDistance,
+      },
+    },
+  };
+  let nearbyLocations
+  try{
+    nearbyLocations = await MC.client
+      .db(db_name)
+      .collection("locations")
+      .find(geoQuery);
 
-  // if (locCountry != "") {
-  //   try {
-  //     let nearbyLocations = await MC.client
-  //       .db(db_name)
-  //       .collection("locations")
-  //       .find({ country: locCountry });
+  }catch(e){  
+    console.log(e);
+  }
 
-  //     // Keep in mind that the type of nearbyLocation is a "Cursor"
-  //     // //
-  //     // while (nearbyLocations.hasNext()) {
-  //     //   let loc = nearbyLocations.next;
-  //     //   let lt2 = loc[coordinates][0];
-  //     //   let ln2 = loc[coordinates][1];
-  //     //   let dist = distCoordinates(lt1, ln1, lt2, ln2);
-  //     //   if (dist < radius) {
-  //     //     locationSet.push(loc);
-  //     //   }
-  //     // }
-  //     return await nearbyLocations
-  //       .toArray()
-  //       .filter(
-  //         (t) =>
-  //           distCoordinates(lt1, ln1, t[coordinates][0], t[coordinates][1]) <
-  //           radius
-  //       );
-  //   } catch (err) {
-  //     // Do something
-  //   }
-  //   return locationSet;
+  // if (nearbyLocations._eventsCount == 0) {
+  //   // there are no events for this location and radius
+  //   return [];
   // }
-  let nearbyLocations = await MC.client
-    .db(db_name)
-    .collection("locations")
-    .find();
-
   while (await nearbyLocations.hasNext()) {
     let loc = await nearbyLocations.next();
-    let dbLocLt = loc["coordinates"][0];
-    let dbLocln = loc["coordinates"][1];
-    let distanceFromParameters = distCoordinates(lt1, ln1, dbLocLt, dbLocln);
-    if (distanceFromParameters < radius) {
-      locationSet.push(loc);
-    }
+    let dbLocLn = loc["location"]["coordinates"][0];
+    let dbLocLt = loc["location"]["coordinates"][1];
+    let distanceFromParameters = distCoordinates(lt1, ln1, dbLocLt, dbLocLn);
+    locationSet.push(loc)
   }
 
   return locationSet;
+}
+
+async function findLocationByPolygon(MC, p1, p2, p3, p4) {
+  /**
+   * TODO not working
+   * The coordinates of the polygon are like this:
+   * p1  p2
+   * p3  p4
+   * returns all locations in DB in this polygon
+   * further information https://www.mongodb.com/docs/manual/geospatial-queries/
+   * for each point: [longitude,latitude]
+   */
+  // GeoJSON object type
+  let square = { type: "Polygon", coordinates: [[p1, p2, p3, p4, p1]] };
+  let query = {
+    location: {
+      $geoIntersects: { $geometry: square },
+    },
+  };
+  let documents = await MC.client
+    .db(db_name)
+    .collection("locations")
+    .find(query);
+  console.log(documents);
 }
 
 /**
@@ -253,21 +256,6 @@ async function testingFetchingUserLocation() {
   }
 }
 
-function printPerson(p) {
-  console.log(`ID: ${p._userID}`);
-  console.log(`\tname: ${p._name[0]} ${p._name[1]}`);
-  console.log(`\tDOB: ${p._dob[2]}.${p._dob[1]}.${p._dob[0]}`);
-  console.log(`\tEmail: ${p._email}`);
-}
-function printLocation(l) {
-  console.log(`ID: ${l._lid}`);
-  console.log(`\tname: ${l._name}`);
-  console.log(`\tCoordinates: ${l._coordinates[0]},${l._coordinates[1]}`);
-  console.log(
-    `\tCountry: ${l._area[0]}, City: ${l._area[1]}, Street: ${l._area[2]} ${l._area[3]}`
-  );
-}
-
 async function testingEmailExists() {
   let M = new MU();
 
@@ -291,21 +279,16 @@ async function testingLocDist() {
 
   await M.connectDB();
 
-  let lt1 = 32.139782892460985;
-  let ln1 = 34.79933707118085;
-  let lt2 = 32.146755638878304;
-  let ln2 = 34.81627421227488;
-  let dist = distCoordinates(lt1, ln1, lt2, ln2);
-  console.log(`Distance between points ${dist}`);
+  let lt1 = 40.77110878055151;
+  let ln1 = -73.97258495332737;
 
-  let radius = 100000;
-  let nearbyLocations = await M.client
-    .db(db_name)
-    .collection("locations")
-    .find({ country: "Israel" });
+  // locCountry = "Israel";
+  let D = 100000;
+  let set
   try {
-    set = await findLocationByRadius(M, lt1, ln1, radius);
+     set = await findLocationByDist(M, lt1, ln1, 1, D);
   } catch (error) {}
+  set.forEach(console.log);
 }
 
 testingLocDist();
