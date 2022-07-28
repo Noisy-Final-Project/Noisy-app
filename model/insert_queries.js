@@ -2,10 +2,11 @@
  * This file will contain different queries from the DB server
  * that will insert data
  * */
+// TODO Insert of all these functions into a class
 const db_name = "Noisy";
 // var { Person, Location, Review } = require("./Model");
 var { MongoUtils: MU } = require("./mongoUtils");
-var { emailExists: EE } = require("./fetching_queries");
+var { emailExists: EE, findLocationByDist } = require("./fetching_queries");
 /**
  * The insertUser function inserts a new user into the database.
  *
@@ -41,19 +42,20 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
   }
 }
 
+
 /**
  * The insertLocation function inserts a new location into the database.
  *
  * 
- * @param MC Used to Access the mongoclient object.
- * @param _name Used to Check if the location already exists.
- * @param latitude Used to Define the latitude of the location.
- * @param longtitude Used to Define the longtitude of the location.
- * @param _city city of the location.
- * @param _street street of the location.
- * @param _num street number of the location.
- * @param _category category of the location.
- * @return A promise that resolves to a boolean value.
+ * @param MC Used to Connect to the mongodb database.
+ * @param _name Used to Name the location.
+ * @param latitude Used to Find the location in the database.
+ * @param longtitude Used to Find the location in the database.
+ * @param _city city of a location.
+ * @param _street street of the location in the database.
+ * @param _num Used to Specify the street number of the location.
+ * @param _category Used to Specify the category of the location.
+ * @return A promise that resolves to either a success message or an error message.
  * 
  * 
  */
@@ -68,28 +70,47 @@ async function insertLocation(
   _category
 ) {
   //TODO check if the location exists. check if there are businesses within a certain radius
-  let geoObject = { type: "Point", coordinates: [longtitude, latitude] };
-  let document = {
-    name: _name,
-    location: geoObject,
-    area: [_city, _street, _num],
-    category: _category,
-  };
-  let successful;
-  let errMsg;
-  try {
-    let p = await MC.client
-      .db(db_name)
-      .collection("locations")
-      .insertOne(document)
-      .then(() => {
-        successful = true;
-      })
-      .catch((err) => {
+
+  let nearbyLoc = await findLocationByDist(MC,latitude,longtitude,0,50)
+
+  if (nearbyLoc.length != 0){
+    for (let i = 0; i < nearbyLoc; i++){
+      if (nearbyLoc[i].name == _name){
+        //TODO needs testing 
         successful = false;
-        errMsg = err;
-      });
-  } catch (errors) {}
+        errMsg = "location within 50 meters exists with this name";
+      }
+    }
+  }
+  else{
+
+    
+      let geoObject = { type: "Point", coordinates: [longtitude, latitude] };
+      let document = {
+        name: _name,
+        location: geoObject,
+        area: [_city, _street, _num],
+        category: _category,
+        created_on: new Date()
+      };
+      let successful;
+      let errMsg;
+      try {
+        let p = await MC.client
+          .db(db_name)
+          .collection("locations")
+          .insertOne(document)
+          .then(() => {
+            successful = true;
+          })
+          .catch((err) => {
+            successful = false;
+            errMsg = err;
+          });
+      } catch (errors) {}
+  }
+return {status:successful, message:errMsg}
+
 }
 
 /**

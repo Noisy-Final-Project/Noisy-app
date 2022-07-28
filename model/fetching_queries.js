@@ -5,6 +5,8 @@
 const db_name = "Noisy";
 var { Person, Location, Review } = require("./Model");
 var { MongoUtils: MU } = require("./mongoUtils");
+// TODO Insert of all these functions into a class
+
 
 async function forgotPass(_newPass, _email) {
   // TODO create instace of mail client
@@ -180,7 +182,7 @@ async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
 
 async function findLocationByPolygon(MC, p1, p2, p3, p4) {
   /**
-   * TODO not working
+   //TODO not working
    * The coordinates of the polygon are like this:
    * p1  p2
    * p3  p4
@@ -291,5 +293,6 @@ async function testingLocDist() {
   set.forEach(console.log);
 }
 
-testingLocDist();
+// testingLocDist();
 module.exports.emailExists = emailExists;
+module.exports.findLocationByDist = findLocationByDist;

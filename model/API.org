@@ -264,3 +264,8 @@ location1: {
     _amountReviews
 }}
 #+end_src
+* ETC
+** TODO Model refractor
+Make class of ALL queries.
+The class will contain all types of queries and in it's constructor the initial connection to DB will occur.
+All the function (query function ) will be accessed through that object.

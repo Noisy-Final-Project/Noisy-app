@@ -1,4 +1,5 @@
 /** This file will contain methods that will enable authentication */
+// TODO Insert of all these functions into a class
 
 const db_name = "Noisy";
 var { Person, Location, Review } = require("./Model");
@@ -19,6 +20,7 @@ async function signUp(MC, _email, _name, _dob, hash) {
 
 
 async function signIn(_email, hash) {
+  //TODO doesnt work yet because how to return a cookie?
   let inDB = await emailExists(MC, _email);
   if (inDB == false) {
   } else {
