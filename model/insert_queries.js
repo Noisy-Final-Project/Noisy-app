@@ -41,18 +41,55 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
   }
 }
 
-
-async function insertLocation(MC, _name, latitude,longtitude, _city, _street, _num,_category) {
+/**
+ * The insertLocation function inserts a new location into the database.
+ *
+ * 
+ * @param MC Used to Access the mongoclient object.
+ * @param _name Used to Check if the location already exists.
+ * @param latitude Used to Define the latitude of the location.
+ * @param longtitude Used to Define the longtitude of the location.
+ * @param _city city of the location.
+ * @param _street street of the location.
+ * @param _num street number of the location.
+ * @param _category category of the location.
+ * @return A promise that resolves to a boolean value.
+ * 
+ * 
+ */
+async function insertLocation(
+  MC,
+  _name,
+  latitude,
+  longtitude,
+  _city,
+  _street,
+  _num,
+  _category
+) {
   //TODO check if the location exists. check if there are businesses within a certain radius
-  let geoObject = {"type": "Point", "coordinates":[longtitude,latitude]}
-  let document = {name: _name, location:geoObject,area: [_city,_street,_num], category: _category}
-  let successful
-  let errMsg
+  let geoObject = { type: "Point", coordinates: [longtitude, latitude] };
+  let document = {
+    name: _name,
+    location: geoObject,
+    area: [_city, _street, _num],
+    category: _category,
+  };
+  let successful;
+  let errMsg;
   try {
-  let p = await MC.client.db(db_name).collection("locations").insertOne(document).then( () => {successful = true}).catch(err => {successful = false; errMsg = err})
-  } catch (errors) {
-    
-  }
+    let p = await MC.client
+      .db(db_name)
+      .collection("locations")
+      .insertOne(document)
+      .then(() => {
+        successful = true;
+      })
+      .catch((err) => {
+        successful = false;
+        errMsg = err;
+      });
+  } catch (errors) {}
 }
 
 /**
