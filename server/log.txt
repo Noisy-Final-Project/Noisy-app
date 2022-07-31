@@ -1,0 +1,9 @@
+RemoteAddress:::ffff:127.0.0.1 , Method:POST , URL:/signin , HTTPver.:1.1 , Status:200 , ResTime:5.914 ms , Body:application/json
+RemoteAddress:::ffff:127.0.0.1 , Method:POST , URL:/signin , Status:200 , ResTime:3.317 ms , Body:{"email":"test@gmail.com","pass":"123"}
+RemoteAddress:::ffff:127.0.0.1 , Method:POST , URL:/signin , Status:200 , ResTime:2.716 ms , Body:{"email":"test@gmail.com","pass":"123"}
+[0mOPTIONS /signup [32m200[0m 2.515 ms - 4[0m
+[0mPOST /signup [32m200[0m 228.878 ms - 22[0m
+[0mPOST /signup [32m200[0m 237.410 ms - 22[0m
+[0mPOST /signup [32m200[0m 227.434 ms - 22[0m
+[0mPOST /signup [32m200[0m 240.017 ms - 16[0m
+[0mPOST /signup [32m200[0m 231.389 ms - 16[0m

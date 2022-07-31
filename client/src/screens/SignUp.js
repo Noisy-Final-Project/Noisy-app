@@ -7,6 +7,8 @@ import axios from "axios";
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { SERVER_URL } from '../../config.json'
+import { validateEmail, validatePassword } from "../helpers/validation"
 
 const SignUp = ({ navigation }) => {
   const [name, setName] = useState();
@@ -21,16 +23,37 @@ const SignUp = ({ navigation }) => {
       setLoading(false);
       return;
     }
+
+    if (!validateEmail(email)){
+      alert(email + " is not a valid email")
+      setLoading(false);
+      return
+    }
+
+    if (!validatePassword(password)){
+      alert("Password should be 8-16 characters long and contain both letters and numbers.")
+      setLoading(false);
+      return
+    }
+
     // console.log("SIGNUP REQUEST => ", name, email, password);
     try {
-      const { data } = await axios.post("http://localhost:8000/api/signup", {
+      const { data } = await axios.post(SERVER_URL + "/signup", {
         name,
         email,
         password,
       });
       setLoading(false);
-      console.log("SIGN IN SUCCESS => ", data);
-      alert("Sign Up successful");
+
+      if (data.error){
+        console.log("SIGN UP FAILED => ", data.error);
+        alert("Sign Up Failed");
+      }
+      else{
+        console.log("SIGN IN SUCCESS => ", data);
+        alert("Sign Up successful");
+      }
+      
     } catch (err) {
       console.log(err);
       setLoading(false);
