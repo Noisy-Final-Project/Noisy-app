@@ -10,7 +10,6 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@kaloraat/react-native-text": "^1.0.4",
     "@react-native-async-storage/async-storage": "^1.17.7",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.2.5",
@@ -21,8 +20,9 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
+    "react-native-elements": "^3.4.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
-    "react-native-safe-area-context": "^4.2.4",
+    "react-native-ratings": "^8.1.0",
     "react-native-screens": "~3.11.1",
     "react-native-web": "0.17.7",
     "react-native-web-ui-components": "^6.1.5",
@@ -33,7 +33,6 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@expo/webpack-config": "^0.16.25"
-
   },
   "private": true
 }

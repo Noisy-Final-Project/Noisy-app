@@ -19,7 +19,7 @@ const MainMenu = ({ navigation }) => {
         </Text>
 
         <Text
-          // onPress={() => navigation.navigate("ChooseBusiness")}
+          onPress={() => navigation.navigate("ChooseBusiness")}
           style={ NoisyStyles.link }>
           Choose a Business
         </Text>

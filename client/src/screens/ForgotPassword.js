@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { View, Text } from "react-native";
-//import Text from "@kaloraat/react-native-text";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
