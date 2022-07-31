@@ -3,11 +3,10 @@ import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
+import { SERVER_URL } from '../../config.json'
 import NoisyLogo from "../components/NoisyLogo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
-import { SERVER_URL } from '../../config.json'
-
 //import { AuthContext } from "../context/auth";
 
 const ForgotPassword = ({ navigation }) => {
@@ -122,7 +121,7 @@ const ForgotPassword = ({ navigation }) => {
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.navigateMainMenu }>
+          style={ NoisyStyles.linkButton }>
           Main Menu
         </Text>
       </View>

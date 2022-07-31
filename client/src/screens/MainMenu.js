@@ -14,9 +14,6 @@ const MainMenu = ({ navigation }) => {
     >
       <View style={{ marginVertical: 110 }}>
         <NoisyLogo style={ NoisyStyles.logo }/>
-        <Text style={ NoisyStyles.title }>
-          Main Menu
-        </Text>
 
         <Text
           onPress={() => navigation.navigate("ChooseBusiness")}

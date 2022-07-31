@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
-//import Text from "@kaloraat/react-native-text";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
+import { SERVER_URL } from '../../config.json'
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { SERVER_URL } from '../../config.json'
 import { validateEmail, validatePassword } from "../helpers/validation"
 
 const SignUp = ({ navigation }) => {
@@ -111,7 +110,7 @@ const SignUp = ({ navigation }) => {
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.navigateMainMenu }>
+          style={ NoisyStyles.linkButton }>
           Main Menu
         </Text>
       </View>

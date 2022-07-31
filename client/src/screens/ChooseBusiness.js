@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
-import { WebView } from 'react-native-webview';
 import UserInput from "../components/UserInput";
-import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
+import { SERVER_URL } from '../../config.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
 
 const ChooseBusiness = ({ navigation }) => {
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState('');
 
   const handleSearch = async () => {
     try {
-      const { data } = await axios.get("/businesses");
+      const { data } = await axios.get(SERVER_URL + "/businesses");
       if (data.error) {
         alert(data.error);
         setSearch(undefined);
@@ -33,7 +32,7 @@ const ChooseBusiness = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <View style={{ marginVertical: 100 }}>
+      <View style={ NoisyStyles.container }>
         <Text style={ NoisyStyles.title }>
           Choose a Business
         </Text>
@@ -48,13 +47,13 @@ const ChooseBusiness = ({ navigation }) => {
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginHorizontal: 15}}>
           <Text
             onPress={() => navigation.navigate("CreateNewReview")}
-            style={ NoisyStyles.linkSmallButton }>
+            style={ NoisyStyles.linkButton }>
             Create New Review
           </Text>
 
           <Text
-            onPress={() => navigation.navigate("ViewUserReviews")}
-            style={ NoisyStyles.linkSmallButton }>
+            onPress={() => navigation.navigate("ViewUserReviews", "locationID")}
+            style={ NoisyStyles.linkButton }>
             View User Reviews
           </Text>
         </View>
@@ -62,7 +61,7 @@ const ChooseBusiness = ({ navigation }) => {
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.navigateMainMenu }>
+          style={ NoisyStyles.linkButton }>
           Main Menu
         </Text>
       </View>

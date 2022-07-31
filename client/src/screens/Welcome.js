@@ -9,13 +9,13 @@ const Welcome = ({navigation}) => {
     }, 3000);
   }, []);
   return (
-    <View style={NoisyStyles.container}>
-      <Text style={NoisyStyles.header}>Noisy</Text>
+    <View style={ NoisyStyles.welcomeContainer }>
+      <Text style={ NoisyStyles.header }>Noisy</Text>
       <Image
         source={require("../../assets/logo.png")}
-        style={NoisyStyles.logo}
+        style={ NoisyStyles.logo }
       />
-      <Text style={NoisyStyles.footer}>A social network for sharing noise levels</Text>
+      <Text style={ NoisyStyles.footer }>A social network for sharing noise levels</Text>
     </View>
   );
 };
