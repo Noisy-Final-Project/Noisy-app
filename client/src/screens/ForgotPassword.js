@@ -6,6 +6,8 @@ import axios from "axios";
 import NoisyLogo from "../components/NoisyLogo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
+import { SERVER_URL } from '../../config.json'
+
 //import { AuthContext } from "../context/auth";
 
 const ForgotPassword = ({ navigation }) => {
@@ -25,7 +27,7 @@ const ForgotPassword = ({ navigation }) => {
       return;
     }
     try {
-      const { data } = await axios.post("/forgot-password", {
+      const { data } = await axios.post(SERVER_URL + "/forgot-password", {
         email,
       });
       if (data.error) {
@@ -46,7 +48,7 @@ const ForgotPassword = ({ navigation }) => {
   const handlePasswordReset = async () => {
     // console.log("HANDLE PASSWORD RESET -> ", email, password, resetCode);
     try {
-      const { data } = await axios.post("/reset-password", {
+      const { data } = await axios.post(SERVER_URL + "/reset-password", {
         email,
         password,
         resetCode,

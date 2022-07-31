@@ -85,6 +85,8 @@ const NoisyStyles = StyleSheet.create({
         justifyContent: "center",
         textAlignVertical: "center",
         textAlign: "center",
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         marginHorizontal: 10,
         marginVertical: 15,
         borderRadius: 24,

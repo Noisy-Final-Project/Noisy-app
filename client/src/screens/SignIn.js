@@ -7,6 +7,8 @@ import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SERVER_URL } from '../../config.json'
+
 //import { AuthContext } from "../context/auth";
 
 const SignIn = ({ navigation }) => {
@@ -26,7 +28,7 @@ const SignIn = ({ navigation }) => {
     // console.log("SIGNINREQUEST => ", name, email, password);
     try {
       // here needs to call controller function that checks sign in info
-      const { data } = await axios.post(`/signin`, {
+      const { data } = await axios.post(SERVER_URL + `/signin`, {
         email,
         password,
       });
@@ -35,7 +37,7 @@ const SignIn = ({ navigation }) => {
         setLoading(false);
       } else {
         // save in context
-        //setState(data);
+        // setState(data);
         // save response in async storage
         await AsyncStorage.setItem("@auth", JSON.stringify(data));
         setLoading(false);

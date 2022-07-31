@@ -40,7 +40,7 @@ app.use("/", authRoutes);
 //     app.json(model.signIn(email, password))
 // })
 
-// app.post('/getlocationreviews', function (req, res) {
+// app.post('/get-location-reviews', function (req, res) {
 //     const lname = req.body.lname
 //     const location = req.body.location
 //     const indexRange = req.body.indexRange
@@ -48,7 +48,7 @@ app.use("/", authRoutes);
 //     res.json(model.getlocationreviews(lname, location, indexRange))
 // })
 
-// app.post('/addreview', function (req, res) {
+// app.post('/add-review', function (req, res) {
 //     const email = req.body.email
 //     const textReview = req.body.textReview
 //     const soundLevel = req.body.soundLevel
@@ -61,7 +61,7 @@ app.use("/", authRoutes);
 //         labels, location, lname))
 // })
 
-// app.post('/getlocationsbyradius', function (req, res) {
+// app.post('/get-locations-by-radius', function (req, res) {
 //     const location = req.body.location
 //     const radius = req.body.radius
 

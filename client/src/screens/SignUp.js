@@ -50,7 +50,7 @@ const SignUp = ({ navigation }) => {
         alert("Sign Up Failed");
       }
       else{
-        console.log("SIGN IN SUCCESS => ", data);
+        console.log("SIGN UP SUCCESS => ", data);
         alert("Sign Up successful");
       }
       

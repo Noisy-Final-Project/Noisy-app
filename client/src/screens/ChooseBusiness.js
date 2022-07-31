@@ -45,7 +45,7 @@ const ChooseBusiness = ({ navigation }) => {
           autoCompleteType="Search"
         />
 
-        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 15}}>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginHorizontal: 15}}>
           <Text
             onPress={() => navigation.navigate("CreateNewReview")}
             style={ NoisyStyles.linkSmallButton }>
