@@ -9,11 +9,11 @@ import NoisyStyles from "../NoisyStyles";
 //import { AuthContext } from "../context/auth";
 
 const ForgotPassword = ({ navigation }) => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [resetCode, setResetCode] = useState();
+  const [resetCode, setResetCode] = useState('');
   // context
   //const [state, setState] = useContext(AuthContext);
 

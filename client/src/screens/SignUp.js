@@ -11,9 +11,9 @@ import { SERVER_URL } from '../../config.json'
 import { validateEmail, validatePassword } from "../helpers/validation"
 
 const SignUp = ({ navigation }) => {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
