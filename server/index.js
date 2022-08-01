@@ -4,6 +4,7 @@ const fs = require('fs')
 const dotenv = require("dotenv").config()
 const cors = require('cors')
 const authRoutes = require('./routes/auth')
+const locationRoutes = require('./routes/locations')
 
 const app = express()
 
@@ -15,12 +16,12 @@ app.use(express.json({ limit: "4mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
-app.use(morgan('dev', { stream: logFile }))
-// app.use(morgan('RemoteAddress::remote-addr , Method::method , URL::url , '+
-//                 'Status::status , ResTime::response-time ms , Body::body', { stream: logFile }))
+app.use(morgan('RemoteAddress::remote-addr , Method::method , URL::url , '+
+                'Status::status , ResTime::response-time ms , Body::body', { stream: logFile }))
 
 // route middlewares
 app.use("/", authRoutes);
+app.use("/locations", locationRoutes);
 
 // app.post('/signup', function (req, res) {
 //     const uname = req.body.uname

@@ -17,24 +17,6 @@ const signUp = async (req, res) => {
     // validation
     const { uname, dob, email, password } = req.body;
 
-    const msg = {
-      to: email, // Change to your recipient
-      from: 'noisyapp22@gmail.com', // Change to your verified sender
-      subject: 'Welcome to Noisy!',
-      text: 'Hola',
-      html: '<strong>Glad to have you!</strong>',
-    }
-    
-    sgMail
-      .send(msg)
-      .then((response) => {
-        console.log(response[0].statusCode)
-        console.log(response[0].headers)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-
     // hash password
     const hashedPassword = await hashPassword(password);
     res.json({success: true})
