@@ -3,12 +3,11 @@ import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
+import { SERVER_URL } from '../../config.json'
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SERVER_URL } from '../../config.json'
-
 //import { AuthContext } from "../context/auth";
 
 const SignIn = ({ navigation }) => {
@@ -60,7 +59,7 @@ const SignIn = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <View style={{ marginVertical: 110 }}>
+      <View style={ NoisyStyles.container }>
         <NoisyLogo style={ NoisyStyles.logo }/>
         <Text style={ NoisyStyles.title }>
           Sign In
@@ -103,7 +102,7 @@ const SignIn = ({ navigation }) => {
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.navigateMainMenu }>
+          style={ NoisyStyles.linkButton }>
           Main Menu
         </Text>
       </View>

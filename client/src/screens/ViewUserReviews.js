@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { Card } from 'react-native-elements';
 import { Rating } from "react-native-ratings";
-import UserInput from "../components/UserInput";
-import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
+import { SERVER_URL } from '../../config.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
 
@@ -21,34 +20,28 @@ const ViewUserReviews = ({ navigation, location }) => {
       userSoundVolume: 5,
       userSoundOpinion: "Opinion",
       labelsAttached: ["Dates", "Fun", "Music"]}];
-  const [reviews, setReviews] = useState(list);
+  const [reviews, setReviews] = useState([]);
 
   const getReviews = async () => {
     try {
-      const { data } = await axios.get("/locations/"+location+"/reviews/");
+      const { data } = await axios.get(SERVER_URL + "/locations/"+location+"/reviews/");
+      console.log(data);
       if (data.error) {
-        //alert(data.error);
-        //setReviews(undefined);
-        // const list = [{   
-        //   userName: "Shani",
-        //   userText: "Text",
-        //   userSoundVolume: 3,
-        //   userSoundOpinion: "Opinion",
-        //   labelsAttached: ["Dates", "Fun", "Music"]}];
-        // setReviews(list);
+        alert(data.error);
       } else {
         setReviews(data);
         console.log("REVIEWS RES => ", data);
       }
     } catch (err) {
-      //alert("Error getting reviews. Try again.");
+      alert("Error getting reviews. Try again.");
+      setReviews(list);
       console.log(err);
     }
   };
 
   useEffect(() => {
     getReviews();
-  }, [])
+  }, []);
 
   return (
     <KeyboardAwareScrollView
@@ -86,13 +79,13 @@ const ViewUserReviews = ({ navigation, location }) => {
 
         <Text
           onPress={() => navigation.navigate("CreateNewReview")}
-          style={ NoisyStyles.linkLargeButton }>
+          style={ NoisyStyles.linkButton }>
            Create New Review
         </Text>
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.navigateMainMenu }>
+          style={ NoisyStyles.linkButton }>
           Main Menu
         </Text>
       </View>

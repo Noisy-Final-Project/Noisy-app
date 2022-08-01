@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native";
 
 const NoisyStyles = StyleSheet.create({
-    container: {
+    welcomeContainer: {
         flex: 1,
         backgroundColor: "powderblue",
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
         height: "100%",
-        zIndex: 1
+        zIndex: 1,
     },
     header: {
         fontSize: 70,
@@ -31,6 +31,12 @@ const NoisyStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
         width: "90%",
+    },
+    container: {
+        marginVertical: 100,
+        marginHorizontal: 20,
+        justifyContent: 'center',
+        //alignSelf: "center",
     },
     title: {   
         marginTop: 20,
@@ -58,6 +64,7 @@ const NoisyStyles = StyleSheet.create({
         backgroundColor: "powderblue",
         height: 50,
         margin: 20,
+        fontSize: 20,
         justifyContent: "center",
         marginHorizontal: 15,
         borderRadius: 24,
@@ -78,28 +85,17 @@ const NoisyStyles = StyleSheet.create({
         textAlign: "center",
         color: "teal",
     },
-    linkSmallButton: {
+    linkButton: {
         backgroundColor: "powderblue",
-        height: 50,
+        height: 45,
         fontSize: 20,
         justifyContent: "center",
         textAlignVertical: "center",
         textAlign: "center",
+        alignSelf: "center",
         paddingVertical: 10,
         paddingHorizontal: 15,
-        marginHorizontal: 10,
-        marginVertical: 15,
-        borderRadius: 24,
-    },
-    linkLargeButton: {
-        backgroundColor: "powderblue",
-        height: 50,
-        margin: 20,
-        fontSize: 20,
-        justifyContent: "center",
-        textAlignVertical: "center",
-        textAlign: "center",
-        marginHorizontal: 10,
+        marginHorizontal: 5,
         marginVertical: 15,
         borderRadius: 24,
     },
