@@ -12,3 +12,18 @@ RemoteAddress:::ffff:127.0.0.1 , Method:POST , URL:/signin , Status:200 , ResTim
 [0mGET / [32m200[0m 1.378 ms - 18[0m
 RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:3.591 ms , Body:{"name":"Bish Gada","dob":"22/11/00","email":"asdas@asdas.com","password":"asdasd2323"}
 RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:0.717 ms , Body:{"name":"asdas","dob":"22/22/22","email":"avsha@gmail.com","password":"231321sadasd"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:1713.786 ms , Body:{"name":"asdas","dob":"22/22/22","email":"avsha@gmail.com","password":"231321sadasd"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:498.891 ms , Body:{"name":"asdasd","dob":"asassd","email":"avsha@gmail.com","password":"232323sadas"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:360.393 ms , Body:{"name":"asdasd","dob":"asassd","email":"avsha@gmail.com","password":"232323sadas"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:425.079 ms , Body:{"name":"asdasd","dob":"asassd","email":"avsha@gmail.com","password":"232323sadas"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:358.891 ms , Body:{"name":"asdas","dob":"asdasd","email":"avsha@gmail.com","password":"asdasd232323"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:362.240 ms , Body:{"name":"asdas","dob":"asdasd","email":"avsha@gmail.com","password":"asdasd232323"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:404.544 ms , Body:{"name":"asdas","dob":"asdasd","email":"avsha@gmail.com","password":"asdasd232323"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:360.249 ms , Body:{"name":"asdas","dob":"asdasd","email":"test11@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:365.892 ms , Body:{"name":"asdas","dob":"asdasd","email":"test12@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:365.978 ms , Body:{"name":"asdas","dob":"asdasd","email":"test12@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:360.863 ms , Body:{"name":"asdas","dob":"11/11/11","email":"test11@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:1913.313 ms , Body:{"name":"asdas","dob":"22/22/22","email":"test11@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:408.892 ms , Body:{"name":"asdas","dob":"22/22/22","email":"test11@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:395.072 ms , Body:{"name":"asdasd","dob":"asd","email":"test11@gmail.com","password":"aaaa1111"}
+RemoteAddress:::1 , Method:POST , URL:/signin , Status:200 , ResTime:522.590 ms , Body:{"email":"test11@gmail.com","password":"aaaa1111"}

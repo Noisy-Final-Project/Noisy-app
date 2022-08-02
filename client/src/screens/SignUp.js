@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ToastAndroid } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
@@ -47,8 +47,8 @@ const SignUp = ({ navigation }) => {
       setLoading(false);
 
       if (data.error){
-        console.log("SIGN UP FAILED => ", data.error);
-        alert("Sign Up Failed");
+        console.log("SIGN UP FAILED => ", data);
+        alert(data.error);
       }
       else{
         console.log("SIGN UP SUCCESS => ", data);

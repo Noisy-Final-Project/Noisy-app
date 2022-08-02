@@ -18,7 +18,7 @@ const signUp = async (req, res) => {
 
     try {
       
-      res.json(await modelAuth.signUp(name, dob, email, password));
+      res.json(await modelAuth.signUp(email, name, dob, password));
     } catch (err) {
       console.log(err);
     }
@@ -44,12 +44,14 @@ const signIn = async (req, res) => {
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
+  res.json(modelAuth.forgotPassword(email))
+
   // MOVE TO MODEL
   // find user by email
   const user = await User.findOne({ email });
   console.log("USER ===> ", user);
   if (!user) {
-    return res.json({ error: "User not found" });
+    return { error: "User not found" };
   }
   // generate code
   const resetCode = nanoid(5).toUpperCase();
@@ -67,34 +69,33 @@ const forgotPassword = async (req, res) => {
   try {
     const data = await sgMail.send(emailData);
     console.log(data);
-    res.json({ ok: true });
+    return data
   } catch (err) {
     console.log(err);
-    res.json({ ok: false });
+    return { 'error': 'failed to send reset email' };
   }
 };
 
 const resetPassword = async function(req, res){
   try {
     const { email, password, resetCode } = req.body;
+
+    res.json(modelAuth.resetPassword(email, password, resetCode))
+
+    //MOVE TO MODEL
     // find user based on email and resetCode
     const user = await User.findOne({ email, resetCode });
     // if user not found
     if (!user) {
-      return res.json({ error: "Email or reset code is invalid" });
+      return { error: "Email or reset code are invalid" };
     }
-    // if password is short
-    if (!password || password.length < 6) {
-      return res.json({
-        error: "Password is required and should be 6 characters long",
-      });
-    }
+    
     // hash password
     const hashedPassword = await hashPassword(password);
     user.password = hashedPassword;
     user.resetCode = "";
     user.save();
-    return res.json({ ok: true });
+    return {};
   } catch (err) {
     console.log(err);
   }
