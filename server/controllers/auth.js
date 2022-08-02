@@ -2,9 +2,8 @@
 const { hashPassword, comparePassword } = require('../helpers/auth')
 const jwt = require('jsonwebtoken')
 const nanoid = require('nanoid')
-const Model = require('../model/Model')
+const modelAuth = require('../model/auth')
 
-// const model = new Model()
 
 // sendgrid
 require("dotenv").config();
@@ -17,23 +16,8 @@ const signUp = async (req, res) => {
     // validation
     const { uname, dob, email, password } = req.body;
 
-    // hash password
-    const hashedPassword = await hashPassword(password);
-    res.json({success: true})
     try {
-      const user = model.signUp(uname, dob, email, hashedPassword)
-      
-      // create signed token
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-      //   console.log(user);
-      const { password, ...rest } = user._doc;
-      return res.json({
-        token,
-        user: rest,
-      });
+      res.json(modelAuth.signup(uname, dob, email, password));
     } catch (err) {
       console.log(err);
     }
@@ -46,35 +30,10 @@ const signIn = async (req, res) => {
   // console.log(req.body);
   try {
     const { email, password } = req.body;
-    // check if our db has user with that email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.json({
-        error: "No user found",
-      });
-    }
     
-    // check password - move to MODEL
-    const match = await comparePassword(password, user.password);
-    if (!match) {
-      return res.json({
-        error: "Wrong password",
-      });
-    }
-
-    const result = model.signIn(email, password)
-
-    // create signed token
-    const token = jwt.sign({ _id: result._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    user.password = undefined;
-    user.secret = undefined;
-    res.json({
-      token,
-      result,
-    });
+    res.json(modelAuth.signIn(email,password))  
+    
+    
   } catch (err) {
     console.log(err);
     return res.status(400).send("Error. Try again.");

@@ -29,7 +29,7 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
       name: _name.trim().split(/\s+/),
       dob: _dob.split("/"),
       Email: _email,
-      passHash: _hash,
+      password: _hash,
     };
     try {
       let p = await MC.db(db_name).collection("users").insertOne(doc);
