@@ -14,10 +14,10 @@ const signUp = async (req, res) => {
   console.log("Signup process started...");
   try {
     // validation
-    const { uname, dob, email, password } = req.body;
+    const { name, dob, email, password } = req.body;
 
     try {
-      res.json(modelAuth.signup(uname, dob, email, password));
+      res.json(modelAuth.signUp(email, name, dob, password));
     } catch (err) {
       console.log(err);
     }
