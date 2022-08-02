@@ -5,6 +5,7 @@ import axios from "axios";
 import { SERVER_URL } from '../../config.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
+import MapView from "../components/MapView";
 
 const ChooseBusiness = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -24,6 +25,7 @@ const ChooseBusiness = ({ navigation }) => {
       console.log(err);
     }
   };
+  const [email, setEmail] = useState('');
 
   return (
     <KeyboardAwareScrollView
@@ -32,6 +34,7 @@ const ChooseBusiness = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
+
       <View style={ NoisyStyles.container }>
         <Text style={ NoisyStyles.title }>
           Choose a Business
@@ -43,6 +46,8 @@ const ChooseBusiness = ({ navigation }) => {
           setValue={setSearch}
           autoCompleteType="Search"
         />
+      <MapView />
+
 
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginHorizontal: 15}}>
           <Text
