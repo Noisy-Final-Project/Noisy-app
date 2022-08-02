@@ -1,13 +1,15 @@
-
 /**
  * This file will contain different queries from the DB server
  * that will insert data
  * */
 
-
 const db_name = "Noisy";
 // var { MongoUtils: MU } = require("./mongoUtils");
-var {emailExists, getLocation,findLocationByDist} = require("./fetching_queries")
+var {
+  emailExists,
+  getLocation,
+  findLocationByDist,
+} = require("./fetching_queries");
 /**
  * The insertUser function inserts a new user into the database.
  * TODO Is DOB nessecary? In which format it will be given?
@@ -16,7 +18,7 @@ var {emailExists, getLocation,findLocationByDist} = require("./fetching_queries"
  * @param name Used to Create a new user.
  * @param dob Used to Store the date of birth.
  * @param email Used to Check if the user already exists in the database.
- * @return JSON - with {res,err} . true if user was added, otherwise false.
+ * @return JSON - with {res,userID,err} . res is true  and userID is it's unique ID if user was added, otherwise false and no user ID.
  *
  *
  */
@@ -31,16 +33,16 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
     };
     try {
       let p = await MC.db(db_name).collection("users").insertOne(doc);
-      return {res:true, err: ""};
+      return { "res": true, "userID": p.insertedId, "err": "" };
     } catch (err) {
-      return {res:false, err:"User not in DB, but failed to add it"};
+      return { "res": false, "err": "User not in DB, but failed to add it" };
     }
   } else if (alreadyInDB == true) {
     // email is in DB
-    return {res:false, err:"User in DB"};
+    return { "res": false, "err": "User in DB" };
   } else {
     // Other problem
-    return {res:false, err:"Connection error"};
+    return { "res": false, "err": "Connection error" };
   }
 }
 
@@ -73,6 +75,7 @@ async function insertLocation(
   //TODO check if the location exists. check if there are businesses within a certain radius
   let successful;
   let errMsg;
+  let locationID;
   let nearbyLoc = await findLocationByDist(MC, latitude, longtitude, 0, 50);
 
   if (nearbyLoc.length != 0) {
@@ -92,10 +95,9 @@ async function insertLocation(
       category: _category,
       created_on: new Date(),
     };
-    
+
     try {
-      let p = await MC
-        .db(db_name)
+      let p = await MC.db(db_name)
         .collection("locations")
         .insertOne(document)
         .then(() => {
@@ -103,11 +105,12 @@ async function insertLocation(
         })
         .catch((err) => {
           successful = false;
+          locationID = p.insertedId;
           errMsg = err;
         });
     } catch (errors) {}
   }
-  return { status: successful, message: errMsg };
+  return { "status": successful, "locationId": locationID, "message": errMsg };
 }
 
 /**
@@ -129,9 +132,9 @@ async function insertReview(MC, _uid, _lid, _ut, _usv, _uso, _labels) {
   let success = false;
 
   // Check if location ID already exists in the database.
-  if (getLocation(MC,_lid) != false){
+  if (getLocation(MC, _lid) != false) {
     // Location already exists in the database (checked by location ID)
-    
+
     let reviewDocument = {
       uid: _uid,
       lid: _lid,
@@ -142,19 +145,19 @@ async function insertReview(MC, _uid, _lid, _ut, _usv, _uso, _labels) {
       createdOn: new Date(),
     };
     try {
-      let DB = await MC.db(db_name)
-      let locations = await DB.collection("reviews")
-      let Q = await locations.insertOne(reviewDocument).then( () => {success = true})
+      let DB = await MC.db(db_name);
+      let locations = await DB.collection("reviews");
+      let Q = await locations.insertOne(reviewDocument).then(() => {
+        success = true;
+      });
     } catch (err) {
       // Do something
     }
-  }
-  else{
+  } else {
     // _lid is not a location id in the database
     // TODO what to do about this? Should a new location be created?
   }
   return success;
 }
 
-
-module.exports = {insertUser, insertLocation,insertReview}
+module.exports = { insertUser, insertLocation, insertReview };
