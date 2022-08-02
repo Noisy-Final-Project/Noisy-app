@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
 });
 router.post("/signup", signUp);
 router.post("/signin", signIn);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
+// router.post("/forgot-password", forgotPassword);
+// router.post("/reset-password", resetPassword);
 
 module.exports = router;

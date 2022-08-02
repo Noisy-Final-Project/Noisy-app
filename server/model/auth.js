@@ -80,3 +80,6 @@ async function signIn( _email, plain_password) {
         doc,
       };
 }
+
+exports.signIn = signIn
+exports.signUp = signUp

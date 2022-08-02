@@ -10,3 +10,5 @@ RemoteAddress:::ffff:127.0.0.1 , Method:POST , URL:/signin , Status:200 , ResTim
 [0mPOST /signup [32m200[0m 237.809 ms - 16[0m
 [0mPOST /signup [32m200[0m 262.814 ms - 16[0m
 [0mGET / [32m200[0m 1.378 ms - 18[0m
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:3.591 ms , Body:{"name":"Bish Gada","dob":"22/11/00","email":"asdas@asdas.com","password":"asdasd2323"}
+RemoteAddress:::1 , Method:POST , URL:/signup , Status:200 , ResTime:0.717 ms , Body:{"name":"asdas","dob":"22/22/22","email":"avsha@gmail.com","password":"231321sadasd"}

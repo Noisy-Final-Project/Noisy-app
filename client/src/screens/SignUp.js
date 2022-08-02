@@ -14,6 +14,7 @@ const SignUp = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [dob, setDOB] = useState('');
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -39,6 +40,7 @@ const SignUp = ({ navigation }) => {
     try {
       const { data } = await axios.post(SERVER_URL + "/signup", {
         name,
+        dob,
         email,
         password,
       });
@@ -77,6 +79,12 @@ const SignUp = ({ navigation }) => {
           value={name}
           setValue={setName}
           autoCapitalize="words"
+          autoCorrect={false}
+        />
+        <UserInput
+          name="Date of Birth"
+          value={dob}
+          setValue={setDOB}
           autoCorrect={false}
         />
         <UserInput

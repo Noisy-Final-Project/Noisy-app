@@ -5,6 +5,7 @@ const dotenv = require("dotenv").config()
 const cors = require('cors')
 const authRoutes = require('./routes/auth')
 const locationRoutes = require('./routes/locations')
+const MongoConnection = require('./model/mongoUtils')
 
 const app = express()
 
