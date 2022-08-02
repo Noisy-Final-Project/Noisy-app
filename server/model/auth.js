@@ -20,10 +20,10 @@ async function signUp(MC, _email, _name, _dob, hash) {
 
 
 async function signIn(_email, hash) {
-  //TODO doesnt work yet because how to return a cookie?
+  //TODO doesnt work yet because how to return a userID?
   let inDB = await emailExists(MC, _email);
   if (inDB == false) {
   } else {
-    // return a cookie
+    // return a userID
   }
 }

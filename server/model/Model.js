@@ -1,3 +1,16 @@
+const { MongoConnection } = require("./mongoUtils");
+const {
+  emailExists,
+  findLocationByDist,
+  getPerson,
+  amountReviewsLocation,
+  distCoordinates,
+  findLocationByPolygon,
+  getLocation,
+  locationByLabel,
+  locationByText,
+} = require("./fetching_queries")
+const inserter = require("./insert_queries");
 class Review {
   _userID;
   _userText;
@@ -66,6 +79,28 @@ class SoundObject {
    * This object should contain an object that will represent the sound recorded by the user.*/
 }
 
-exports.Person = Person;
-exports.Review = Review;
-exports.Location = Location;
+
+
+
+async function objectTesting(){
+
+  // setInterval(() => console.log("Hello"),2000)
+  await MongoConnection.connect().then(() => console.log("Connected to Mongo"))
+  
+  // Add user
+  console.log("Before insertion");
+  let res = await inserter.insertUser(MongoConnection,"Ariel arieli", "12/12/2012","ariel@gmail.com","123")
+  console.log(`Response:\n ${JSON.stringify(res,null,2)}`);
+  console.log("After insertion");
+
+  // Add location
+  res = await inserter.insertReview(MongoConnection,"testUserID","62e8e3b0ff1f13836c2ea06f","Amazing placeAmazing place","3 stars","ObjectiveSound",["quiet", "comfy"])
+  console.log(`Response:\n ${res}`);
+
+}
+
+
+objectTesting()
+
+
+

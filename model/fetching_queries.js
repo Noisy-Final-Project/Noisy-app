@@ -3,10 +3,9 @@
  * that will retrieve data
  * */
 const db_name = "Noisy";
-var { Person, Location, Review } = require("./Model");
+const { ObjectId } = require("bson");
 var { MongoUtils: MU } = require("./mongoUtils");
 // TODO Insert of all these functions into a class
-
 
 async function forgotPass(_newPass, _email) {
   // TODO create instace of mail client
@@ -56,42 +55,44 @@ async function locationByText(MC, area, _text) {}
  * */
 async function locationByLabel(MC, labels, userLocation, radius) {}
 /**
- * Return a person object out of DB based on personID
+ * Return a person details out of DB based on personID
  *
  * @param {MongoClient} MC  connected mongo client
  * @param {string} uid
- * @returns {Person} */
+ * @returns JSON */
 async function getPerson(MC, uid) {
   let o_id = MC.get_id_obj(uid);
   try {
-    let db_person = await MC.client
+    let db_person = await MC
       .db(db_name)
       .collection("users")
       .findOne({ _id: o_id });
-    return new Person(uid, db_person.name, db_person.dob, db_person.Email);
+    return {userID:uid, name:db_person.name, dob:db_person.dob, email:db_person.Email};
   } catch (err) {}
 }
 /**
  * Return a location object out of DB based on location ID
  * @param {MongoClient} MC  connected mongo client
  * @param {string} lid location ID
- * @returns {Location} */
+ * @returns JSON with fields {lid,name,coordinates,area} if found,false otherwise */
 async function getLocation(MC, lid) {
-  let o_id = MC.get_id_obj(lid);
+  
   try {
-    let db_location = await MC.client
+    let db_location = await MC
       .db(db_name)
       .collection("locations")
-      .findOne({ _id: o_id });
-    return new Location(
-      lid,
-      db_location.name,
-      db_location.coordinates,
-      db_location.area
-    );
+      .findOne({ _id: ObjectId(lid) });
+
+    if (db_location != null) {
+      let res = {lid: lid, name: db_location.name, coordinates: db_location.coordinates,area: db_location.area}
+      return res
+    }else{
+      return false
+    }
   } catch (err) {
     // Do something
   }
+  return false
 }
 /**
  * Return a review object out of DB based on review ID
@@ -112,7 +113,7 @@ async function getReview(MC, rid) {}
  */
 async function emailExists(MC, email) {
   try {
-    let db_emailExists = await MC.client
+    let db_emailExists = await MC
       .db(db_name)
       .collection("users")
       .findOne({ Email: email });
@@ -128,18 +129,24 @@ async function emailExists(MC, email) {
 }
 
 /**
- * The findLocationByRadius function finds all locations within a radius of the given coordinates.
+ * The findLocationByDist function finds all locations within a certain distance of the given coordinates.
  *
  *
- * @param MC Used to Connect to the mongodb database.
- * @param lt1 Used to Store the latitude of the user.
- * @param ln1 Used to Set the longitude of the user.
- * @param radius Used to Find the locations that are within a certain radius of the user's location.
- * @param locCountry Used to Filter the locations by country.
- * @return A list of locations within the radius.
+ * @param MC Used to query to the database.
+ * @param lt1 Used to Set the latitude of the location to be searched.
+ * @param ln1 Used to Get the longitude of the user's location.
+ * @param minimalDistance Used to Filter out locations that are too far away from the user's location.
+ * @param maxDistance Used to Set the maximum distance from the location to be returned.
+ * @return An array of locations that are within a certain radius.
  *
  */
-async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
+async function findLocationByDist(
+  MC,
+  lt1,
+  ln1,
+  minimalDistance,
+  maxDistance
+) {
   // further information https://www.mongodb.com/docs/manual/geospatial-queries/
   //  *IMPORTANT* for each point: [longitude,latitude]
   var locationSet = [];
@@ -154,29 +161,25 @@ async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
       },
     },
   };
-  let nearbyLocations
-  try{
-    nearbyLocations = await MC.client
+  let nearbyLocations;
+  try {
+    nearbyLocations = await MC
       .db(db_name)
       .collection("locations")
       .find(geoQuery);
-
-  }catch(e){  
+  } catch (e) {
     console.log(e);
   }
 
-  // if (nearbyLocations._eventsCount == 0) {
-  //   // there are no events for this location and radius
-  //   return [];
-  // }
   while (await nearbyLocations.hasNext()) {
     let loc = await nearbyLocations.next();
     let dbLocLn = loc["location"]["coordinates"][0];
     let dbLocLt = loc["location"]["coordinates"][1];
     let distanceFromParameters = distCoordinates(lt1, ln1, dbLocLt, dbLocLn);
-    locationSet.push(loc)
+    locationSet.push(loc);
   }
 
+  //TODO should I close the connection to the curser here? check mongoDB docs
   return locationSet;
 }
 
@@ -197,7 +200,7 @@ async function findLocationByPolygon(MC, p1, p2, p3, p4) {
       $geoIntersects: { $geometry: square },
     },
   };
-  let documents = await MC.client
+  let documents = await MC
     .db(db_name)
     .collection("locations")
     .find(query);
@@ -206,7 +209,7 @@ async function findLocationByPolygon(MC, p1, p2, p3, p4) {
 
 /**
  * The distCoordinates function takes in two pairs of latitude and longitude coordinates,
- * and returns the distance between them.
+ * and returns the distance between them in meters.
  *
  *
  * @param lt1 Used to Store the latitude of the first coordinate.
@@ -228,71 +231,20 @@ function distCoordinates(lt1, ln1, lt2, ln2) {
       Math.cos((lt2 * Math.PI) / 180) *
       (1 - Math.cos(dLon))) /
       2;
-  meters_distance = Math.round(6371000 * 2 * Math.asin(Math.sqrt(a)));
+  let meters_distance = Math.round(6371000 * 2 * Math.asin(Math.sqrt(a)));
   return meters_distance;
 }
 
-/**
- * Testing methods
- *
- *
- *
- * */
-async function testingFetchingUserLocation() {
-  let M = new MU();
 
-  await M.connectDB();
-  let lid = "628c125a7af17e516baa7f42";
-  let uid = "62895832625ace8c5c715825";
-  try {
-    let p = await getPerson(M, uid);
-    printPerson(p);
 
-    let l = await getLocation(M, lid);
-    printLocation(l);
-  } catch (err) {
-    // Do something
-    console.log(err);
-  } finally {
-    await M.closeConnection();
-  }
-}
-
-async function testingEmailExists() {
-  let M = new MU();
-
-  await M.connectDB();
-  fakeEmail = "carmfidean@gmail.com";
-  existingEmail = "carmidean@gmail.com";
-  try {
-    let p1 = await emailExists(M, fakeEmail);
-    let p2 = await emailExists(M, existingEmail);
-    console.log(`Is ${fakeEmail} in the DB? ${p1}`);
-    console.log(`Is ${existingEmail} in the DB? ${p2}`);
-  } catch (err) {
-    // Do something
-  } finally {
-    await M.closeConnection();
-  }
-}
-
-async function testingLocDist() {
-  let M = new MU();
-
-  await M.connectDB();
-
-  let lt1 = 40.77110878055151;
-  let ln1 = -73.97258495332737;
-
-  // locCountry = "Israel";
-  let D = 100000;
-  let set
-  try {
-     set = await findLocationByDist(M, lt1, ln1, 1, D);
-  } catch (error) {}
-  set.forEach(console.log);
-}
-
-// testingLocDist();
-module.exports.emailExists = emailExists;
-module.exports.findLocationByDist = findLocationByDist;
+module.exports = {
+  emailExists,
+  findLocationByDist,
+  amountReviewsLocation,
+  distCoordinates,
+  findLocationByPolygon,
+  getLocation,
+  getPerson,
+  locationByLabel,
+  locationByText,
+};
