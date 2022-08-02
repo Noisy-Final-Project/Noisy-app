@@ -44,7 +44,7 @@ const signIn = async (req, res) => {
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  res.json(modelAuth.forgotPassword(email))
+  res.json(await modelAuth.forgotPassword(email))
 
   // MOVE TO MODEL
   // find user by email
@@ -80,7 +80,7 @@ const resetPassword = async function(req, res){
   try {
     const { email, password, resetCode } = req.body;
 
-    res.json(modelAuth.resetPassword(email, password, resetCode))
+    res.json(await modelAuth.resetPassword(email, password, resetCode))
 
     //MOVE TO MODEL
     // find user based on email and resetCode

@@ -5,15 +5,12 @@
 const db_name = "Noisy";
 const { ObjectId } = require("bson");
 var { MongoUtils: MU } = require("./mongoUtils");
-// TODO Insert of all these functions into a class
 
 async function forgotPass(_newPass, _email) {
-  // TODO create instace of mail client
-  // TODO Send mail with new password
-  // TODO create a new field in user's document in user collections
-  // that will contain the oldpassword.
-  // Whenever the user connects with new password, put the oldpassword in oldPasswird field
-  // in user's document (in DB) and put instead the hash of _newPass
+  /**
+   * send grid the email server
+   * this function needs to replace the password on record with the given email address
+   */
 }
 
 /**

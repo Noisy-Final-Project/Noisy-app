@@ -26,8 +26,8 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
   var alreadyInDB = await emailExists(MC, _email);
   if (alreadyInDB == false) {
     const doc = {
-      name: _name.trim().split(/\s+/),
-      dob: _dob.split("/"),
+      name: _name,
+      dob: _dob,
       Email: _email,
       password: _hash,
     };
