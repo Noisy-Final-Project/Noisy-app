@@ -100,7 +100,7 @@ async function objectTesting(){
 }
 
 
-objectTesting()
+// objectTesting()
 
 
 
