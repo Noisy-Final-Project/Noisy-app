@@ -6,13 +6,6 @@ const db_name = "Noisy";
 const { ObjectId } = require("bson");
 var { MongoUtils: MU } = require("./mongoUtils");
 
-async function forgotPass(_newPass, _email) {
-  /**
-   * send grid the email server
-   * this function needs to replace the password on record with the given email address
-   */
-}
-
 /**
  * Returns the amount of reviews for a single
  * location.
@@ -21,7 +14,13 @@ async function forgotPass(_newPass, _email) {
  * @param {string} lid location ID
  * @returns {number} amount of reviews for that location id
  * */
-async function amountReviewsLocation(MC, lid) {}
+async function amountReviewsLocation(MC, _lid) {
+  const amount = await MC.db("db_name")
+    .collection("reviews")
+    .aggregate([{ $count: _lid }]);
+  // Should return an integer
+  return amount[_lid];
+}
 
 /**
  * Returns the location with certain lables
@@ -40,7 +39,7 @@ async function locationByLabel(MC, labels, area) {}
  * @param {string} _text user search text
  * @returns {Array<string>} locationID
  * */
-async function locationByText(MC, area, _text) {}
+async function locationByText(MC, _text) {}
 /**
  * Returns the location with certain lables
  *
@@ -60,11 +59,15 @@ async function locationByLabel(MC, labels, userLocation, radius) {}
 async function getPerson(MC, uid) {
   let o_id = MC.get_id_obj(uid);
   try {
-    let db_person = await MC
-      .db(db_name)
+    let db_person = await MC.db(db_name)
       .collection("users")
       .findOne({ _id: o_id });
-    return {userID:uid, name:db_person.name, dob:db_person.dob, email:db_person.Email};
+    return {
+      userID: uid,
+      name: db_person.name,
+      dob: db_person.dob,
+      email: db_person.Email,
+    };
   } catch (err) {}
 }
 /**
@@ -73,23 +76,26 @@ async function getPerson(MC, uid) {
  * @param {string} lid location ID
  * @returns JSON with fields {lid,name,coordinates,area} if found,false otherwise */
 async function getLocation(MC, lid) {
-  
   try {
-    let db_location = await MC
-      .db(db_name)
+    let db_location = await MC.db(db_name)
       .collection("locations")
       .findOne({ _id: ObjectId(lid) });
 
     if (db_location != null) {
-      let res = {lid: lid, name: db_location.name, coordinates: db_location.coordinates,area: db_location.area}
-      return res
-    }else{
-      return false
+      let res = {
+        lid: lid,
+        name: db_location.name,
+        coordinates: db_location.coordinates,
+        area: db_location.area,
+      };
+      return res;
+    } else {
+      return false;
     }
   } catch (err) {
     // Do something
   }
-  return false
+  return false;
 }
 /**
  * Return a review object out of DB based on review ID
@@ -110,8 +116,7 @@ async function getReview(MC, rid) {}
  */
 async function emailExists(MC, email) {
   try {
-    let db_emailExists = await MC
-      .db(db_name)
+    let db_emailExists = await MC.db(db_name)
       .collection("users")
       .findOne({ Email: email });
     // db_emailExists returns the document, if it exists.
@@ -137,13 +142,7 @@ async function emailExists(MC, email) {
  * @return An array of locations that are within a certain radius.
  *
  */
-async function findLocationByDist(
-  MC,
-  lt1,
-  ln1,
-  minimalDistance,
-  maxDistance
-) {
+async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
   // further information https://www.mongodb.com/docs/manual/geospatial-queries/
   //  *IMPORTANT* for each point: [longitude,latitude]
   var locationSet = [];
@@ -160,8 +159,7 @@ async function findLocationByDist(
   };
   let nearbyLocations;
   try {
-    nearbyLocations = await MC
-      .db(db_name)
+    nearbyLocations = await MC.db(db_name)
       .collection("locations")
       .find(geoQuery);
   } catch (e) {
@@ -197,10 +195,7 @@ async function findLocationByPolygon(MC, p1, p2, p3, p4) {
       $geoIntersects: { $geometry: square },
     },
   };
-  let documents = await MC
-    .db(db_name)
-    .collection("locations")
-    .find(query);
+  let documents = await MC.db(db_name).collection("locations").find(query);
   console.log(documents);
 }
 
@@ -231,8 +226,6 @@ function distCoordinates(lt1, ln1, lt2, ln2) {
   let meters_distance = Math.round(6371000 * 2 * Math.asin(Math.sqrt(a)));
   return meters_distance;
 }
-
-
 
 module.exports = {
   emailExists,
