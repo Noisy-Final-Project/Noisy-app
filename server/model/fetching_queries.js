@@ -4,7 +4,8 @@
  * */
 const db_name = "Noisy";
 const { ObjectId } = require("bson");
-var { MongoUtils: MU } = require("./mongoUtils");
+const { MongoClient } = require("mongodb");
+const {MongoConnection} = require("./mongoUtils")
 
 /**
  * Returns the amount of reviews for a single
@@ -31,15 +32,38 @@ async function amountReviewsLocation(MC, _lid) {
  * @returns {Array<string>} locationID
  * */
 async function locationByLabel(MC, labels, area) {}
+
 /**
- * Returns the location that its name contains text, in an certain area.
- * if area is null -> search in all areas
- * @param {MongoClient} MC  connected mongo client
- * @param {Array<string>} area specifies city/country
- * @param {string} _text user search text
- * @returns {Array<string>} locationID
- * */
-async function locationByText(MC, _text) {}
+ * The locationByText function returns a list of locations that match the given text.
+ * If it is a sentence, it will do logical or on each word
+ * 
+ * @param MC Used to Access the mongoclient.
+ * @param _text Used to Search for the text in the name field of each location.
+ * @return An array of locations that match the search text (each contains _id,name,location (lat,long)).
+ * 
+ * @doc-author Trelent
+ */
+async function locationByText(MC, _text) {
+  const query = { $text: { $search: _text } };
+  // return only these fields
+  const projection = {
+    _id: 1,
+    name: 1,
+    location:1,
+  };
+  let collection = await MC.db(db_name).collection("locations")
+  let results = await collection.find(query).project(projection);
+  // process the results
+  let arr = await results.toArray();
+  arr.forEach( (elem) => {
+    elem._id = elem._id.toString()
+    let lat = elem.location.coordinates[1]
+    let long = elem.location.coordinates[0]
+    elem.location = [lat, long]
+  })
+
+  return arr
+}
 /**
  * Returns the location with certain lables
  *
