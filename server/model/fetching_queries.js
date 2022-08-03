@@ -3,9 +3,9 @@
  * that will retrieve data
  * */
 const db_name = "Noisy";
-const { ObjectId } = require("bson");
-const { MongoClient } = require("mongodb");
-const {MongoConnection} = require("./mongoUtils")
+// const { ObjectId } = require("bson");
+const { MongoClient, ObjectId } = require("mongodb");
+const { MongoConnection } = require("./mongoUtils");
 
 /**
  * Returns the amount of reviews for a single
@@ -23,25 +23,15 @@ async function amountReviewsLocation(MC, _lid) {
   return amount[_lid];
 }
 
-/**
- * Returns the location with certain lables
- *
- * @param {MongoClient} MC  connected mongo client
- * @param {Array<string>} labels labels to be searched for
- * @param {Array<string>} area specifies city/country
- * @returns {Array<string>} locationID
- * */
-async function locationByLabel(MC, labels, area) {}
 
 /**
  * The locationByText function returns a list of locations that match the given text.
  * If it is a sentence, it will do logical or on each word
- * 
+ *
  * @param MC Used to Access the mongoclient.
  * @param _text Used to Search for the text in the name field of each location.
  * @return An array of locations that match the search text (each contains _id,name,location (lat,long)).
- * 
- * @doc-author Trelent
+ *
  */
 async function locationByText(MC, _text) {
   const query = { $text: { $search: _text } };
@@ -49,20 +39,20 @@ async function locationByText(MC, _text) {
   const projection = {
     _id: 1,
     name: 1,
-    location:1,
+    location: 1,
   };
-  let collection = await MC.db(db_name).collection("locations")
+  let collection = await MC.db(db_name).collection("locations");
   let results = await collection.find(query).project(projection);
   // process the results
   let arr = await results.toArray();
-  arr.forEach( (elem) => {
-    elem._id = elem._id.toString()
-    let lat = elem.location.coordinates[1]
-    let long = elem.location.coordinates[0]
-    elem.location = [lat, long]
-  })
+  arr.forEach((elem) => {
+    elem._id = elem._id.toString();
+    let lat = elem.location.coordinates[1];
+    let long = elem.location.coordinates[0];
+    elem.location = [lat, long];
+  });
 
-  return arr
+  return arr;
 }
 /**
  * Returns the location with certain lables
@@ -74,18 +64,18 @@ async function locationByText(MC, _text) {
  * @returns {Array<string>} locationID
  * */
 async function locationByLabel(MC, labels, userLocation, radius) {}
-/**
- * Return a person details out of DB based on personID
- *
- * @param {MongoClient} MC  connected mongo client
- * @param {string} uid
- * @returns JSON */
+
 async function getPerson(MC, uid) {
-  let o_id = MC.get_id_obj(uid);
   try {
     let db_person = await MC.db(db_name)
       .collection("users")
-      .findOne({ _id: o_id });
+      .findOne({ _id: ObjectId(uid) });
+
+    // If not found
+    if (!db_person ) {
+      return {"error": "person not found"}
+    }
+    
     return {
       userID: uid,
       name: db_person.name,
@@ -94,11 +84,6 @@ async function getPerson(MC, uid) {
     };
   } catch (err) {}
 }
-/**
- * Return a location object out of DB based on location ID
- * @param {MongoClient} MC  connected mongo client
- * @param {string} lid location ID
- * @returns JSON with fields {lid,name,coordinates,area} if found,false otherwise */
 async function getLocation(MC, lid) {
   try {
     let db_location = await MC.db(db_name)
@@ -121,12 +106,50 @@ async function getLocation(MC, lid) {
   }
   return false;
 }
+
 /**
- * Return a review object out of DB based on review ID
- * @param {MongoClient} MC  connected mongo client
- * @param {string} rid location ID
- * @returns {Review} */
-async function getReview(MC, rid) {}
+ * The getReviews function returns an array of reviews for a given listing.
+ *
+ *
+ * @param MC Used to Access the mongodb database.
+ * @param _lid Used to Filter the reviews by location id.
+ * @param startFrom Used to Skip the first reviews.
+ * @param limit Used to Limit the number of reviews that are returned.
+ * @return An array of reviews from the database.
+ *
+ */
+async function getReviews(MC, _lid, startFrom, limit) {
+  const query = { lid: _lid };
+  const sort = { createdOn: -1 };
+  const reviews = await MC.db(db_name)
+    .collection("reviews")
+    .find(query)
+    .sort(sort)
+    .skip(startFrom)
+    .limit(limit);
+
+  let result = [];
+
+  while (await reviews.hasNext()) {
+    const doc = await reviews.next();
+    const _uid = doc.uid;
+    const userDetails = await getPerson(MC, _uid);
+    const _username = typeof userDetails.name == "object" ? userDetails.name.join(' ') : userDetails.name;
+    const locationReview = {
+      username: _username,
+      userText: doc.userText,
+      objectiveSound: doc.objectiveSound,
+      soundOpinion: doc.userSoundOpinion,
+      labels: doc.labels,
+      reviewDate: doc.createdOn,
+    };
+    result.push(locationReview);
+  }
+  if (result.length == 0){
+    return {"error":"no reviews found for locationID"}
+  }
+  return result;
+}
 
 /**
  * The emailExists function checks to see if the email is already in use.
@@ -168,7 +191,7 @@ async function emailExists(MC, email) {
  */
 async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
   // further information https://www.mongodb.com/docs/manual/geospatial-queries/
-  //  *IMPORTANT* for each point: [longitude,latitude]
+  //  *IMPORTANT* for each point enter (that is how mongodb will look for close points): [longitude,latitude]
   var locationSet = [];
   let geoJSON = { type: "Point", coordinates: [ln1, lt1] };
 
@@ -261,4 +284,5 @@ module.exports = {
   getPerson,
   locationByLabel,
   locationByText,
+  getReviews,
 };
