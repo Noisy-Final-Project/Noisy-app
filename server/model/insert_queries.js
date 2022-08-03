@@ -33,16 +33,16 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
     };
     try {
       let p = await MC.db(db_name).collection("users").insertOne(doc);
-      return { "res": true, "userID": p.insertedId, "err": "" };
+      return { res: true, userID: p.insertedId, err: "" };
     } catch (err) {
-      return { "res": false, "err": "User not in DB, but failed to add it" };
+      return { res: false, err: "User not in DB, but failed to add it" };
     }
   } else if (alreadyInDB == true) {
     // email is in DB
-    return { "res": false, "err": "User in DB" };
+    return { res: false, err: "User in DB" };
   } else {
     // Other problem
-    return { "res": false, "err": "Connection error" };
+    return { res: false, err: "Connection error" };
   }
 }
 
@@ -110,7 +110,7 @@ async function insertLocation(
         });
     } catch (errors) {}
   }
-  return { "status": successful, "locationId": locationID, "message": errMsg };
+  return { status: successful, locationId: locationID, message: errMsg };
 }
 
 /**
@@ -129,8 +129,6 @@ async function insertLocation(
  *
  */
 async function insertReview(MC, _uid, _lid, _ut, _usv, _uso, _labels) {
-  let success = false;
-
   // Check if location ID already exists in the database.
   if (getLocation(MC, _lid) != false) {
     // Location already exists in the database (checked by location ID)
@@ -146,18 +144,17 @@ async function insertReview(MC, _uid, _lid, _ut, _usv, _uso, _labels) {
     };
     try {
       let DB = await MC.db(db_name);
-      let locations = await DB.collection("reviews");
-      let Q = await locations.insertOne(reviewDocument).then(() => {
-        success = true;
+      let reviews = await DB.collection("reviews");
+      let Q = await reviews.insertOne(reviewDocument).then(() => {
+        return true;
       });
     } catch (err) {
-      // Do something
+      // some error with the database connection?
+      return false;
     }
-  } else {
-    // _lid is not a location id in the database
-    // TODO what to do about this? Should a new location be created?
   }
-  return success;
+  // _lid is not a location id in the database
+  return false;
 }
 
 module.exports = { insertUser, insertLocation, insertReview };
