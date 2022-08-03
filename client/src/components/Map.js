@@ -1,26 +1,36 @@
 import React, { Component } from 'react';
-import { SafeAreaView, Text } from "react-native";
+import { SafeAreaView, Text, Platform, StyleSheet } from "react-native";
 import { WebView } from 'react-native-webview';
 import NoisyStyles from '../NoisyStyles';
+import MapTemplate from '../screens/MapTemplate';
 
-class MapView extends Component {
-  render() {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <Text style={ NoisyStyles.title }>
-          Choose a Business
-        </Text>
-        <WebView 
-          source={{ uri: 'https://reactnative.dev/' }} 
-          style={{marginTop: 200, marginTop:200}}
-        />
-        <Text style={ NoisyStyles.title }>
-          Choose a Business
-        </Text>
-      </SafeAreaView>
-    );
+const Map = React.forwardRef(({onMessage}, ref) => {
+  if (Platform.OS === 'web') {
+    console.log('Returning web....')
+
+    return <iframe ref={ref} srcDoc={MapTemplate} id='mapFrame'/>;
   }
-}
+
+  return (
+    <WebView
+        ref={ref}
+        onMessage={onMessage}
+        style={styles.map}
+        originWhitelist={['*']}
+        source={{ html:MapTemplate }}
+      />
+  )})
+
+
+const styles = StyleSheet.create({
+  map: {
+    flex:1,
+    width: '100%',
+    height: '85%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 // import { WebView } from 'react-native-webview';
 // import { View } from 'react-native';
@@ -67,4 +77,4 @@ class MapView extends Component {
 //   );
 // };
 
-export default MapView;
+export default Map;

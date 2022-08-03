@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, SafeAreaView, TextInput, Button, StyleSheet } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, Text, SafeAreaView, TextInput, Button, StyleSheet, Platform } from "react-native";
 import UserInput from "../components/UserInput";
 import axios from "axios";
 import { SERVER_URL } from '../../config.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
-import MapView from "../components/MapView";
+import Map from "../components/Map";
 import { WebView } from 'react-native-webview';
-import MapTemplate from "./MapTemplate";
 
 const ChooseBusiness = ({ navigation }) => {
   // let webRef = undefined;
@@ -45,35 +44,48 @@ const ChooseBusiness = ({ navigation }) => {
   //   </View>
   // );
 
-  const [search, setSearch] = useState('');
-
-  let webRef = undefined;
+  let webRef = React.useRef(null);
   let [mapCenter, setMapCenter] = useState('-121.913, 37.361');
 
   const onButtonClick = () => {
     const [lng, lat] = mapCenter.split(",");
-    webRef.injectJavaScript(`map.setCenter([${parseFloat(lng)}, ${parseFloat(lat)}])`);
+    if (Platform.OS === 'web')
+    {
+      webRef.current.contentWindow.postMessage(JSON.stringify({lng, lat}))
+    }
+    else {
+      webRef.current.injectJavaScript(`map.setCenter([${parseFloat(lng)}, ${parseFloat(lat)}])`);
+    }
   }
 
   const handleMapEvent = (event) => {
-    setMapCenter(event.nativeEvent.data)
+    alert("Triggered event "+event.data)
+    console.log("Triggered event "+event.data)
+    // setMapCenter(event.nativeEvent.data)
   }
 
-  const handleSearch = async () => {
-    try {
-      const { data } = await axios.get(SERVER_URL + "/businesses");
-      if (data.error) {
-        alert(data.error);
-        setSearch(undefined);
-      } else {
-        setSearch(data);
-        console.log("BUSINESSES RES => ", data);
-      }
-    } catch (err) {
-      alert("Error getting businesses. Try again.");
-      console.log(err);
-    }
-  };
+  if (Platform.OS === 'web')
+  {
+      window.addEventListener("message", handleMapEvent, false);
+  }
+
+
+
+  // const handleSearch = async () => {
+  //   try {
+  //     const { data } = await axios.get(SERVER_URL + "/businesses");
+  //     if (data.error) {
+  //       alert(data.error);
+  //       setSearch(undefined);
+  //     } else {
+  //       setSearch(data);
+  //       console.log("BUSINESSES RES => ", data);
+  //     }
+  //   } catch (err) {
+  //     alert("Error getting businesses. Try again.");
+  //     console.log(err);
+  //   }
+  // };
 
   return (
 
@@ -82,19 +94,22 @@ const ChooseBusiness = ({ navigation }) => {
           Choose a Business
         </Text>
         <View style={styles.buttons}>
-        <TextInput 
+        <TextInput
         style={styles.textInput}
         onChangeText={setMapCenter}
         value={mapCenter}></TextInput>
         <Button title="Set Center" onPress={onButtonClick}></Button>
       </View>
-      <WebView
+
+      <Map onMessage={handleMapEvent} ref={webRef}/>
+      {/* <Map message={'HELLOBUTT'} ref={webRef}></Map> */}
+      {/* <WebView
         ref={(r) => (webRef = r)}
         onMessage={handleMapEvent}
         style={styles.map}
         originWhitelist={['*']}
         source={{ html: MapTemplate }}
-      />
+      /> */}
         {/* <WebView 
           source={{ html: '<h1>Hi Thereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</h1>' }} 
           style={{marginTop: 300, marginTop:200}}
