@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { Card } from 'react-native-elements';
 import { Rating } from "react-native-ratings";
 import axios from "axios";
-import { SERVER_URL } from '../../config.json'
+import { SERVER_URL } from '../../ENV.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
 

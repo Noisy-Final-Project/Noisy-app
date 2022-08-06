@@ -3,7 +3,7 @@ import { View, Text, ToastAndroid } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
-import { SERVER_URL } from '../../config.json'
+import { SERVER_URL } from '../../ENV.json'
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
