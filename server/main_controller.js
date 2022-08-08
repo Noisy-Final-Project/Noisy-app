@@ -9,7 +9,7 @@ const MongoConnection = require('./model/mongoUtils')
 
 const app = express()
 
-const PORT = 3000
+const PORT = process.env.PORT || 5000
 const logFile = fs.createWriteStream('./log.txt', {flags: 'a'});
 
 // middlewares
