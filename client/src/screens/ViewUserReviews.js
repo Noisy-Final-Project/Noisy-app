@@ -7,8 +7,10 @@ import { SERVER_URL } from '../../ENV.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
 
-const ViewUserReviews = ({ navigation, locationID }) => {
-  alert('LocationID is: ' + locationID)
+
+const ViewUserReviews = ({ navigation, route }) => {
+  const { locationID } = route.params;
+ // alert('LocationID is: ' + locationID);
   const list = [{   
     userName: "Shani",
     userText: "Text",
@@ -64,9 +66,10 @@ const ViewUserReviews = ({ navigation, locationID }) => {
                   <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={ NoisyStyles.cardText}>Noise Level: </Text>
                     <Rating 
-                      imageSize={20}
+                      imageSize={30}
                       readonly
-                      startingValue={review.userSoundVolume}/>
+                      startingValue={review.userSoundVolume}
+                      type='bell'/>
                   </View>
                   <Text style={ NoisyStyles.cardText}>Sound Opinion: {review.userSoundOpinion}</Text>
                   <Text style={ NoisyStyles.cardText}>Labels: {review.labelsAttached.join(", ")}</Text>
