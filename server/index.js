@@ -23,6 +23,43 @@ app.use(morgan('RemoteAddress::remote-addr , Method::method , URL::url , '+
 // route middlewares
 app.use("/", authRoutes);
 app.use("/locations", locationRoutes);
+app.get('/r', (req,res)=>{
+    console.log('Got request')
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.json({
+        places: [
+            {
+                id: 1,
+                name: 'abc',
+                address: 'abs 23',
+                lnglat: [35.01291827647526,31.88937427045248],
+                numOfReviews: 10
+            },
+            {
+                id:2,
+                name: 'def',
+                address: 'hhhh 334',
+                lnglat: [35.01055793254196, 31.891997777528616],
+                numOfReviews: 123
+            },
+            {
+                id:3,
+                name: 'pizza',
+                address: 'abs 2hhh44',
+                lnglat: [35.00635222880712, 31.890084810998772],
+                numOfReviews: 334
+            },
+            {
+                id:4,
+                name: 'burger',
+                address: 'abs 23',
+                lnglat: [35.006155492136685, 31.90585946670268],
+                numOfReviews: 78
+            }
+        ]
+    })
+})
 
 // app.post('/signup', function (req, res) {
 //     const uname = req.body.uname

@@ -11,7 +11,7 @@ export async function getLocation() {
   
     const currentLocation = await Location.getCurrentPositionAsync({});
   
-    return currentLocation
+    return [currentLocation.coords.longitude, currentLocation.coords.latitude]
  }
 
  export function sendToMap(webRef ,type, jsonObject) {

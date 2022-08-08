@@ -50,16 +50,29 @@
             width: 24px;
         }
 
-        .button {
-            border: none;
-            color: rgb(43, 199, 230);
-            padding: 10px 23px;
+        .popup {
+            background: #ffffff;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
+        }
+        
+        .button {
+            border: 0px solid #000000;
+            border-radius: 5px;
+            padding: 20px 40px 20px 40px;
+            margin: 0px 0px 30px 0px;
+            background-color: #2947FF;
+            color: #FFFFFF;
+            font-weight: bold;
+            opacity: 1;
+            transition: 1s;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+        }
+
+        .button:hover {
+            background-color: #1D32B3;
+            opacity: 1;
+            transition: 1s;
         }
     </style>
 
@@ -72,27 +85,20 @@
     }
 </script>
 
-<body>
+<body style="padding: 0; margin: 0;">
     <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.20.0/services/services-web.min.js'></script>
 
     <div style="width:100vw; height: 100vh;" id='map'></div>
 
     <script id="mapScript">
-        let currentMarkers = {}
+        // Markers containers:
+        let currentMarkers = {};
+        let selfMarker = null;
+        let tempMarker = null;
+        let tempMarkerID = '';
 
-        const sendToApp = async (type, jsonObject) => {
-            const message = {
-                type,
-                body: jsonObject
-            }
-            if (window.ANDROID) {
-                window.ReactNativeWebView.postMessage(JSON.stringify(message))
-            }
-            else {
-                window.parent.postMessage(message)
-            }
-        }
-
+        // Map Creation
+        tt.setProductInfo('Noisy', '1.0');
         var map = tt.map({
             key: '${MAPS_API_KEY}',
             container: 'map',
@@ -105,26 +111,198 @@
                 source: 'vector'
             }
         });
-        sendToApp('getLocation', {})
-
         map.addControl(new tt.NavigationControl());
+        map.doubleClickZoom.disable()
+        if (window.ANDROID) {
+            sendToApp('getLocation', {}); // Center to current location
+        }
 
-        map.on('click', 'POI', handlePoiClick);
-        map.on('click', (e) => console.log('CLICKED: ' + e.lngLat));
-        map.on('render', () => {
-            fetch('http://localhost:3000/r/')
+        /*
+            ####### FUNCTIONS: #######
+        */
+
+        // Sends messages from the webview/iframe to main app:
+        function sendToApp(type, jsonObject) {
+            const message = {
+                type,
+                body: jsonObject
+            }
+
+            if (window.ANDROID) {
+                window.ReactNativeWebView.postMessage(JSON.stringify(message))
+            }
+            else {
+                window.parent.postMessage(message)
+            }
+        }
+
+        // Creates a marker on the map with the following parameters:
+        function createMarker(icon, id, color, position, popup) {
+            try {
+                var markerElement = document.createElement('div');
+                markerElement.className = id + '-marker';
+
+                var markerContentElement = document.createElement('div');
+                markerContentElement.className = 'marker-content';
+                markerContentElement.style.backgroundColor = color;
+                markerElement.appendChild(markerContentElement);
+
+                var iconElement = document.createElement('div');
+                iconElement.className = 'marker-icon';
+                iconElement.style.backgroundImage = 'url(' + icon + ')'
+
+                markerContentElement.appendChild(iconElement);
+
+                // add marker to map
+                marker = new tt.Marker({ element: markerElement, anchor: 'bottom' })
+                    .setLngLat(position)
+                    .setPopup(popup)
+                    .addTo(map);
+
+                return marker
+            }
+            catch (err) {
+                alert(err)
+            }
+
+        }
+
+        // Creates a popup for a location marker containing these details:
+        function createPopup(placeDetails, numOfReviews) {
+            var popupDOMElement = document.createElement('div');
+            popupDOMElement.className = 'popup';
+            popupDOMElement.innerHTML = "<h1>" + placeDetails.name + "</h1>" +
+                "<p>" + placeDetails.address + "</p>" +
+                "<p>#Reviews: " + numOfReviews + "</p>";
+
+
+            // var head1 = document.createElement('h1');
+            // head1.className = "placeName"
+            // head1.innerHTML = placeDetails.name
+            // popupDOMElement.appendChild(head1);
+
+            // console.log(placeDetails.address);
+
+            // var p1 = document.createElement('p');
+            // p1.className = "placeAddress"
+            // p1.textContent = placeDetails.address
+            // popupDOMElement.appendChild(p1)
+
+            // var p2 = document.createElement('p');
+            // p2.className = "placeNumOfReviews"
+            // p1.textContent = "#Reviews: " + numOfReviews
+            // popupDOMElement.appendChild(p2)
+
+            // var p3 = document.createElement('p');
+            // p1.textContent = "#TEST: "
+            // popupDOMElement.appendChild(p3)
+
+            const btn = document.createElement("button");
+            btn.className = 'button star'
+            if (numOfReviews === 0) {
+                btn.innerHTML = "Add Review";
+                btn.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(placeDetails) + ")")
+            }
+            else {
+                btn.innerHTML = "Read Reviews";
+                btn.setAttribute("onclick", "sendToApp('getReviews'," + JSON.stringify(placeDetails) + ")")
+            }
+
+            popupDOMElement.appendChild(btn)
+
+            var popup = new tt.Popup({ offset: 30 }).setDOMContent(popupDOMElement);
+
+            return popup
+        }
+
+        // Creates a marker for a places that is not a POI
+        function createTempMarker(placeDetails) {
+            var popup = createPopup(placeDetails, 0)
+
+            let icon = 'https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/question-mark-icon.png'
+
+            tempMarker = createMarker(icon, placeDetails.id, '#FF0000', placeDetails.lnglat, popup).togglePopup()
+            tempMarkerID = (placeDetails.id) ? placeDetails.id : 'temp';
+        }
+
+        function removeTempMarker() {
+            if (tempMarkerID != '') {
+                tempMarkerID = '';
+                tempMarker.remove();
+                delete tempMarker;
+            }
+        }
+
+        function removeSelfMarker() {
+            alert('removing')
+            if (selfMarker) {
+                alert('removed')
+                selfMarker.remove();
+                delete tempMarker;
+            }
+        }
+
+        /*
+            ####### BINDERS: #######
+        */
+        // Add event listener for messages from main app
+        window.addEventListener("message", messageHandler, false);
+
+        // Bind map events with handlers:
+        map.on('click', generalClickHandler)
+        map.on('moveend', mapMoveHandler)
+        map.on('dblclick', unknownPlaceHandler)
+
+        /*
+            ####### HANDLERS: #######
+        */
+        function generalClickHandler(event) {
+            var feature = map.queryRenderedFeatures(event.point)[0];
+
+            if (feature.layer.id !== 'POI' || feature.properties.id !== tempMarkerID) {
+                removeTempMarker()
+            }
+
+            if (feature.layer.id === 'POI') {
+                if (feature.properties.id === tempMarkerID) {
+                    return
+                }
+                tt.services.placeById({
+                    key: '${MAPS_API_KEY}',
+                    entityId: feature.properties.id,
+                    language: 'he-IL'
+                })
+                    .then(function (response) {
+                        const place = response.results[0]
+                        if (!place || !place.poi) {
+                            return;
+                        }
+
+                        const placeDetails = {
+                            id: place.id,
+                            name: place.poi.name,
+                            address: place.address.freeformAddress,
+                            lnglat: [place.position.lng, place.position.lat]
+                        }
+
+                        createTempMarker(placeDetails)
+                    })
+            }
+        }
+
+        // update the Noisy markers when the map moves
+        function mapMoveHandler() {
+            fetch('http://192.168.31.236:3000/r/')
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
-                    console.log('Recieved: ' + JSON.stringify(response))
                     try {
                         // Remove old markers
                         if (currentMarkers) {
                             const bounds = map.getBounds()
                             Object.keys(currentMarkers).forEach(id => {
-                                if (!bounds.contains(tt.LngLat(currentMarkers[id].coords))) {
+                                if (!bounds.contains(currentMarkers[id].getLngLat())) {
                                     currentMarkers[id].remove();
                                     delete currentMarkers[id];
-                                    console.log('Removed marker '+id)
                                 }
                             })
                         }
@@ -132,124 +310,93 @@
                         // Create new places array and place markers on map
                         const places = response.places
 
-                        console.log('Places: ' + JSON.stringify(places))
-
                         places.forEach(p => {
                             if (currentMarkers) {
                                 const alreadyAppear = Object.values(currentMarkers).some(marker =>
-                                    marker.getElement().className === '{p.id}-marker')
+                                    marker.getElement().className === p.id + '-marker')
                                 if (alreadyAppear) {
-                                    console.log(p.id+' already appears');
                                     return
                                 }
                             }
 
-                            const popupHtml = '<div class="popup">\
-                                    <h1>{p.name}</h1>\
-                                    <p>Number of reviews: {p.numOfReviews}</p></div>\
-                                    <button class="button">Read Reviews</button>'
-                            console.log('Trying to create marker for '+JSON.stringify(p));
-                            currentMarkers[p.id] = createMarker('SpeakerIcon', p.id, p.coords, popupHtml)
-                            console.log('Current markers: '+JSON.stringify(currentMarkers))
+                            const placeDetails = {
+                                id: p.id,
+                                name: p.name,
+                                address: p.address,
+                                lnglat: p.lnglat
+                            }
 
+                            var popup = createPopup(placeDetails, p.numOfReviews)
+
+                            const details = {
+                                id: p.id,
+                            }
+
+                            const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
+                            currentMarkers[p.id] = createMarker(iconURL, p.id, '#41CEFE', p.lnglat, popup)
                         })
                     }
                     catch (err) {
-                        console.error("Oops! " + err)
+                        alert(err)
+                        console.error("Failed with marker creation! " + err)
                     }
                 })
-        })
+        }
 
-        const messageHandler = (event) => {
+        // Handles clicking on an unknown place (not POI)
+        function unknownPlaceHandler(event) {
+            var feature = map.queryRenderedFeatures(event.point)[0];
+
+            if (feature.layer.id === 'POI') {
+                return;
+            }
+
+            tt.services.reverseGeocode({
+                key: '${MAPS_API_KEY}',
+                position: event.lngLat,
+                language: 'he-IL'
+            })
+                .then(function (response) {
+                    let clickedAddress = (response.addresses.length > 0) ? response.addresses[0].address : '';
+
+                    const placeDetails = {
+                        id: '',
+                        name: '',
+                        address: (clickedAddress) ? clickedAddress.freeformAddress : '',
+                        lnglat: event.lngLat
+                    }
+
+                    createTempMarker(placeDetails)
+                })
+        }
+
+        // Handles messages from the app
+        function messageHandler(event) {
             const message = event.data
             if (message.error) {
                 alert(message.error)
                 return
             }
             switch (message.type) {
-                case 'alert':
-                    alert(message.body)
-                    break
                 case 'center':
                     try {
                         const lnglat = message.body.lnglat
-                        map.setCenter(lnglat)
-                        createMarker('self', self, lnglat, '');
+                        map.flyTo({ center: lnglat, zoom: 15 })
+                        alert(window.ANDROID)
+                        if (windows.ANDROID) {
+                            removeSelfMarker()
+                            selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
+                        }
 
                     }
                     catch (err) {
                         alert(err.message)
                     }
                     break
-
                 default:
                     break
             }
         }
-
-        window.addEventListener("message", messageHandler, false);
-
-        function createMarker(icon, id, position, popupHTML) {
-            console.log('creating marker ' + id + ' in ' + position)
-            var markerElement = document.createElement('div');
-            markerElement.className = id + '-marker';
-            console.log('created element1 ' + id + ' in ' + position)
-
-            var markerContentElement = document.createElement('div');
-            markerContentElement.className = 'marker-content';
-            markerContentElement.style.backgroundColor = (icon == 'poi') ? '#41CEFE' : '#41DB41';
-            markerElement.appendChild(markerContentElement);
-            console.log('created element2 ' + id + ' in ' + position)
-
-
-            const oldPersonIcon = 'url(https://www.iconpacks.net/icons/1/free-user-icon-295-thumb.png)'
-            var iconElement = document.createElement('div');
-            iconElement.className = 'marker-icon';
-            iconElement.style.backgroundImage = (icon == 'poi') ?
-                'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png' :
-                'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png';
-            console.log('created element3 ' + id + ' in ' + position)
-            markerContentElement.appendChild(iconElement);
-
-            if (popupHTML) {
-                var popup = new tt.Popup({ offset: 30 }).setHTML(popupHTML);
-                console.log('created popup ' + id + ' in ' + position)
-
-            }
-
-            // add marker to map
-            marker = new tt.Marker({ element: markerElement, anchor: 'bottom' })
-                .setLngLat(position)
-                .setPopup(popup)
-                .addTo(map);
-            console.log('created marker ' + id + ' in ' + position)
-            return marker
-
-        }
-
-        function handlePoiClick(event) {
-            var feature = map.queryRenderedFeatures(event.point)[0];
-
-            // hideResult();
-
-            if (feature.sourceLayer !== 'Point of Interest') {
-                return
-            }
-            const popupHtml = '<h1>{feature.properties.name}</h1>\
-                                <h1>There</h1>'
-
-            createMarker('', 'self', feature.geometry.coordinates, '')
-            // errorHint.hide();
-            // infoHint.hide();
-
-            // if (feature.properties.id) {
-            //     serviceCall(feature);
-            // } else {
-            //     infoHint.setMessage('There\'s no result found for this place ID');
-            // }
-        }
-
-
 
 
     </script>

@@ -7,7 +7,8 @@ import { SERVER_URL } from '../../ENV.json'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
 
-const ViewUserReviews = ({ navigation, location }) => {
+const ViewUserReviews = ({ navigation, locationID }) => {
+  alert('LocationID is: ' + locationID)
   const list = [{   
     userName: "Shani",
     userText: "Text",
@@ -24,7 +25,7 @@ const ViewUserReviews = ({ navigation, location }) => {
 
   const getReviews = async () => {
     try {
-      const { data } = await axios.get(SERVER_URL + "/locations/"+location+"/reviews/");
+      const { data } = await axios.get(SERVER_URL + "/locations/"+locationID+"/reviews/");
       console.log(data);
       if (data.error) {
         alert(data.error);
@@ -52,7 +53,7 @@ const ViewUserReviews = ({ navigation, location }) => {
     >
       <View style={{ marginVertical: 100 }}>
         <Text style={ NoisyStyles.title }>
-          Reviews of {location}
+          Reviews of {locationID}
         </Text>
 
         <View style= {{marginVertical: 50}}>

@@ -10,7 +10,8 @@ export function SuggestionListItem(props) {
         <FontAwesomeIcon icon={faMapMarkerAlt} />
       </View>
       <View>
-        <Text style={styles.searchListItemTitle}>{props.item.p1}</Text>
+        <Text style={styles.searchListItemTitle}>{props.item.name}</Text>
+        {props.item.p1 ? <Text>{props.item.p1}</Text> : null}
         {props.item.p2 && props.item.p3 ? <Text>{props.item.p2} {props.item.p3}</Text> : null}
         {props.item.p2 && !props.item.p3 ? <Text>{props.item.p2}</Text> : null}
       </View>
@@ -27,7 +28,8 @@ const styles = StyleSheet.create({
   searchListItem: {
     marginTop: 5,
     marginBottom: 5,
-    flexDirection: "row"
+    flexDirection: "row",
+    writingDirection: 'rtl'
   },
   searchListItemTitle: {
     fontWeight: 'bold'
