@@ -1,4 +1,4 @@
-import { MAPS_API_KEY } from '../../ENV.json'
+import { MAPS_API_KEY, SERVER_URL } from '../../ENV.json'
 
 export default `
 
@@ -304,7 +304,7 @@ export default `
 
         // update the Noisy markers when the map moves
         function mapMoveHandler() {
-            fetch('http://192.168.31.236:3000/r/')
+            fetch( '${SERVER_URL}' + 'r')
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
