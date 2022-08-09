@@ -123,7 +123,7 @@ async function getLocation(MC, lid) {
 
 /**
  * The getReviews function returns a list of reviews for a given location.
- *
+ * 
  * 
  * @param MC Used to Connect to the database.
  * @param _lid Used to Find the reviews for a specific location.
