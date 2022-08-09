@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
-import { SERVER_URL } from '../../ENV.json'
+import { SERVER_URL } from "../../ENV.json";
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -17,7 +17,7 @@ const SignIn = ({ navigation }) => {
   // context
   //const [state, setState] = useContext(AuthContext);
 
-  const handleSubmit = async () => {
+  const handleSignIn = async () => {
     setLoading(true);
     if (!email || !password) {
       alert("All fields are required");
@@ -59,11 +59,9 @@ const SignIn = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <View style={ NoisyStyles.container }>
-        <NoisyLogo style={ NoisyStyles.logo }/>
-        <Text style={ NoisyStyles.title }>
-          Sign In
-        </Text>
+      <View style={NoisyStyles.container}>
+        <NoisyLogo style={NoisyStyles.logo} />
+        <Text style={NoisyStyles.title}>Sign In</Text>
 
         <UserInput
           name="Email"
@@ -77,32 +75,36 @@ const SignIn = ({ navigation }) => {
           value={password}
           setValue={setPassword}
           secureTextEntry={true}
-          autoComplteType="password"
+          autoCompleteType="password"
         />
 
         <SubmitButton
           title="Sign In"
-          handleSubmit={handleSubmit}
+          handleSubmit={handleSignIn}
           loading={loading}
         />
 
-        <Text style={ NoisyStyles.isChecked }>
+        <Text style={NoisyStyles.isChecked}>
           Not yet registered?{" "}
-          <Text onPress={() => navigation.navigate("SignUp")}
-              style={ NoisyStyles.navigateLink }>
+          <Text
+            onPress={() => navigation.navigate("SignUp")}
+            style={NoisyStyles.navigateLink}
+          >
             Sign Up
           </Text>
         </Text>
 
         <Text
           onPress={() => navigation.navigate("ForgotPassword")}
-            style={ NoisyStyles.navigateLink }>
+          style={NoisyStyles.navigateLink}
+        >
           Forgot Password?
         </Text>
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.linkButton }>
+          style={NoisyStyles.linkButton}
+        >
           Main Menu
         </Text>
       </View>

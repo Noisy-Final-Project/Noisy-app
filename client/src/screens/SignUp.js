@@ -3,11 +3,11 @@ import { View, Text, ToastAndroid } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
-import { SERVER_URL } from '../../ENV.json'
+import { SERVER_URL } from "../../ENV.json";
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { validateEmail, validatePassword } from "../helpers/validation"
+import { validateEmail, validatePassword } from "../helpers/validation";
 
 const SignUp = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -16,7 +16,7 @@ const SignUp = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [dob, setDOB] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSignUp = async () => {
     setLoading(true);
     if (!name || !email || !password) {
       alert("All fields are required");
@@ -24,16 +24,18 @@ const SignUp = ({ navigation }) => {
       return;
     }
 
-    if (!validateEmail(email)){
-      alert(email + " is not a valid email")
+    if (!validateEmail(email)) {
+      alert(email + " is not a valid email");
       setLoading(false);
-      return
+      return;
     }
 
-    if (!validatePassword(password)){
-      alert("Password should be 8-16 characters long and contain both letters and numbers.")
+    if (!validatePassword(password)) {
+      alert(
+        "Password should be 8-16 characters long and contain both letters and numbers."
+      );
       setLoading(false);
-      return
+      return;
     }
 
     // console.log("SIGNUP REQUEST => ", name, email, password);
@@ -46,15 +48,13 @@ const SignUp = ({ navigation }) => {
       });
       setLoading(false);
 
-      if (data.error){
+      if (data.error) {
         console.log("SIGN UP FAILED => ", data);
         alert(data.error);
-      }
-      else{
+      } else {
         console.log("SIGN UP SUCCESS => ", data);
         alert("Sign Up successful");
       }
-      
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -69,10 +69,8 @@ const SignUp = ({ navigation }) => {
       }}
     >
       <View style={{ marginVertical: 110 }}>
-        <NoisyLogo style={ NoisyStyles.logo }/>
-        <Text style={ NoisyStyles.title }>
-          Sign Up
-        </Text>
+        <NoisyLogo style={NoisyStyles.logo} />
+        <Text style={NoisyStyles.title}>Sign Up</Text>
 
         <UserInput
           name="Name"
@@ -99,26 +97,29 @@ const SignUp = ({ navigation }) => {
           value={password}
           setValue={setPassword}
           secureTextEntry={true}
-          autoComplteType="password"
+          autoCompleteType="password"
         />
 
         <SubmitButton
           title="Sign Up"
-          handleSubmit={handleSubmit}
+          handleSubmit={handleSignUp}
           loading={loading}
         />
 
-        <Text style={ NoisyStyles.isChecked }> 
+        <Text style={NoisyStyles.isChecked}>
           Already Joined?{" "}
-            <Text onPress={() => navigation.navigate("SignIn")}
-             style={ NoisyStyles.navigateLink }>
-                Sign In
-            </Text>
+          <Text
+            onPress={() => navigation.navigate("SignIn")}
+            style={NoisyStyles.navigateLink}
+          >
+            Sign In
+          </Text>
         </Text>
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.linkButton }>
+          style={NoisyStyles.linkButton}
+        >
           Main Menu
         </Text>
       </View>

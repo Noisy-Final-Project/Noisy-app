@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
-import { SERVER_URL } from '../../ENV.json'
+import { SERVER_URL } from "../../ENV.json";
 import NoisyLogo from "../components/NoisyLogo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
@@ -18,7 +18,7 @@ const ForgotPassword = ({ navigation }) => {
   // context
   //const [state, setState] = useContext(AuthContext);
 
-  const handleSubmit = async () => {
+  const handleRequestResetCode = async () => {
     setLoading(true);
     if (!email) {
       alert("Email is required");
@@ -35,7 +35,7 @@ const ForgotPassword = ({ navigation }) => {
       } else {
         setLoading(false);
         setVisible(true);
-        console.log("RESET PASSWORD RES => ", data);
+        console.log("FORGOT PASSWORD RES => ", data);
         alert("Enter the password reset code we sent in your email");
       }
     } catch (err) {
@@ -75,10 +75,8 @@ const ForgotPassword = ({ navigation }) => {
       }}
     >
       <View style={{ marginVertical: 100 }}>
-        <NoisyLogo style={ NoisyStyles.logo }/>
-        <Text style={ NoisyStyles.title }>
-          Forgot Password
-        </Text>
+        <NoisyLogo style={NoisyStyles.logo} />
+        <Text style={NoisyStyles.title}>Forgot Password</Text>
 
         <UserInput
           name="Email"
@@ -95,7 +93,7 @@ const ForgotPassword = ({ navigation }) => {
               value={password}
               setValue={setPassword}
               secureTextEntry={true}
-              autoComplteType="password"
+              autoCompleteType="password"
             />
 
             <UserInput
@@ -109,19 +107,21 @@ const ForgotPassword = ({ navigation }) => {
 
         <SubmitButton
           title={visible ? "Reset Password" : "Request Reset Code"}
-          handleSubmit={visible ? handlePasswordReset : handleSubmit}
+          handleSubmit={visible ? handlePasswordReset : handleRequestResetCode}
           loading={loading}
         />
 
         <Text
           onPress={() => navigation.navigate("SignIn")}
-          style={ NoisyStyles.navigateLink }>
+          style={NoisyStyles.navigateLink}
+        >
           Sign In
         </Text>
 
         <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={ NoisyStyles.linkButton }>
+          style={NoisyStyles.linkButton}
+        >
           Main Menu
         </Text>
       </View>

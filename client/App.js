@@ -9,6 +9,7 @@ import SignUp from './src/screens/SignUp';
 import ForgotPassword from './src/screens/ForgotPassword';
 import ChooseBusiness from './src/screens/ChooseBusiness';
 import ViewUserReviews from './src/screens/ViewUserReviews';
+import AddReview from './src/screens/addReview';
 
 
 const Stack = createNativeStackNavigator();
@@ -27,6 +28,7 @@ export default function App() {
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="ChooseBusiness" component={ChooseBusiness} />
           <Stack.Screen name="ViewUserReviews" component={ViewUserReviews} />
+          <Stack.Screen name="AddReview" component={AddReview} />
         </Stack.Navigator>
       </NavigationContainer>
   );
