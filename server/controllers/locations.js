@@ -2,17 +2,18 @@
 const fetcher = require('../model/fetching_queries')
 const inserter = require('../model/insert_queries')
 const {MongoConnection} = require('../model/mongoUtils')
-const model = 
-exports.getLocationsByRadius = async (req, res) => {
-  const { latitude, logitude, radius } = req.query
-  const minimal_distance = 1
-  res.json(fetcher.findLocationByDist(MongoConnection, latitude, logitude,minimal_distance ,radius))
+// const model = 
+exports.getLocationsInBounds = async (req, res) => {
+  const { bounds } = req.query
+  const jsonBounds = JSON.parse(bounds)
+    
+  res.json(await fetcher.getLocationsInBounds(jsonBounds._sw, jsonBounds._ne))
 };
 
 exports.getLocationReviews = async (req, res) => {
-  const { lname, location, start, end} = req.query
+  const { id } = req.params.id
 
-  res.json(await fetcher.getReviews(MongoConnection,location,start,end))
+  res.json(await fetcher.getReviews(id))
 };
 
 exports.addReview = async (req, res) => {
@@ -20,6 +21,6 @@ exports.addReview = async (req, res) => {
     labels, locationID, lname } = req.body
     // TODO what is better to transfer? userID (uid) or email? 
     // TODO location name is not nessecary if locationID can be transferred. is it possible for View to send it?
-  res.json(inserter.insertReview(MongoConnection, uid,locationID,textReview,soundLevel,soundOpinion,labels))
+  res.json(inserter.insertReview(uid,locationID,textReview,soundLevel,soundOpinion,labels))
 };
 
