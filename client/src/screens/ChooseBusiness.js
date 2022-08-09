@@ -102,8 +102,10 @@ const ChooseBusiness = ({ navigation }) => {
       case 'addReview':
         // params are: [id, name, address, lnglat]
         const params = Object.values(message.body)
-        console.log(params);
-        // navigation.navigate("ViewUserReviews", ...params);
+
+        // Reset ID for the server to create a new ID in DB
+        params[0] = ''
+        navigation.navigate("ViewUserReviews", ...params);
         break
       default:
         break

@@ -1,12 +1,10 @@
-// const Model = require('../model/Model')
 const fetcher = require('../model/fetching_queries')
 const inserter = require('../model/insert_queries')
-const {MongoConnection} = require('../model/mongoUtils')
-// const model = 
+
 exports.getLocationsInBounds = async (req, res) => {
   const { bounds } = req.query
   const jsonBounds = JSON.parse(bounds)
-    
+
   res.json(await fetcher.getLocationsInBounds(jsonBounds._sw, jsonBounds._ne))
 };
 

@@ -58,19 +58,7 @@ export default `
             background: #ffffff;
             text-align: center;
         }
-
-        /* .button {
-            border: none;
-            color: rgb(43, 199, 230);
-            padding: 10px 23px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-        } */
-
+        
         .button {
             border: 0px solid #000000;
             border-radius: 5px;
@@ -81,6 +69,8 @@ export default `
             font-weight: bold;
             opacity: 1;
             transition: 1s;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
         }
 
         .button:hover {
@@ -190,29 +180,8 @@ export default `
                 "<p>#Reviews: " + numOfReviews + "</p>";
 
 
-            // var head1 = document.createElement('h1');
-            // head1.className = "placeName"
-            // head1.innerHTML = placeDetails.name
-            // popupDOMElement.appendChild(head1);
-
-            // console.log(placeDetails.address);
-
-            // var p1 = document.createElement('p');
-            // p1.className = "placeAddress"
-            // p1.textContent = placeDetails.address
-            // popupDOMElement.appendChild(p1)
-
-            // var p2 = document.createElement('p');
-            // p2.className = "placeNumOfReviews"
-            // p1.textContent = "#Reviews: " + numOfReviews
-            // popupDOMElement.appendChild(p2)
-
-            // var p3 = document.createElement('p');
-            // p1.textContent = "#TEST: "
-            // popupDOMElement.appendChild(p3)
-
             const btn = document.createElement("button");
-            btn.className = 'button'
+            btn.className = 'button star'
             if (numOfReviews === 0) {
                 btn.innerHTML = "Add Review";
                 btn.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(placeDetails) + ")")
@@ -248,7 +217,9 @@ export default `
         }
 
         function removeSelfMarker() {
+            alert('removing')
             if (selfMarker) {
+                alert('removed')
                 selfMarker.remove();
                 delete tempMarker;
             }
@@ -263,6 +234,7 @@ export default `
         // Bind map events with handlers:
         map.on('click', generalClickHandler)
         map.on('moveend', mapMoveHandler)
+        map.on('load', mapMoveHandler)
         map.on('dblclick', unknownPlaceHandler)
 
         /*
@@ -304,13 +276,14 @@ export default `
 
         // update the Noisy markers when the map moves
         function mapMoveHandler() {
-            fetch( '${SERVER_URL}' + 'r')
+            const bounds = map.getBounds()
+
+            fetch('http://localhost:5000/' + 'locations?bounds='+JSON.stringify(bounds))
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
                         // Remove old markers
                         if (currentMarkers) {
-                            const bounds = map.getBounds()
                             Object.keys(currentMarkers).forEach(id => {
                                 if (!bounds.contains(currentMarkers[id].getLngLat())) {
                                     currentMarkers[id].remove();
@@ -394,8 +367,8 @@ export default `
                     try {
                         const lnglat = message.body.lnglat
                         map.flyTo({ center: lnglat, zoom: 15 })
-
-                        if (window.ANDROID) {
+                        alert(window.ANDROID)
+                        if (windows.ANDROID) {
                             removeSelfMarker()
                             selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
                         }

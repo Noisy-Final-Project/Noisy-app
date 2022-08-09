@@ -6,3 +6,5 @@ RemoteAddress:::1 , Method:GET , URL:/locations?abc={a:1;b:65} , Status:- , ResT
 RemoteAddress:::1 , Method:GET , URL:/locations?abc={%22a%22:1;%22b%22:65} , Status:- , ResTime:- ms , Body:{}
 RemoteAddress:::1 , Method:GET , URL:/locations?abc={%22a%22:1,%22b%22:65} , Status:- , ResTime:- ms , Body:{}
 RemoteAddress:::1 , Method:GET , URL:/locations?abc={%22a%22:1,%22b%22:65} , Status:- , ResTime:- ms , Body:{}
+RemoteAddress:::1 , Method:GET , URL:/locations?bounds={%22_sw%22:{%22lng%22:35.19200235650737,%22lat%22:32.098956369204956},%22_ne%22:{%22lng%22:35.21624952600223,%22lat%22:32.11077096185221}} , Status:- , ResTime:- ms , Body:{}
+RemoteAddress:::1 , Method:GET , URL:/locations?bounds={%22_sw%22:{%22lng%22:35.19118260175213,%22lat%22:32.09545452490346},%22_ne%22:{%22lng%22:35.215429771247074,%22lat%22:32.10726957055266}} , Status:- , ResTime:- ms , Body:{}

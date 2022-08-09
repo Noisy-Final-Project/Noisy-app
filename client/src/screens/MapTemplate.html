@@ -176,27 +176,6 @@
                 "<p>#Reviews: " + numOfReviews + "</p>";
 
 
-            // var head1 = document.createElement('h1');
-            // head1.className = "placeName"
-            // head1.innerHTML = placeDetails.name
-            // popupDOMElement.appendChild(head1);
-
-            // console.log(placeDetails.address);
-
-            // var p1 = document.createElement('p');
-            // p1.className = "placeAddress"
-            // p1.textContent = placeDetails.address
-            // popupDOMElement.appendChild(p1)
-
-            // var p2 = document.createElement('p');
-            // p2.className = "placeNumOfReviews"
-            // p1.textContent = "#Reviews: " + numOfReviews
-            // popupDOMElement.appendChild(p2)
-
-            // var p3 = document.createElement('p');
-            // p1.textContent = "#TEST: "
-            // popupDOMElement.appendChild(p3)
-
             const btn = document.createElement("button");
             btn.className = 'button star'
             if (numOfReviews === 0) {
@@ -292,13 +271,14 @@
 
         // update the Noisy markers when the map moves
         function mapMoveHandler() {
-            fetch('http://192.168.31.236:3000/r/')
+            const bounds = map.getBounds()
+
+            fetch('${SERVER_URL}' + 'locations?bounds='+JSON.stringify(bounds))
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
                         // Remove old markers
                         if (currentMarkers) {
-                            const bounds = map.getBounds()
                             Object.keys(currentMarkers).forEach(id => {
                                 if (!bounds.contains(currentMarkers[id].getLngLat())) {
                                     currentMarkers[id].remove();
