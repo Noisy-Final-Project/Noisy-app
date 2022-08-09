@@ -16,26 +16,20 @@ const { MongoConnection } = require("./mongoUtils");
  * @returns {number} amount of reviews for that location id
  * */
 async function amountReviewsLocation(MC, _lid) {
-  const pipeline = [
-    { $match: { lid: _lid } },
-    { $count: "amountReviews" } 
-];
-  
-    const amount = await MC.db(db_name)
-    .collection("reviews")
-    .aggregate(pipeline);
+  const pipeline = [{ $match: { lid: _lid } }, { $count: "amountReviews" }];
+
+  const amount = await MC.db(db_name).collection("reviews").aggregate(pipeline);
   // Should return an integer
-  
-  let result = undefined
+
+  let result = undefined;
   for await (const doc of amount) {
     result = doc.amountReviews;
-}
+  }
   if (result == undefined) {
-    return 0
+    return 0;
   }
   return result;
 }
-
 
 /**
  * The locationByText function returns a list of locations that match the given text.
@@ -85,10 +79,10 @@ async function getPerson(MC, uid) {
       .findOne({ _id: ObjectId(uid) });
 
     // If not found
-    if (!db_person ) {
-      return {"error": "person not found"}
+    if (!db_person) {
+      return { error: "person not found" };
     }
-    
+
     return {
       userID: uid,
       name: db_person.name,
@@ -120,21 +114,20 @@ async function getLocation(MC, lid) {
   return false;
 }
 
-
 /**
  * The getReviews function returns a list of reviews for a given location.
- * 
- * 
+ *
+ *
  * @param MC Used to Connect to the database.
  * @param _lid Used to Find the reviews for a specific location.
  * @param page Used to Determine which page of reviews to return.
  * @param amountReviewsPerPage Used to Determine how many reviews to display per page. default value 10
  * @return An array of review objects.
- * 
+ *
  */
-async function getReviews(MC, _lid, page, amountReviewsPerPage=10) {
-  const startFrom = page*amountReviewsPerPage
-  const limit = startFrom + amountReviewsPerPage 
+async function getReviews(MC, _lid, page, amountReviewsPerPage = 10) {
+  const startFrom = page * amountReviewsPerPage;
+  const limit = startFrom + amountReviewsPerPage;
   const query = { lid: _lid };
   const sort = { createdOn: -1 };
   const reviews = await MC.db(db_name)
@@ -150,7 +143,10 @@ async function getReviews(MC, _lid, page, amountReviewsPerPage=10) {
     const doc = await reviews.next();
     const _uid = doc.uid;
     const userDetails = await getPerson(MC, _uid);
-    const _username = typeof userDetails.name == "object" ? userDetails.name.join(' ') : userDetails.name;
+    const _username =
+      typeof userDetails.name == "object"
+        ? userDetails.name.join(" ")
+        : userDetails.name;
     const locationReview = {
       username: _username,
       userText: doc.userText,
@@ -161,8 +157,8 @@ async function getReviews(MC, _lid, page, amountReviewsPerPage=10) {
     };
     result.push(locationReview);
   }
-  if (result.length == 0){
-    return {"error":"no reviews found for locationID"}
+  if (result.length == 0) {
+    return { error: "no reviews found for locationID" };
   }
   return result;
 }
@@ -194,15 +190,16 @@ async function emailExists(MC, email) {
 }
 
 /**
- * The findLocationByDist function finds all locations within a certain distance of the given coordinates.
+ * The findLocationByDist function takes in a latitude and longitude, as well as a minimal distance and maximum distance.
+ * It then uses the MongoDB geospatial queries to find all locations within the specified range of the given coordinates.
  *
  *
- * @param MC Used to query to the database.
- * @param lt1 Used to Set the latitude of the location to be searched.
- * @param ln1 Used to Get the longitude of the user's location.
- * @param minimalDistance Used to Filter out locations that are too far away from the user's location.
- * @param maxDistance Used to Set the maximum distance from the location to be returned.
- * @return An array of locations that are within a certain radius.
+ * @param MC Used to Connect to the database.
+ * @param lt1 Used to Find the location that is closest to it.
+ * @param ln1 Used to Find the closest location to it.
+ * @param minimalDistance Used to Filter out locations that are too far away from the user.
+ * @param maxDistance Used to Determine the maximum distance from the point given in lt and ln to be considered a match.
+ * @return An array of objects, each object contains the following fields:.
  *
  */
 async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
@@ -241,25 +238,35 @@ async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
   return locationSet;
 }
 
-async function findLocationByPolygon(MC, p1, p2, p3, p4) {
-  /**
-   //TODO not working
-   * The coordinates of the polygon are like this:
-   * p1  p2
-   * p3  p4
-   * returns all locations in DB in this polygon
-   * further information https://www.mongodb.com/docs/manual/geospatial-queries/
-   * for each point: [longitude,latitude]
-   */
+/**
+ * The function finds all locations in the database that are within a polygon.
+ * 
+ * The coordinates of the polygon are like this:
+ * p3  p2
+ * p1  p4
+ * returns all locations in DB in this polygon
+ * further information https://www.mongodb.com/docs/manual/geospatial-queries/
+ * for each point: [longitude,latitude]
+ * 
+ * @param MC Used to Connect to the mongodb database.
+ * @param p1 Used to Specify the longitude and latitude of the first point.
+ * @param p2 Used to Specify the longitude and latitude of the second point.
+ * @return An array of locations that are in the polygon.
+ 
+  */
+
+async function findLocationByRectangle(MC, p1, p2) {
   // GeoJSON object type
-  let square = { type: "Polygon", coordinates: [[p1, p2, p3, p4, p1]] };
+  const p3 = [p1[0], p2[1]];
+  const p4 = [p2[0], p1[1]];
+  let square = { type: "Polygon", coordinates: [[p1, p3, p2, p4, p1]] };
   let query = {
     location: {
       $geoIntersects: { $geometry: square },
     },
   };
   let documents = await MC.db(db_name).collection("locations").find(query);
-  console.log(documents);
+  return await documents.toArray();
 }
 
 /**
@@ -295,7 +302,7 @@ module.exports = {
   findLocationByDist,
   amountReviewsLocation,
   distCoordinates,
-  findLocationByPolygon,
+  findLocationByRectangle,
   getLocation,
   getPerson,
   locationByLabel,

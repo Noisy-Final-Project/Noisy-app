@@ -29,9 +29,23 @@ async function testGetReviews() {
 async function testAmountReviews() {
   const locationID = "62e8e3b0ff1f13836c2ea06f";
   await MongoConnection.connect();
-  const results = await fetcher.amountReviewsLocation(MongoConnection, locationID);
+  const results = await fetcher.amountReviewsLocation(
+    MongoConnection,
+    locationID
+  );
 
   console.log(`Amount of reviews : ${results}`);
 }
 
 // testAmountReviews();
+async function testLocationPolygon() {
+  const P1 = [-73.9719582809264, 40.79688259197476 ];
+  const P2 = [-73.9113379760125, 40.84129692366408 ];
+  await MongoConnection.connect();
+  const geoQuery = await fetcher.findLocationByRectangle(MongoConnection, P1, P2);
+  for (const doc of geoQuery) {
+    console.log(doc);
+  }
+}
+
+// testLocationPolygon();
