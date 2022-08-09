@@ -4,15 +4,9 @@
  * */
 
 const db_name = "Noisy";
-// var { MongoUtils: MU } = require("./mongoUtils");
-var {
-  emailExists,
-  getLocation,
-  findLocationByDist,
-} = require("./fetching_queries");
+var { emailExists, getLocation } = require("./fetching_queries");
 /**
  * The insertUser function inserts a new user into the database.
- * TODO Is DOB nessecary? In which format it will be given?
  *
  * @param MC Used to Connect to the mongodb database.
  * @param name Used to Create a new user.
@@ -50,16 +44,13 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
  * The insertLocation function inserts a new location into the database.
  *
  *
- * @param MC Used to Connect to the mongodb database.
- * @param _name Used to Name the location.
- * @param latitude Used to Find the location in the database.
- * @param longtitude Used to Find the location in the database.
- * @param _city city of a location.
- * @param _street street of the location in the database.
- * @param _num Used to Specify the street number of the location.
- * @param _category Used to Specify the category of the location.
- * @return A promise that resolves to either a success message or an error message.
- *
+ * @param MC Used to Connect to the database.
+ * @param _name Used to Store the name of the location.
+ * @param latitude
+ * @param longtitude
+ * @param _category Optional.
+ * @param _TID location id of the location in tomtom.
+ * @return A json.
  *
  */
 async function insertLocation(
@@ -70,72 +61,76 @@ async function insertLocation(
   _city,
   _street,
   _num,
-  _category
+  _category,
+  _TID
 ) {
-  //TODO check if the location exists. check if there are businesses within a certain radius
   let successful;
   let errMsg;
   let locationID;
-  let nearbyLoc = await findLocationByDist(MC, latitude, longtitude, 0, 50);
 
-  if (nearbyLoc.length != 0) {
-    for (let i = 0; i < nearbyLoc; i++) {
-      if (nearbyLoc[i].name == _name) {
-        //TODO needs testing
-        successful = false;
-        errMsg = "location within 50 meters exists with this name";
-      }
-    }
-  } else {
-    let geoObject = { type: "Point", coordinates: [longtitude, latitude] };
-    let document = {
-      name: _name,
-      location: geoObject,
-      area: [_city, _street, _num],
-      category: _category,
-      created_on: new Date(),
+  let tidQuery = await MC.db(db_name)
+    .collection("locations")
+    .findOne({ tid: _TID });
+  if (tidQuery) {
+    return {
+      status: false,
+      message: "Tomtom ID already exists in the database",
     };
-
-    try {
-      let p = await MC.db(db_name)
-        .collection("locations")
-        .insertOne(document)
-        .then(() => {
-          successful = true;
-        })
-        .catch((err) => {
-          successful = false;
-          locationID = p.insertedId;
-          errMsg = err;
-        });
-    } catch (errors) {}
   }
+
+  let geoObject = { type: "Point", coordinates: [longtitude, latitude] };
+  let document = {
+    name: _name,
+    location: geoObject,
+    area: [_city, _street, _num],
+    category: _category,
+    created_on: new Date(),
+  };
+
+  try {
+    let p = await MC.db(db_name)
+      .collection("locations")
+      .insertOne(document)
+      .then(() => {
+        successful = true;
+        // that is the ObjectID given to the location by mongoDB.
+        locationID = p.insertedId.toString();
+      })
+      .catch((err) => {
+        successful = false;
+        errMsg = err;
+      });
+  } catch (errors) {}
+
   return { status: successful, locationId: locationID, message: errMsg };
 }
 
 /**
- * The insertReview function inserts a new review into the database.
- * //TODO needs to be tested
+ * The insertReview function inserts a review into the database.
  *
- * @param MC Used to Access the mongoclient object.
- * @param uid Used to Identify the user who is posting the review.
- * @param lid Used to Identify the location of the review.
- * @param ut Used to Determine the user text review.
- * @param usv Used to Store the value that represents user's recording of the sound.
- * @param uso Used to store the user sound opinion
- * @param labels {array} Used to Store the labels of the review.
- * @return A boolean value. True if added successfuly, otherwise false
  *
+ * @param MC Used to Access the database.
+ * @param _uid Used to Identify the user who is submitting a review.
+ * @param _tid Used to Find the location in the , tomtom ID for the location.
+ * @param _ut Used to Store the user text.
+ * @param _usv Used to Store the user's objective value of the sound.
+ * @param _uso Used to Store the user's sound opinion.
+ * @param _labels Used to Store the labels that were selected by the user for the location.
+ * @return true if review inserted succesfully, otherwise false.
  *
  */
-async function insertReview(MC, _uid, _lid, _ut, _usv, _uso, _labels) {
+async function insertReview(MC, _uid, _tid, _ut, _usv, _uso, _labels) {
   // Check if location ID already exists in the database.
-  if (getLocation(MC, _lid) != false) {
-    // Location already exists in the database (checked by location ID)
+  const findPOI = await MC.db(db_name)
+    .collection("locations")
+    .findOne({ tid: _tid });
+
+  if (findPOI) {
+    // Location already exists in the database (checked by tomtom ID)
 
     let reviewDocument = {
       uid: _uid,
-      lid: _lid,
+      tid: _tid,
       userText: _ut,
       objectiveSound: _usv,
       userSoundOpinion: _uso,
@@ -153,7 +148,7 @@ async function insertReview(MC, _uid, _lid, _ut, _usv, _uso, _labels) {
       return false;
     }
   }
-  // _lid is not a location id in the database
+  // couldn't find the location in the database (based on tomtom ID)
   return false;
 }
 
