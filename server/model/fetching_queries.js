@@ -16,11 +16,24 @@ const { MongoConnection } = require("./mongoUtils");
  * @returns {number} amount of reviews for that location id
  * */
 async function amountReviewsLocation(MC, _lid) {
-  const amount = await MC.db("db_name")
+  const pipeline = [
+    { $match: { lid: _lid } },
+    { $count: "amountReviews" } 
+];
+  
+    const amount = await MC.db(db_name)
     .collection("reviews")
-    .aggregate([{ $count: _lid }]);
+    .aggregate(pipeline);
   // Should return an integer
-  return amount[_lid];
+  
+  let result = undefined
+  for await (const doc of amount) {
+    result = doc.amountReviews;
+}
+  if (result == undefined) {
+    return 0
+  }
+  return result;
 }
 
 
@@ -107,18 +120,21 @@ async function getLocation(MC, lid) {
   return false;
 }
 
+
 /**
- * The getReviews function returns an array of reviews for a given listing.
+ * The getReviews function returns a list of reviews for a given location.
  *
- *
- * @param MC Used to Access the mongodb database.
- * @param _lid Used to Filter the reviews by location id.
- * @param startFrom Used to Skip the first reviews.
- * @param limit Used to Limit the number of reviews that are returned.
- * @return An array of reviews from the database.
- *
+ * 
+ * @param MC Used to Connect to the database.
+ * @param _lid Used to Find the reviews for a specific location.
+ * @param page Used to Determine which page of reviews to return.
+ * @param amountReviewsPerPage Used to Determine how many reviews to display per page. default value 10
+ * @return An array of review objects.
+ * 
  */
-async function getReviews(MC, _lid, startFrom, limit) {
+async function getReviews(MC, _lid, page, amountReviewsPerPage=10) {
+  const startFrom = page*amountReviewsPerPage
+  const limit = startFrom + amountReviewsPerPage 
   const query = { lid: _lid };
   const sort = { createdOn: -1 };
   const reviews = await MC.db(db_name)
