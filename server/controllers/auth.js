@@ -1,7 +1,4 @@
 
-const { hashPassword, comparePassword } = require('../helpers/auth')
-const jwt = require('jsonwebtoken')
-const nanoid = require('nanoid')
 const modelAuth = require('../model/auth')
 
 
