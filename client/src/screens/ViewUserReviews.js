@@ -9,7 +9,7 @@ import NoisyStyles from "../NoisyStyles";
 
 const ViewUserReviews = ({ navigation, route }) => {
   const { locationID, locationName } = route.params;
-  alert("view users reviews" + locationID);
+  alert("view users reviews" + locationName);
   const list = [
     {
       userName: "Shani",
@@ -31,8 +31,7 @@ const ViewUserReviews = ({ navigation, route }) => {
   const getReviews = async () => {
     try {
       const { data } = await axios.get(
-        SERVER_URL + "/locations/" + locationID + "/reviews/"
-      );
+        SERVER_URL + "/locations/reviews/" + locationID);
       console.log(data);
       if (data.error) {
         alert(data.error);
