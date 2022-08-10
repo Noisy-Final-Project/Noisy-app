@@ -37,7 +37,8 @@
     "react-native-web-ui-components": "^6.1.5",
     "react-native-webview": "11.18.1",
     "react-router": "^6.3.0",
-    "react-router-native": "^6.3.0"
+    "react-router-native": "^6.3.0",
+    "expo-av": "~11.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

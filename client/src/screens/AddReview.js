@@ -9,17 +9,18 @@ import { SERVER_URL } from "../../ENV.json";
 import NoisyStyles from "../NoisyStyles";
 import SubmitButton from "../components/SubmitButton";
 import UserInput from "../components/UserInput";
+import getBells from "../helpers/Recorder.js";
 
 const AddReview = ({ navigation, route }) => {
   const { locationID, locationName, uid } = route.params;
 
   const [loading, setLoading] = useState(false);
   const [loadingNoiseTest, setLoadingNoiseTest] = useState(false);
-  const [soundLevel, setSoundLevel] = useState('');
-  const [reviewerName, setReviewerName] = useState('');
-  const [ageGroup, setAgeGroup] = useState('');
-  const [soundOpinion, setSoundOpinion] = useState('');
-  const [textReview, setTextReview] = useState('');
+  const [soundLevel, setSoundLevel] = useState("");
+  const [reviewerName, setReviewerName] = useState("");
+  const [ageGroup, setAgeGroup] = useState("");
+  const [soundOpinion, setSoundOpinion] = useState("");
+  const [textReview, setTextReview] = useState("");
 
   const [openLabels, setOpenLabels] = useState(false);
   const [labels, setLabels] = useState([]);
@@ -62,8 +63,17 @@ const AddReview = ({ navigation, route }) => {
   };
 
   // TODO: Add Sound meter test
-  const handleNoiseTest = async () => {
+  const handleNoiseTest = () => {
     setLoadingNoiseTest(true);
+    getBells()
+      .then((res) => {
+        // here res is the amount of bells (float)
+        // TODO set the amount of bells
+        console.log(`The amount of noise ${res}`);
+        setLoadingNoiseTest(false);
+        return res
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
