@@ -104,7 +104,6 @@ const ChooseBusiness = ({ navigation }) => {
         const params = Object.values(message.body);
 
         // Reset ID for the server to create a new ID in DB
-        params[0] = "";
         navigation.navigate("AddReview", ...params);
         break;
       default:
