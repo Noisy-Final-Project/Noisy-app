@@ -58,19 +58,21 @@ export default `
             background: #ffffff;
             text-align: center;
         }
-        
+
+        .button-div {
+            flex-direction: row;
+        }
+
         .button {
             border: 0px solid #000000;
-            border-radius: 5px;
-            padding: 20px 40px 20px 40px;
-            margin: 0px 0px 30px 0px;
+            border-radius: 10px;
+            padding: 10px 10px 10px 10px;
+            margin: 0px 10px 0px 10px;
             background-color: #2947FF;
             color: #FFFFFF;
             font-weight: bold;
             opacity: 1;
             transition: 1s;
-            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
-            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
         }
 
         .button:hover {
@@ -177,21 +179,31 @@ export default `
             popupDOMElement.className = 'popup';
             popupDOMElement.innerHTML = "<h1>" + placeDetails.name + "</h1>" +
                 "<p>" + placeDetails.address + "</p>" +
-                "<p>#Reviews: " + numOfReviews + "</p>";
+                "<p>" + numOfReviews + " Reviews</p>";
 
-
-            const btn = document.createElement("button");
-            btn.className = 'button star'
-            if (numOfReviews === 0) {
-                btn.innerHTML = "Add Review";
-                btn.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(placeDetails) + ")")
+            var buttonDiv = document.createElement('div');
+            buttonDiv.className = 'button-div';
+            
+            if (numOfReviews > 0) {
+                const btnRead = document.createElement("button");
+                btnRead.className = 'button'
+                
+                btnRead.innerHTML = "Read";
+                btnRead.setAttribute("onclick", "sendToApp('getReviews'," + JSON.stringify(placeDetails) + ")")
+                buttonDiv.appendChild(btnRead)
             }
             else {
-                btn.innerHTML = "Read Reviews";
-                btn.setAttribute("onclick", "sendToApp('getReviews'," + JSON.stringify(placeDetails) + ")")
+                placeDetails.id = ''
             }
+            
+            const btnAdd = document.createElement("button");
+            btnAdd.className = 'button'
+            btnAdd.innerHTML = "Add";
+            btnAdd.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(placeDetails) + ")")
+            buttonDiv.appendChild(btnAdd)
 
-            popupDOMElement.appendChild(btn)
+
+            popupDOMElement.appendChild(buttonDiv)
 
             var popup = new tt.Popup({ offset: 30 }).setDOMContent(popupDOMElement);
 
@@ -233,8 +245,8 @@ export default `
 
         // Bind map events with handlers:
         map.on('click', generalClickHandler)
-        map.on('moveend', mapMoveHandler)
         map.on('load', mapMoveHandler)
+        map.on('moveend', mapMoveHandler)
         map.on('dblclick', unknownPlaceHandler)
 
         /*
@@ -278,7 +290,8 @@ export default `
         function mapMoveHandler() {
             const bounds = map.getBounds()
 
-            fetch('http://localhost:5000/' + 'locations?bounds='+JSON.stringify(bounds))
+            // fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds))
+            fetch('${SERVER_URL}' + 'r')
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
