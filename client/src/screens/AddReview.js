@@ -57,6 +57,7 @@ const AddReview = ({ navigation, route }) => {
         console.log("ADD REVIEW RES => ", data);
       }
     } catch (err) {
+      setLoading(false);
       alert("Error adding review. Try again.");
       console.log(err);
     }
@@ -69,8 +70,8 @@ const AddReview = ({ navigation, route }) => {
       .then((res) => {
         // here res is the amount of bells (float)
         setLoadingNoiseTest(false);
-
-        // TODO set the amount of bells
+        alert("sound level: " + res);
+        setSoundLevel(2.5);
       })
       .catch((err) => console.log(err));
   };
@@ -83,14 +84,14 @@ const AddReview = ({ navigation, route }) => {
       }}
     >
       <Card>
-        <Text style={NoisyStyles.title}>Review {locationName}</Text>
-
-        <View style={NoisyStyles.container}>
+        <View>
+          <Text style={NoisyStyles.title}>Review {locationName}</Text>
           <View
             style={{
               flex: 1,
               flexDirection: "row",
               justifyContent: "space-between",
+              paddingTop: 40
             }}
           >
             <Text style={NoisyStyles.text}>*Sound Level: </Text>
@@ -99,13 +100,14 @@ const AddReview = ({ navigation, route }) => {
               readonly
               startingValue={soundLevel}
               type="bell"
-            />
-            <SubmitButton
-              title="   Test   "
-              handleSubmit={handleNoiseTest}
-              loading={loadingNoiseTest}
+              fraction="2"
             />
           </View>
+          <SubmitButton
+            title="Test"
+            handleSubmit={handleNoiseTest}
+            loading={loadingNoiseTest}
+          />
           <UserInput
             name="Reviewer Name"
             value={reviewerName}
