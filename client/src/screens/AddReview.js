@@ -85,7 +85,7 @@ const AddReview = ({ navigation, route }) => {
       <Card>
         <Text style={NoisyStyles.title}>Review {locationName}</Text>
 
-        <View style={{ marginVertical: 50 }}>
+        <View style={NoisyStyles.container}>
           <View
             style={{
               flex: 1,
@@ -93,7 +93,7 @@ const AddReview = ({ navigation, route }) => {
               justifyContent: "space-between",
             }}
           >
-            <Text style={NoisyStyles.cardText}>*Sound Level: </Text>
+            <Text style={NoisyStyles.text}>*Sound Level: </Text>
             <Rating
               imageSize={30}
               readonly
@@ -101,29 +101,35 @@ const AddReview = ({ navigation, route }) => {
               type="bell"
             />
             <SubmitButton
-              title="        Test        "
+              title="   Test   "
               handleSubmit={handleNoiseTest}
               loading={loadingNoiseTest}
             />
           </View>
           <UserInput
-            name="Reviewer Name:"
+            name="Reviewer Name"
             value={reviewerName}
             setValue={setReviewerName}
             autoCompleteType="name"
+            namePosition="text"
           />
           <UserInput
-            name="Sound Opinion:"
+            name="Age"
+            value={ageGroup}
+            setValue={setAgeGroup}
+            namePosition="text"
+            keyboardType="numeric"
+          />
+          <UserInput
+            name="Sound Opinion"
             value={soundOpinion}
             setValue={setSoundOpinion}
+            namePosition="text"
           />
-          <Text style={NoisyStyles.cardText}>Labels:</Text>
+          <Text style={NoisyStyles.text}>Labels:</Text>
           <View
             style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: 15,
+              paddingVertical: 10
             }}
           >
             <DropDownPicker
@@ -147,9 +153,10 @@ const AddReview = ({ navigation, route }) => {
             />
           </View>
           <UserInput
-            name="*Summary:"
+            name="*Summary"
             value={textReview}
             setValue={setTextReview}
+            namePosition="text"
           />
         </View>
 

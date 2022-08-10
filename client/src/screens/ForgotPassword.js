@@ -74,7 +74,7 @@ const ForgotPassword = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <View style={{ marginVertical: 100 }}>
+      <View style={NoisyStyles.container}>
         <NoisyLogo style={NoisyStyles.logo} />
         <Text style={NoisyStyles.title}>Forgot Password</Text>
 

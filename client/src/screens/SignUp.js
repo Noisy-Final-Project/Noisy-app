@@ -68,7 +68,7 @@ const SignUp = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <View style={{ marginVertical: 110 }}>
+      <View style={NoisyStyles.container}>
         <NoisyLogo style={NoisyStyles.logo} />
         <Text style={NoisyStyles.title}>Sign Up</Text>
 

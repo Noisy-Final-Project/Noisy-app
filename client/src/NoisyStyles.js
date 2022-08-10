@@ -38,13 +38,13 @@ const NoisyStyles = StyleSheet.create({
         justifyContent: 'center',
         //alignSelf: "center",
     },
-    title: {   
+    title: {
         marginTop: 20,
         fontSize: 32,
         fontFamily: "serif",
         textAlign: "center",
         fontWeight: "bold"
-      },
+    },
     link: {
         marginTop: 50,
         fontSize: 24,
@@ -54,6 +54,11 @@ const NoisyStyles = StyleSheet.create({
         color: "teal",
     },
     text: {
+        marginTop: 5,
+        fontSize: 18,
+        fontWeight: "600",
+    },
+    centerText: {
         marginTop: 50,
         fontSize: 24,
         fontWeight: "300",
@@ -99,11 +104,6 @@ const NoisyStyles = StyleSheet.create({
         marginVertical: 15,
         borderRadius: 24,
     },
-    cardText: {
-        marginTop: 5,
-        fontSize: 18,
-        fontWeight: "600",
-    }
-  });
+});
 
-  export default NoisyStyles;
+export default NoisyStyles;

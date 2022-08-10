@@ -71,7 +71,7 @@ const ViewUserReviews = ({ navigation, route }) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Text style={NoisyStyles.cardText}>Noise Level: </Text>
+                  <Text style={NoisyStyles.text}>Noise Level: </Text>
                   <Rating
                     imageSize={30}
                     readonly
@@ -79,16 +79,16 @@ const ViewUserReviews = ({ navigation, route }) => {
                     type="bell"
                   />
                 </View>
-                <Text style={NoisyStyles.cardText}>
+                <Text style={NoisyStyles.text}>
                   Sound Opinion: {review.userSoundOpinion}
                 </Text>
-                <Text style={NoisyStyles.cardText}>
+                <Text style={NoisyStyles.text}>
                   Labels: {review.labelsAttached.join(", ")}
                 </Text>
-                <Text style={NoisyStyles.cardText}>
+                <Text style={NoisyStyles.text}>
                   More Info: {review.userText}
                 </Text>
-                <Text style={NoisyStyles.cardText}>
+                <Text style={NoisyStyles.text}>
                   Reviewer Name: {review.userName}
                 </Text>
               </Card>
@@ -97,7 +97,11 @@ const ViewUserReviews = ({ navigation, route }) => {
         </View>
 
         <Text
-          onPress={() => navigation.navigate("AddReview")}
+          onPress={() => navigation.navigate("AddReview", {
+            locationID: 4,
+            locationName: "BBB",
+            uid: "userID",
+          })}
           style={NoisyStyles.linkButton}
         >
           Create New Review

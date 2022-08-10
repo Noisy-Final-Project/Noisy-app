@@ -13,21 +13,21 @@ const MainMenu = ({ navigation }) => {
       }}
     >
       <View style={{ marginVertical: 110 }}>
-        <NoisyLogo style={ NoisyStyles.logo }/>
+        <NoisyLogo style={NoisyStyles.logo} />
 
         <Text
           onPress={() => navigation.navigate("ChooseBusiness")}
-          style={ NoisyStyles.link }>
+          style={NoisyStyles.link}>
           Choose a Business
         </Text>
 
-        <Text style={ NoisyStyles.text }>
+        <Text style={NoisyStyles.centerText}>
           OR
         </Text>
 
         <Text
           onPress={() => navigation.navigate("SignIn")}
-            style= { NoisyStyles.link }>
+          style={NoisyStyles.link}>
           Sign In
         </Text>
       </View>
