@@ -90,7 +90,7 @@ async function forgotPassword(_email) {
     $set: { resetCode: resetCode, expirationDate: expirationDate },
   };
 
-  const result =  await MongoConnection.db(db_name)
+  const result = await MongoConnection.db(db_name)
     .collection("users")
     .updateOne(filter, update);
   result.then(() => {
