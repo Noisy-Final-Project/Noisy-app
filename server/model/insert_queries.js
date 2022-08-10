@@ -4,7 +4,12 @@
  * */
 
 const db_name = "Noisy";
-var { emailExists, getLocation, findLocationByDist } = require("./fetching_queries");
+var {
+  emailExists,
+  getLocation,
+  findLocationByDist,
+} = require("./fetching_queries");
+const MongoConnection = require("./mongoUtils");
 /**
  * The insertUser function inserts a new user into the database.
  *
@@ -16,7 +21,7 @@ var { emailExists, getLocation, findLocationByDist } = require("./fetching_queri
  *
  *
  */
-async function insertUser(MC, _name, _dob, _email, _hash) {
+async function insertUser(_name, _dob, _email, _hash, MC = MongoConnection) {
   var alreadyInDB = await emailExists(MC, _email);
   if (alreadyInDB == false) {
     const doc = {
@@ -40,9 +45,7 @@ async function insertUser(MC, _name, _dob, _email, _hash) {
   }
 }
 
-
 async function insertLocation(
-  MC,
   _name,
   latitude,
   longtitude,
@@ -50,21 +53,32 @@ async function insertLocation(
   _street,
   _num,
   _category,
+  MC = MongoConnection
 ) {
   let successful;
   let errMsg;
   let locationID;
 
- // Check if the location already exists in the database
- const maxDistance = 100
- const locationNearby = await findLocationByDist(MC,latitude,longtitude,2,maxDistance)
+  // Check if the location already exists in the database
+  const maxDistance = 100;
+  const locationNearby = await findLocationByDist(
+    MC,
+    latitude,
+    longtitude,
+    2,
+    maxDistance
+  );
 
- for await (const doc of locationNearby){
-  if (doc.name == _name){
-    // location already exists in the database
-    return {status: false, message: "location already exists in the database", locationID: doc._id}
+  for await (const doc of locationNearby) {
+    if (doc.name == _name) {
+      // location already exists in the database
+      return {
+        status: false,
+        message: "location already exists in the database",
+        locationID: doc._id,
+      };
+    }
   }
- }
 
   let geoObject = { type: "Point", coordinates: [longtitude, latitude] };
   let document = {
@@ -93,28 +107,44 @@ async function insertLocation(
   return { status: successful, locationId: locationID, message: errMsg };
 }
 
-
-async function insertReview(MC,_lid, _uid, _ut, _usv, _uso, _labels, locationDetails ) {
-  if (_lid === ""){
+async function insertReview(
+  _lid,
+  _uid,
+  _ut,
+  _usv,
+  _uso,
+  _labels,
+  locationDetails,
+  MC=MongoConnection,
+) {
+  if (_lid === "") {
     // adding a new location
     const _name = locationDetails.name;
     const _city = locationDetails.city;
     const _street = locationDetails.street;
     const _num = locationDetails.num;
     const _lat = locationDetails.lat;
-    const _long = locationDetails.long
+    const _long = locationDetails.long;
     const _category = locationDetails.category;
-    const statusInsertLocation = await insertLocation(MC,_name,_lat,_long,_city,_street,_num,_category)
+    const statusInsertLocation = await insertLocation(
+      MC,
+      _name,
+      _lat,
+      _long,
+      _city,
+      _street,
+      _num,
+      _category
+    );
     if (statusInsertLocation.status == true) {
       // location was added successfully
-      _lid = statusInsertLocation.locationID
-    }else{
-      // issue with creating the location 
-      return statusInsertLocation
+      _lid = statusInsertLocation.locationID;
+    } else {
+      // issue with creating the location
+      return statusInsertLocation;
     }
   }
-  
-  
+
   // Check if location ID already exists in the database.
   const findPOI = await MC.db(db_name)
     .collection("locations")

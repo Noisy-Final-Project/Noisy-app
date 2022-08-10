@@ -5,7 +5,7 @@ const dotenv = require("dotenv").config()
 const cors = require('cors')
 const authRoutes = require('./routes/auth')
 const locationRoutes = require('./routes/locations')
-const MongoConnection = require('./model/mongoUtils')
+const {MongoConnection, connectedMongo} = require('./model/mongoUtils')
 
 const app = express()
 
@@ -107,5 +107,9 @@ app.get('/r', (req,res)=>{
 //     res.json(model.getLocationsByRadius(location, radius))
 // })
 
+connectedMongo().then(() => {
 
-app.listen(PORT, ()=> console.log(`Started listening on port ${PORT}...`))
+
+    app.listen(PORT, ()=> console.log(`Started listening on port ${PORT}...`))
+
+})

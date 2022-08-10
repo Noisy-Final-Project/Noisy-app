@@ -6,8 +6,7 @@ let currentRecording = undefined;
 
 const onRecordingStatusUpdate = (playbackStatus) => {
   console.log("Current status: " + JSON.stringify(playbackStatus));
-  if (playbackStatus.metering)
-    decibels.push(playbackStatus.metering);
+  if (playbackStatus.metering) decibels.push(playbackStatus.metering);
 };
 
 async function startRecording() {
@@ -31,8 +30,6 @@ async function startRecording() {
 
     console.log("Init Recording status: " + status);
     console.log("Recording started");
-
-    
   } catch (err) {
     console.error("Failed to start recording", err);
   }
@@ -42,8 +39,7 @@ async function stopRecording() {
   console.log("Stopping recording..");
   await currentRecording.stopAndUnloadAsync();
   currentRecording = undefined;
-  console.log(decibels.toString())
-
+  console.log(decibels.toString());
 }
 
 /**
@@ -52,9 +48,9 @@ async function stopRecording() {
  * */
 function analyzeAverage() {
   let sum = 0;
-  console.log('Analyzing '+decibels.toString());
-  decibels.forEach((element) => sum += element);
-  console.log('Sum: '+sum);
+  console.log("Analyzing " + decibels.toString());
+  decibels.forEach((element) => (sum += element));
+  console.log("Sum: " + sum);
 
   const average = sum / decibels.length;
   const amount = Math.abs(average / 32.5);
@@ -63,15 +59,15 @@ function analyzeAverage() {
 
 async function getBells() {
   // record and stop
-  const delay = ms => new Promise(res => setTimeout(res, ms));
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  await startRecording()
+  await startRecording();
 
-  await delay(timeMillis)
-  
-  await stopRecording()
+  await delay(timeMillis);
 
-  return analyzeAverage()
+  await stopRecording();
+
+  return analyzeAverage();
 }
 
-export default getBells ;
+export default getBells;

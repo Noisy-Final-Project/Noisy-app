@@ -15,7 +15,7 @@ const { MongoConnection } = require("./mongoUtils");
  * @param {string} lid location ID
  * @returns {number} amount of reviews for that location id
  * */
-async function amountReviewsLocation(MC, _lid) {
+async function amountReviewsLocation( _lid,MC=MongoConnection) {
   const pipeline = [{ $match: { lid: _lid } }, { $count: "amountReviews" }];
 
   const amount = await MC.db(db_name).collection("reviews").aggregate(pipeline);
@@ -40,7 +40,7 @@ async function amountReviewsLocation(MC, _lid) {
  * @return An array of locations that match the search text (each contains _id,name,location (lat,long)).
  *
  */
-async function locationByText(MC, _text) {
+async function locationByText( _text, MC=MongoConnection) {
   const query = { $text: { $search: _text } };
   // return only these fields
   const projection = {
@@ -72,7 +72,7 @@ async function locationByText(MC, _text) {
  * */
 async function locationByLabel(MC, labels, userLocation, radius) {}
 
-async function getPerson(MC, uid) {
+async function getPerson( uid,MC=MongoConnection) {
   try {
     let db_person = await MC.db(db_name)
       .collection("users")
@@ -91,7 +91,7 @@ async function getPerson(MC, uid) {
     };
   } catch (err) {}
 }
-async function getLocation(MC, lid) {
+async function getLocation(lid,MC=MongoConnection) {
   try {
     let db_location = await MC.db(db_name)
       .collection("locations")
@@ -125,7 +125,7 @@ async function getLocation(MC, lid) {
  * @return An array of review objects.
  *
  */
-async function getReviews(MC, _lid, page, amountReviewsPerPage = 10) {
+async function getReviews( _lid, page ,amountReviewsPerPage=10,MC=MongoConnection) {
   const startFrom = page * amountReviewsPerPage;
   const limit = startFrom + amountReviewsPerPage;
   const query = { lid: _lid };
@@ -173,7 +173,7 @@ async function getReviews(MC, _lid, page, amountReviewsPerPage = 10) {
  *
  *
  */
-async function emailExists(MC, email) {
+async function emailExists( email, MC=MongoConnection) {
   try {
     let db_emailExists = await MC.db(db_name)
       .collection("users")
@@ -202,7 +202,7 @@ async function emailExists(MC, email) {
  * @return An array of objects, each object contains the following fields:.
  *
  */
-async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
+async function findLocationByDist(lt1, ln1, minimalDistance, maxDistance,MC=MongoConnection) {
   // further information https://www.mongodb.com/docs/manual/geospatial-queries/
   //  *IMPORTANT* for each point enter (that is how mongodb will look for close points): [longitude,latitude]
   var locationSet = [];
@@ -255,10 +255,11 @@ async function findLocationByDist(MC, lt1, ln1, minimalDistance, maxDistance) {
  
   */
 
-async function findLocationByRectangle(MC, p1, p2) {
+async function findLocationByRectangle( p1, p2,MC=MongoConnection) {
   // GeoJSON object type
-  const p3 = [p1[0], p2[1]];
-  const p4 = [p2[0], p1[1]];
+  
+  const p3 = [p1.lang, p2.lat];
+  const p4 = [p2.lang, p1.lat];
   let square = { type: "Polygon", coordinates: [[p1, p3, p2, p4, p1]] };
   let query = {
     location: {
@@ -269,39 +270,12 @@ async function findLocationByRectangle(MC, p1, p2) {
   return await documents.toArray();
 }
 
-/**
- * The distCoordinates function takes in two pairs of latitude and longitude coordinates,
- * and returns the distance between them in meters.
- *
- *
- * @param lt1 Used to Store the latitude of the first coordinate.
- * @param ln1 Used to Calculate the distance between two points on a map.
- * @param lt2 Used to Calculate the distance between two points on a sphere.
- * @param ln2 Used to Calculate the distance between two points on a sphere.
- * @return The distance between two points in meters.
- *
- *
- */
-function distCoordinates(lt1, ln1, lt2, ln2) {
-  // using Haversine formula
-  var dLat = ((lt1 - lt2) * Math.PI) / 180;
-  var dLon = ((ln1 - ln2) * Math.PI) / 180;
-  var a =
-    0.5 -
-    Math.cos(dLat) / 2 +
-    (Math.cos((lt1 * Math.PI) / 180) *
-      Math.cos((lt2 * Math.PI) / 180) *
-      (1 - Math.cos(dLon))) /
-      2;
-  let meters_distance = Math.round(6371000 * 2 * Math.asin(Math.sqrt(a)));
-  return meters_distance;
-}
+
 
 module.exports = {
   emailExists,
   findLocationByDist,
   amountReviewsLocation,
-  distCoordinates,
   findLocationByRectangle,
   getLocation,
   getPerson,
