@@ -149,7 +149,7 @@ const ChooseBusiness = ({ navigation }) => {
           onPress={() =>
             navigation.navigate("AddReview", {
               locationID: 4,
-              locationName: "BBB",
+              locationName: "",
               uid: "userID",
             })
           }

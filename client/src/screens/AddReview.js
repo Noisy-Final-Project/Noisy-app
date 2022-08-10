@@ -4,6 +4,7 @@ import { Rating } from "react-native-ratings";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Card } from "react-native-elements";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { SERVER_URL } from "../../ENV.json";
 import NoisyStyles from "../NoisyStyles";
@@ -12,15 +13,16 @@ import UserInput from "../components/UserInput";
 import getBells from "../helpers/Recorder.js";
 
 const AddReview = ({ navigation, route }) => {
-  const { locationID, locationName, uid } = route.params;
+  const { locationID, locationName } = route.params;
 
   const [loading, setLoading] = useState(false);
   const [loadingNoiseTest, setLoadingNoiseTest] = useState(false);
-  const [soundLevel, setSoundLevel] = useState("");
-  const [reviewerName, setReviewerName] = useState("");
-  const [ageGroup, setAgeGroup] = useState("");
-  const [soundOpinion, setSoundOpinion] = useState("");
-  const [textReview, setTextReview] = useState("");
+  const [newLocationName, setNewLocationName] = useState('');
+  const [soundLevel, setSoundLevel] = useState('');
+  const [reviewerName, setReviewerName] = useState('');
+  const [ageGroup, setAgeGroup] = useState('');
+  const [soundOpinion, setSoundOpinion] = useState('');
+  const [textReview, setTextReview] = useState('');
 
   const [openLabels, setOpenLabels] = useState(false);
   const [labels, setLabels] = useState([]);
@@ -31,9 +33,15 @@ const AddReview = ({ navigation, route }) => {
     { label: "Business Meeting", value: "businessMeeting" },
   ]);
 
+  // useEffect(async () => {
+  //   const user = await AsyncStorage.getItem("@auth");
+  //   setUid(user.uid);
+  //   setReviewerName(user.name);
+  // }, []);
+
   const submitReview = async () => {
     setLoading(true);
-    if (!soundLevel || !textReview) {
+    if (!soundLevel || !textReview || (!locationName && !newLocationName)) {
       alert("Mandatory fields are required");
       setLoading(false);
       return;
@@ -41,6 +49,7 @@ const AddReview = ({ navigation, route }) => {
     try {
       const { data } = await axios.post(SERVER_URL + "locations/add-review", {
         locationID,
+        newLocationName,
         uid,
         soundLevel,
         reviewerName,
@@ -85,8 +94,15 @@ const AddReview = ({ navigation, route }) => {
     >
       <Card>
         <View>
-          <Text style={NoisyStyles.title}>Review {locationName}</Text>
-          <View
+          <Text style={NoisyStyles.title}>{locationName ? "Review " + locationName : "Add New Review"}</Text>
+          {!locationName && (
+            <UserInput
+              name="* Location Name"
+              value={newLocationName}
+              setValue={setNewLocationName}
+              namePosition="text"
+            />)}
+          < View
             style={{
               flex: 1,
               flexDirection: "row",
@@ -94,7 +110,7 @@ const AddReview = ({ navigation, route }) => {
               paddingTop: 40
             }}
           >
-            <Text style={NoisyStyles.text}>*Sound Level: </Text>
+            <Text style={NoisyStyles.text}>* Sound Level: </Text>
             <Rating
               imageSize={30}
               readonly
@@ -114,6 +130,7 @@ const AddReview = ({ navigation, route }) => {
             setValue={setReviewerName}
             autoCompleteType="name"
             namePosition="text"
+            editable={(reviewerName) ? false : true}
           />
           <UserInput
             name="Age"
@@ -155,7 +172,7 @@ const AddReview = ({ navigation, route }) => {
             />
           </View>
           <UserInput
-            name="*Summary"
+            name="* Summary"
             value={textReview}
             setValue={setTextReview}
             namePosition="text"
@@ -175,7 +192,7 @@ const AddReview = ({ navigation, route }) => {
           Main Menu
         </Text>
       </Card>
-    </KeyboardAwareScrollView>
+    </KeyboardAwareScrollView >
   );
 };
 

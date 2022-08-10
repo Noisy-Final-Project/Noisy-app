@@ -10,6 +10,7 @@ const UserInput = ({
   keyboardType = "default",
   secureTextEntry = false,
   namePosition = "placeholder",
+  editable = true,
 }) => {
   return (
     <View>
@@ -29,6 +30,7 @@ const UserInput = ({
         placeholder={namePosition === "placeholder" ? name : ""}
         value={value}
         onChangeText={(text) => setValue(text)}
+        editable={editable}
       />
     </View>
   );

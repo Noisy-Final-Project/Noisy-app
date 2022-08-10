@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { Card } from "react-native-elements";
 import { Rating } from "react-native-ratings";
 import axios from "axios";
@@ -9,7 +9,6 @@ import NoisyStyles from "../NoisyStyles";
 
 const ViewUserReviews = ({ navigation, route }) => {
   const { locationID, locationName } = route.params;
-  alert("view users reviews" + locationName);
   const list = [
     {
       userName: "Shani",
@@ -27,6 +26,8 @@ const ViewUserReviews = ({ navigation, route }) => {
     },
   ];
   const [reviews, setReviews] = useState([]);
+  const [isWeb, setIsweb] = useState(false);
+
 
   const getReviews = async () => {
     try {
@@ -47,6 +48,7 @@ const ViewUserReviews = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    setIsweb(Platform.OS == "web");
     getReviews();
   }, []);
 
@@ -96,7 +98,7 @@ const ViewUserReviews = ({ navigation, route }) => {
           })}
         </View>
 
-        <Text
+        {!isWeb && (<Text
           onPress={() => navigation.navigate("AddReview", {
             locationID: 4,
             locationName: "BBB",
@@ -104,17 +106,17 @@ const ViewUserReviews = ({ navigation, route }) => {
           })}
           style={NoisyStyles.linkButton}
         >
-          Create New Review
-        </Text>
+          Add New Review
+        </Text>)}
 
-        <Text
+        < Text
           onPress={() => navigation.navigate("MainMenu")}
           style={NoisyStyles.linkButton}
         >
           Main Menu
         </Text>
       </View>
-    </KeyboardAwareScrollView>
+    </KeyboardAwareScrollView >
   );
 };
 
