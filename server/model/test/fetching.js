@@ -7,7 +7,7 @@ async function testSearch() {
   const textQuery = "park";
   await MongoConnection.connect();
 
-  const results = await fetcher.locationByText(MongoConnection, textQuery);
+  const results = await fetcher.locationByText(textQuery);
   console.log(results);
 }
 

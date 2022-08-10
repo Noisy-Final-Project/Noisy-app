@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
 const uri =
   "mongodb+srv://dean:1122456@cluster0.a2sp2.mongodb.net/?retrywrites=true&w=majority";
@@ -12,7 +12,9 @@ let MongoConnection = new MongoClient(uri, options);
 
 async function connectedMongo() {
   await MongoConnection.connect();
-  return MongoConnection
+  console.log("Connected to Mongo Server");
+  return MongoConnection;
 }
-exports.connectedMongo = connectedMongo
+
 exports.MongoConnection = MongoConnection;
+exports.connectedMongo = connectedMongo;

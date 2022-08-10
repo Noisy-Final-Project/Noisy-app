@@ -67,13 +67,10 @@ const AddReview = ({ navigation, route }) => {
     setLoadingNoiseTest(true);
     getBells()
       .then((res) => {
-        // here res is the amount of bells (float)        
+        // here res is the amount of bells (float)
         setLoadingNoiseTest(false);
 
         // TODO set the amount of bells
-
-
-
       })
       .catch((err) => console.log(err));
   };

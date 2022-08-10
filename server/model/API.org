@@ -261,8 +261,3 @@ location1: {
 }}
 #+end_src
 
-* Tasks [0%]
-** View [%]
-** Model [0%]
-** Controller [%]
-** Tests [%]
