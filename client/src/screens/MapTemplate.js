@@ -290,8 +290,7 @@ export default `
         function mapMoveHandler() {
             const bounds = map.getBounds()
 
-            // fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds))
-            fetch('${SERVER_URL}' + 'r')
+            fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds))
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
