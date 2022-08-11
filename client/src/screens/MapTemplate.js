@@ -379,8 +379,8 @@ export default `
                     try {
                         const lnglat = message.body.lnglat
                         map.flyTo({ center: lnglat, zoom: 15 })
-                        alert(window.ANDROID)
-                        if (windows.ANDROID) {
+                        
+                        if (window.ANDROID) {
                             removeSelfMarker()
                             selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
                         }

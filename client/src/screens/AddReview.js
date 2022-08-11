@@ -80,7 +80,7 @@ const AddReview = ({ navigation, route }) => {
         // here res is the amount of bells (float)
         setLoadingNoiseTest(false);
         alert("sound level: " + res);
-        setSoundLevel(2.5);
+        setSoundLevel(res);
       })
       .catch((err) => console.log(err));
   };
