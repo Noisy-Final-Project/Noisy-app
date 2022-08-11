@@ -9,7 +9,8 @@ var {
   getLocation,
   findLocationByDist,
 } = require("./fetching_queries");
-const MongoConnection = require("./mongoUtils");
+const { MongoConnection } = require("./mongoUtils");
+const { ObjectId } = require("mongodb");
 /**
  * The insertUser function inserts a new user into the database.
  *
@@ -62,10 +63,9 @@ async function insertLocation(
   // Check if the location already exists in the database
   const maxDistance = 100;
   const locationNearby = await findLocationByDist(
-    MC,
     latitude,
     longtitude,
-    2,
+    0,
     maxDistance
   );
 
@@ -75,7 +75,7 @@ async function insertLocation(
       return {
         status: false,
         message: "location already exists in the database",
-        locationID: doc._id,
+        locationID: doc._id.toString(),
       };
     }
   }
@@ -90,24 +90,19 @@ async function insertLocation(
   };
 
   try {
-    let p = await MC.db(db_name)
-      .collection("locations")
-      .insertOne(document)
-      .then(() => {
-        successful = true;
-        // that is the ObjectID given to the location by mongoDB.
-        locationID = p.insertedId.toString();
-      })
-      .catch((err) => {
-        successful = false;
-        errMsg = err;
-      });
-  } catch (errors) {}
+    let p = await MC.db(db_name).collection("locations").insertOne(document);
+    successful = true;
+    // that is the ObjectID given to the location by mongoDB.
+    locationID = p.insertedId.toString();
+  } catch (errors) {
+    successful = false;
+    errMsg = errors;
+  }
 
   return { status: successful, locationId: locationID, message: errMsg };
 }
 
-async function insertReview(
+async function  insertReview(
   _lid,
   _uid,
   _ut,
@@ -115,65 +110,65 @@ async function insertReview(
   _uso,
   _labels,
   locationDetails,
-  MC=MongoConnection,
+  MC = MongoConnection
 ) {
+  let LID = _lid
+  // let statusInsertLocation = undefined
   if (_lid === "") {
     // adding a new location
     const _name = locationDetails.name;
     const _city = locationDetails.city;
     const _street = locationDetails.street;
     const _num = locationDetails.num;
-    const _lat = locationDetails.lat;
-    const _long = locationDetails.long;
+    const _lat = locationDetails.lnglat[1];
+    const _long = locationDetails.lnglat[0];
     const _category = locationDetails.category;
     const statusInsertLocation = await insertLocation(
-      MC,
       _name,
       _lat,
       _long,
       _city,
       _street,
       _num,
-      _category
+      _category,
+      MC
     );
     if (statusInsertLocation.status == true) {
       // location was added successfully
-      _lid = statusInsertLocation.locationID;
+      LID = statusInsertLocation.locationId;
+      console.log(`Location id ${LID}\nType: ${typeof(LID)}`);
     } else {
       // issue with creating the location
       return statusInsertLocation;
     }
   }
-
-  // Check if location ID already exists in the database.
+  // Check if location ID already exists in the location collection.
   const findPOI = await MC.db(db_name)
     .collection("locations")
-    .findOne({ lid: _lid });
+    .findOne({ _id: new ObjectId(LID) });
 
   if (findPOI) {
-    // Location already exists in the database (checked by location ID)
+    // Location already exists in the location collection (checked by location ID)
 
     let reviewDocument = {
       uid: _uid,
+      lid: LID,
       userText: _ut,
       objectiveSound: _usv,
       userSoundOpinion: _uso,
       labels: _labels,
       createdOn: new Date(),
     };
-    try {
-      let DB = await MC.db(db_name);
-      let reviews = await DB.collection("reviews");
-      let Q = await reviews.insertOne(reviewDocument).then(() => {
-        return true;
-      });
-    } catch (err) {
-      // some error with the database connection?
-      return false;
-    }
+
+    let DB = await MC.db(db_name);
+    let reviews = await DB.collection("reviews");
+    let Q = await reviews.insertOne(reviewDocument);
+    return true;
   }
-  // couldn't find the location in the database (based on tomtom ID)
-  return false;
+  return {
+    success: false,
+    err: "location id should be empty OR in the locations database. Check location ID",
+  };
 }
 
 module.exports = { insertUser, insertLocation, insertReview };

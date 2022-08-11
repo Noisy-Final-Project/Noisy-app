@@ -15,7 +15,7 @@ const { MongoConnection } = require("./mongoUtils");
  * @param {string} lid location ID
  * @returns {number} amount of reviews for that location id
  * */
-async function amountReviewsLocation( _lid,MC=MongoConnection) {
+async function amountReviewsLocation(_lid, MC = MongoConnection) {
   const pipeline = [{ $match: { lid: _lid } }, { $count: "amountReviews" }];
 
   const amount = await MC.db(db_name).collection("reviews").aggregate(pipeline);
@@ -40,7 +40,7 @@ async function amountReviewsLocation( _lid,MC=MongoConnection) {
  * @return An array of locations that match the search text (each contains _id,name,location (lat,long)).
  *
  */
-async function locationByText( _text, MC=MongoConnection) {
+async function locationByText(_text, MC = MongoConnection) {
   const query = { $text: { $search: _text } };
   // return only these fields
   const projection = {
@@ -72,7 +72,7 @@ async function locationByText( _text, MC=MongoConnection) {
  * */
 async function locationByLabel(MC, labels, userLocation, radius) {}
 
-async function getPerson( uid,MC=MongoConnection) {
+async function getPerson(uid, MC = MongoConnection) {
   try {
     let db_person = await MC.db(db_name)
       .collection("users")
@@ -91,7 +91,7 @@ async function getPerson( uid,MC=MongoConnection) {
     };
   } catch (err) {}
 }
-async function getLocation(lid,MC=MongoConnection) {
+async function getLocation(lid, MC = MongoConnection) {
   try {
     let db_location = await MC.db(db_name)
       .collection("locations")
@@ -125,7 +125,12 @@ async function getLocation(lid,MC=MongoConnection) {
  * @return An array of review objects.
  *
  */
-async function getReviews( _lid, page ,amountReviewsPerPage=10,MC=MongoConnection) {
+async function getReviews(
+  _lid,
+  page,
+  amountReviewsPerPage = 10,
+  MC = MongoConnection
+) {
   const startFrom = page * amountReviewsPerPage;
   const limit = startFrom + amountReviewsPerPage;
   const query = { lid: _lid };
@@ -173,7 +178,7 @@ async function getReviews( _lid, page ,amountReviewsPerPage=10,MC=MongoConnectio
  *
  *
  */
-async function emailExists( email, MC=MongoConnection) {
+async function emailExists(email, MC = MongoConnection) {
   try {
     let db_emailExists = await MC.db(db_name)
       .collection("users")
@@ -199,10 +204,16 @@ async function emailExists( email, MC=MongoConnection) {
  * @param ln1 Used to Find the closest location to it.
  * @param minimalDistance Used to Filter out locations that are too far away from the user.
  * @param maxDistance Used to Determine the maximum distance from the point given in lt and ln to be considered a match.
- * @return An array of objects, each object contains the following fields:.
+ * @return An array of objects that are in the range of the points given in lt and ln
  *
  */
-async function findLocationByDist(lt1, ln1, minimalDistance, maxDistance,MC=MongoConnection) {
+async function findLocationByDist(
+  lt1,
+  ln1,
+  minimalDistance,
+  maxDistance,
+  MC = MongoConnection
+) {
   // further information https://www.mongodb.com/docs/manual/geospatial-queries/
   //  *IMPORTANT* for each point enter (that is how mongodb will look for close points): [longitude,latitude]
   var locationSet = [];
@@ -217,24 +228,16 @@ async function findLocationByDist(lt1, ln1, minimalDistance, maxDistance,MC=Mong
       },
     },
   };
-  let nearbyLocations;
-  try {
-    nearbyLocations = await MC.db(db_name)
-      .collection("locations")
-      .find(geoQuery);
-  } catch (e) {
-    console.log(e);
-  }
+
+  const nearbyLocations = await MC.db(db_name)
+    .collection("locations")
+    .find(geoQuery);
 
   while (await nearbyLocations.hasNext()) {
     let loc = await nearbyLocations.next();
-    let dbLocLn = loc["location"]["coordinates"][0];
-    let dbLocLt = loc["location"]["coordinates"][1];
-    let distanceFromParameters = distCoordinates(lt1, ln1, dbLocLt, dbLocLn);
     locationSet.push(loc);
   }
 
-  //TODO should I close the connection to the curser here? check mongoDB docs
   return locationSet;
 }
 
@@ -255,9 +258,9 @@ async function findLocationByDist(lt1, ln1, minimalDistance, maxDistance,MC=Mong
  
   */
 
-async function findLocationByRectangle( p1, p2,MC=MongoConnection) {
+async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
   // GeoJSON object type
-  
+
   const p3 = [p1.lang, p2.lat];
   const p4 = [p2.lang, p1.lat];
   let square = { type: "Polygon", coordinates: [[p1, p3, p2, p4, p1]] };
@@ -269,8 +272,6 @@ async function findLocationByRectangle( p1, p2,MC=MongoConnection) {
   let documents = await MC.db(db_name).collection("locations").find(query);
   return await documents.toArray();
 }
-
-
 
 module.exports = {
   emailExists,
