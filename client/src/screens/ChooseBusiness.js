@@ -6,6 +6,7 @@ import Map from "../components/Map";
 import { getLocation, sendToMap } from "../helpers/MapUtils";
 import axios from "axios";
 import { Suggestions } from "../components/Suggestions";
+import tt from '@tomtom-international/web-sdk-services'
 
 const ChooseBusiness = ({ navigation }) => {
   // Search bar variables:
@@ -32,6 +33,7 @@ const ChooseBusiness = ({ navigation }) => {
       setShowList(false);
       return;
     }
+    
 
     let baseUrl = `https://api.tomtom.com/search/2/search/${changedSearchText}.json?`;
     let searchUrl = baseUrl + `key=${MAPS_API_KEY}`;
@@ -41,6 +43,7 @@ const ChooseBusiness = ({ navigation }) => {
       searchUrl = searchUrl + `&lat=${location[1]}`;
     }
 
+    searchUrl += '&language=he-IL'
     axios
       .get(searchUrl)
       .then((response) => {
@@ -90,7 +93,7 @@ const ChooseBusiness = ({ navigation }) => {
         try {
           getLocation().then((currentLocation) => {
             setLocation(currentLocation);
-            sendToMap(webRef, "center", { lnglat: currentLocation });
+            sendToMap(webRef, "selfCenter", { lnglat: currentLocation });
           });
         } catch (err) {
           console.error(err);
@@ -101,10 +104,8 @@ const ChooseBusiness = ({ navigation }) => {
         break;
       case "addReview":
         // params are: [id, name, address, lnglat]
-        const params = Object.values(message.body);
 
-        // Reset ID for the server to create a new ID in DB
-        navigation.navigate("AddReview", ...params);
+        navigation.navigate("AddReview", message.body);
         break;
       default:
         break;

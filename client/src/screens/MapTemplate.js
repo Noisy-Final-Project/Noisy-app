@@ -160,7 +160,7 @@ export default `
                 markerContentElement.appendChild(iconElement);
 
                 // add marker to map
-                marker = new tt.Marker({ element: markerElement, anchor: 'bottom' })
+                marker = new tt.Marker({ element: markerElement, anchor: 'bottom', offset: [0, -30] })
                     .setLngLat(position)
                     .setPopup(popup)
                     .addTo(map);
@@ -183,11 +183,11 @@ export default `
 
             var buttonDiv = document.createElement('div');
             buttonDiv.className = 'button-div';
-            
+
             if (numOfReviews > 0) {
                 const btnRead = document.createElement("button");
                 btnRead.className = 'button'
-                
+
                 btnRead.innerHTML = "Read";
                 btnRead.setAttribute("onclick", "sendToApp('getReviews'," + JSON.stringify(placeDetails) + ")")
                 buttonDiv.appendChild(btnRead)
@@ -195,7 +195,7 @@ export default `
             else {
                 placeDetails.id = ''
             }
-            
+
             const btnAdd = document.createElement("button");
             btnAdd.className = 'button'
             btnAdd.innerHTML = "Add";
@@ -205,7 +205,7 @@ export default `
 
             popupDOMElement.appendChild(buttonDiv)
 
-            var popup = new tt.Popup({ offset: 30 }).setDOMContent(popupDOMElement);
+            var popup = new tt.Popup({ offset: 40 }).setDOMContent(popupDOMElement);
 
             return popup
         }
@@ -229,9 +229,7 @@ export default `
         }
 
         function removeSelfMarker() {
-            alert('removing')
             if (selfMarker) {
-                alert('removed')
                 selfMarker.remove();
                 delete tempMarker;
             }
@@ -275,9 +273,9 @@ export default `
                         }
 
                         const placeDetails = {
-                            id: place.id,
-                            name: place.poi.name,
-                            address: place.address.freeformAddress,
+                            locationID: place.id,
+                            locationName: place.poi.name,
+                            locationAddress: place.address.freeformAddress,
                             lnglat: [place.position.lng, place.position.lat]
                         }
 
@@ -375,16 +373,16 @@ export default `
                 return
             }
             switch (message.type) {
+                case 'selfCenter':
+                    const lnglat = message.body.lnglat
+                    if (window.ANDROID) {
+                        removeSelfMarker()
+                        selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
+                    }
                 case 'center':
                     try {
                         const lnglat = message.body.lnglat
-                        map.flyTo({ center: lnglat, zoom: 15 })
-                        
-                        if (window.ANDROID) {
-                            removeSelfMarker()
-                            selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
-                        }
-
+                        map.flyTo({ center: lnglat, zoom: 17 })
                     }
                     catch (err) {
                         alert(err.message)

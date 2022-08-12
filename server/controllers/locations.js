@@ -18,12 +18,12 @@ exports.getLocationReviews = async (req, res) => {
 
 exports.addReview = async (req, res) => {
   const {
+    locationID,
     uid,
     textReview,
     soundLevel,
     soundOpinion,
     labels,
-    locationID,
     additionalDetails,
   } = req.body;
   res.json(

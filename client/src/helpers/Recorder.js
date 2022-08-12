@@ -39,7 +39,6 @@ async function stopRecording() {
   console.log("Stopping recording..");
   await currentRecording.stopAndUnloadAsync();
   currentRecording = undefined;
-  console.log(decibels.toString());
 }
 
 /**
@@ -48,9 +47,7 @@ async function stopRecording() {
  * */
 function analyzeAverage() {
   let sum = 0;
-  console.log("Analyzing " + decibels.toString());
   decibels.forEach((element) => (sum += element));
-  console.log("Sum: " + sum);
 
   const average = sum / decibels.length;
   const amount = Math.abs(average / 32.5);

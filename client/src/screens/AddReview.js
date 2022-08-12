@@ -13,7 +13,7 @@ import UserInput from "../components/UserInput";
 import getBells from "../helpers/Recorder.js";
 
 const AddReview = ({ navigation, route }) => {
-  const { locationID, locationName } = route.params;
+  const { locationID, locationName, locationAddress, lnglat } = route.params;
 
   const [loading, setLoading] = useState(false);
   const [loadingNoiseTest, setLoadingNoiseTest] = useState(false);
@@ -49,14 +49,18 @@ const AddReview = ({ navigation, route }) => {
     try {
       const { data } = await axios.post(SERVER_URL + "locations/add-review", {
         locationID,
-        newLocationName,
         uid,
-        soundLevel,
-        reviewerName,
-        ageGroup,
-        labels,
-        soundOpinion,
         textReview,
+        soundLevel,
+        soundOpinion,
+        labels,
+        additionalDetails: {
+          locationName: newLocationName,
+          reviewerName,
+          ageGroup,
+          locationAddress,
+          lnglat
+        }
       });
       if (data.error) {
         alert(data.error);
