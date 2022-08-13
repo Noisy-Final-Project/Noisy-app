@@ -180,6 +180,7 @@ async function getReviews(
  */
 async function emailExists(email, MC = MongoConnection) {
   try {
+    console.log(MC)
     let db_emailExists = await MC.db(db_name)
       .collection("users")
       .findOne({ Email: email });
@@ -190,7 +191,7 @@ async function emailExists(email, MC = MongoConnection) {
     return false;
   } catch (err) {
     // console.log(err);
-    return "Email checking failed";
+    return "Email checking failed: "+err;
   }
 }
 

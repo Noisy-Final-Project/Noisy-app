@@ -23,7 +23,8 @@ const { ObjectId } = require("mongodb");
  *
  */
 async function insertUser(_name, _dob, _email, _hash, MC = MongoConnection) {
-  var alreadyInDB = await emailExists(MC, _email);
+  var alreadyInDB = await emailExists(_email);
+
   if (alreadyInDB == false) {
     const doc = {
       name: _name,

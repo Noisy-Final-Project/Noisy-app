@@ -14,7 +14,8 @@ const signUp = async (req, res) => {
     const { name, dob, email, password } = req.body;
 
     try {
-      
+      res.set('Access-Control-Allow-Origin', '*');
+
       res.json(await modelAuth.signUp(email, name, dob, password));
     } catch (err) {
       console.log(err);
@@ -28,7 +29,8 @@ const signIn = async (req, res) => {
   // console.log(req.body);
   try {
     const { email, password } = req.body;
-    
+    res.set('Access-Control-Allow-Origin', '*');
+
     res.json(await modelAuth.signIn(email,password))  
     
     

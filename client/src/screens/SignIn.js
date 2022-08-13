@@ -27,7 +27,7 @@ const SignIn = ({ navigation }) => {
     // console.log("SIGNINREQUEST => ", name, email, password);
     try {
       // here needs to call controller function that checks sign in info
-      const { data } = await axios.post(SERVER_URL + `/signin`, {
+      const { data } = await axios.post(SERVER_URL + `signin`, {
         email,
         password,
       });

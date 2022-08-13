@@ -40,7 +40,7 @@ const SignUp = ({ navigation }) => {
 
     // console.log("SIGNUP REQUEST => ", name, email, password);
     try {
-      const { data } = await axios.post(SERVER_URL + "/signup", {
+      const { data } = await axios.post(SERVER_URL + "signup", {
         name,
         dob,
         email,

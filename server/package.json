@@ -32,6 +32,6 @@
   },
   "homepage": "https://github.com/Noisy-Final-Project/Noisy-app/tree/main#readme",
   "engines": {
-    "node": "16.14.2"
+    "node": "16.14.x"
   }
 }

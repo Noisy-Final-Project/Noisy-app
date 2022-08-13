@@ -15,7 +15,6 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 async function signUp(_email, _name, _dob, password) {
   const hashedPassword = await hashPassword(password);
   let userdb = await insertUser(
-    MongoConnection,
     _name,
     _dob,
     _email,
@@ -42,7 +41,7 @@ async function signUp(_email, _name, _dob, password) {
 
 async function signIn(_email, plain_password) {
   let uid = "";
-  let inDB = await emailExists(MongoConnection, _email);
+  let inDB = await emailExists(_email);
   if (inDB == false) {
     return { error: "Email doesn't exist in database" };
   }

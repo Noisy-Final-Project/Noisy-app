@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, FlatList } from "react-native";
 import { Card } from "react-native-elements";
 import { Rating } from "react-native-ratings";
 import axios from "axios";
@@ -27,12 +27,14 @@ const ViewUserReviews = ({ navigation, route }) => {
   ];
   const [reviews, setReviews] = useState([]);
   const [isWeb, setIsweb] = useState(false);
-
+  const [reviewList, setReviewList] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
 
   const getReviews = async () => {
     try {
       const { data } = await axios.get(
         SERVER_URL + "/locations/reviews/" + locationID);
+      setReviewList(data)
       console.log(data);
       if (data.error) {
         alert(data.error);
@@ -52,6 +54,38 @@ const ViewUserReviews = ({ navigation, route }) => {
     getReviews();
   }, []);
 
+  const renderItem = ({ review }) => (
+    <Card key={i}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={NoisyStyles.text}>Noise Level: </Text>
+                  <Rating
+                    imageSize={30}
+                    readonly
+                    startingValue={review.userSoundVolume}
+                    type="bell"
+                  />
+                </View>
+                <Text style={NoisyStyles.text}>
+                  Sound Opinion: {review.userSoundOpinion}
+                </Text>
+                <Text style={NoisyStyles.text}>
+                  Labels: {review.labelsAttached.join(", ")}
+                </Text>
+                <Text style={NoisyStyles.text}>
+                  More Info: {review.userText}
+                </Text>
+                <Text style={NoisyStyles.text}>
+                  Reviewer Name: {review.userName}
+                </Text>
+              </Card>
+  );
+
   return (
     <KeyboardAwareScrollView
       contentCotainerStyle={{
@@ -62,7 +96,12 @@ const ViewUserReviews = ({ navigation, route }) => {
       <View style={{ marginVertical: 100 }}>
         <Text style={NoisyStyles.title}>Reviews of {locationName}</Text>
 
-        <View style={{ marginVertical: 50 }}>
+        <FlatList
+          data={list}
+          renderItem={renderItem}
+        />
+
+        {/* <View style={{ marginVertical: 50 }}>
           {reviews.map((review, i) => {
             return (
               <Card key={i}>
@@ -107,7 +146,7 @@ const ViewUserReviews = ({ navigation, route }) => {
           style={NoisyStyles.linkButton}
         >
           Add New Review
-        </Text>)}
+        </Text>)} */}
 
         < Text
           onPress={() => navigation.navigate("MainMenu")}

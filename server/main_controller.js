@@ -12,10 +12,11 @@ const app = express()
 const PORT = process.env.PORT || 5000
 const logFile = fs.createWriteStream('./log.txt', {flags: 'a'});
 
+
 // middlewares
 app.use(express.json({ limit: "4mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors({origin: '*'}))
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan('RemoteAddress::remote-addr , Method::method , URL::url , '+
                 'Status::status , ResTime::response-time ms , Body::body', { stream: logFile }))
@@ -108,7 +109,6 @@ app.get('/r', (req,res)=>{
 // })
 
 connectedMongo().then(() => {
-
 
     app.listen(PORT, ()=> console.log(`Started listening on port ${PORT}...`))
 
