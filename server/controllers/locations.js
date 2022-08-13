@@ -18,23 +18,15 @@ exports.getLocationReviews = async (req, res) => {
 
 exports.addReview = async (req, res) => {
   const {
-    locationDetails,
     userDetails,
-    textReview,
-    soundLevel,
-    soundOpinion,
-    labels,
-    additionalDetails
+    locationDetails,
+    reviewDetails
   } = req.body;
   res.json(
     await inserter.insertReview(
       locationDetails,
       userDetails,
-      textReview,
-      soundLevel,
-      soundOpinion,
-      labels,
-      additionalDetails
+      reviewDetails
     )
   );
 };
