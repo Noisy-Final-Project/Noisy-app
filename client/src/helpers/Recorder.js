@@ -11,7 +11,6 @@ const onRecordingStatusUpdate = (playbackStatus) => {
 
 async function startRecording() {
   try {
-    // TODO make sure this line empties the array in the beginning of each recording
     decibels = [];
     console.log("Requesting permissions..");
     await Audio.requestPermissionsAsync();

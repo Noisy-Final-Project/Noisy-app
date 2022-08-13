@@ -103,18 +103,13 @@ async function insertLocation(
   return { status: successful, locationId: locationID, message: errMsg };
 }
 
-async function  insertReview(
-  _lid,
-  _uid,
-  _ut,
-  _usv,
-  _uso,
-  _labels,
+async function insertReview_old(
+  reviewDetails,
   locationDetails,
   userDetails,
   MC = MongoConnection
 ) {
-  let LID = _lid
+  let LID = _lid;
   // let statusInsertLocation = undefined
   if (_lid === "") {
     // adding a new location
@@ -138,7 +133,7 @@ async function  insertReview(
     if (statusInsertLocation.status == true) {
       // location was added successfully
       LID = statusInsertLocation.locationId;
-      console.log(`Location id ${LID}\nType: ${typeof(LID)}`);
+      console.log(`Location id ${LID}\nType: ${typeof LID}`);
     } else {
       // issue with creating the location
       return statusInsertLocation;
@@ -173,4 +168,124 @@ async function  insertReview(
   };
 }
 
+/**
+ * The insertReview function inserts a review into the database.
+ * //TODO NEEDS TO BE TESTED
+ * case locationDetails.id == "":
+ * 1. Add the user details to users collection 
+ * 2. Add the location details to locations collection (it checks if the location already exists)
+ * 3. Add the review details to the review collection
+ * //TODO NEEDS TO BE TESTED
+ * case locationDetails.id != "":
+ * 1. finds location in locations collection (checking the provided location id is valid)
+ * 2. Adds review to reviews collection.
+ * 
+ *
+ * @param reviewDetails Store the review details
+ * @param locationDetails Specify the location details
+ * @param userDetails Create a new user in the database if it doesn't exist already
+ * @param MC mongo connection object
+ * 
+     userDetails = {
+            uid: <string>,
+            name: <string>, //can be empty, anonymous
+            dateOfBirth: <string>
+            }
+
+    locationDetails = {
+            name : <string>,
+            id: <string>,
+            address: <json, tomom object>,
+            lnglat: [lang,lat],
+            category:<string>
+            }
+    reviewDetails = {
+            locationID: <string>,
+            userID: <string>,
+            userText: <string>,
+            soundOpinion: <double>,
+            soundLevel: <double>,
+            labels: <Array<string>>,
+            }
+ *
+ * @return json
+ *
+ */
+async function insertReview(
+  reviewDetails,
+  locationDetails,
+  userDetails,
+  MC = MongoConnection
+) {
+  if (locationDetails.id == "") {
+    // location is new, not in DB
+    // add user to DB
+    const addUser = await insertUser(userDetails.name, userDetails.dob);
+    if (addUser.res == false) {
+      return { success: false, err: addUser.err };
+    }
+    // create location
+    const addLocation = await insertLocation(
+      locationDetails.name,
+      locationDetails.lnglat[1],
+      lnglat[0],
+      //TODO Is this enough to specify a new location
+      locationDetails.address.municipality,
+      locationDetails.address.streetName,
+      locationDetails.address.streetNumber,
+      locationDetails.category
+    );
+
+    if (addLocation.status == false) {
+      return { success: false, err: addLocation.message };
+    }
+
+    const _lid = addLocation.locationId;
+    // add review
+    const reviewDoc = {
+      uid: addUser.userID,
+      lid: _lid,
+      userText: reviewDetails.userText,
+      objectiveSound: reviewDetails.soundLevel,
+      userSoundOpinion: reviewDetails.soundOpinion,
+      labels: reviewDetails.labels,
+      createdOn: new Date(),
+    };
+    let db_insertion = await MC.db(db_name)
+      .collection("reviews")
+      .insertOne(reviewDocument);
+
+    if (db_insertion.insertedId) {
+      return { success: true, reviewID: db_insertion.insertId };
+    } else {
+      return { success: false, err: "Error with inserting the review to DB" };
+    }
+  } else {
+    // location is in DB already
+    const findPOI = await MC.db(db_name)
+      .collection("locations")
+      .findOne({ _id: new ObjectId(locationDetails.id) });
+    if (findPOI) {
+      // Location already exists in the location collection (checked by location ID)
+
+      let reviewDocument = {
+        uid: reviewDetails.userID,
+        lid: reviewDetails.locationID,
+        userText: reviewDetails.userText,
+        soundLevel: reviewDetails.soundLevel,
+        soundOpinion: reviewDetails.soundOpinion,
+        labels: reviewDetails.labels,
+        createdOn: new Date(),
+      };
+
+      let db_insertion = await MC.db(db_name)
+        .collection("reviews")
+        .insertOne(reviewDocument);
+      return { success: true, locationID: db_insertion.insertId };
+    } else {
+      // couldn't find the POI in DB
+      return { success: "false", err: "Couldn't find the location ID in DB" };
+    }
+  }
+}
 module.exports = { insertUser, insertLocation, insertReview };
