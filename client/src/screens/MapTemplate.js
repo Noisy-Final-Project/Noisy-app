@@ -273,9 +273,9 @@ export default `
                         }
 
                         const placeDetails = {
-                            locationID: place.id,
-                            locationName: place.poi.name,
-                            locationAddress: place.address.freeformAddress,
+                            id: place.id,
+                            name: place.poi.name,
+                            address: place.address,
                             lnglat: [place.position.lng, place.position.lat]
                         }
 
@@ -323,10 +323,6 @@ export default `
 
                             var popup = createPopup(placeDetails, p.numOfReviews)
 
-                            const details = {
-                                id: p.id,
-                            }
-
                             const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
                             currentMarkers[p.id] = createMarker(iconURL, p.id, '#41CEFE', p.lnglat, popup)
                         })
@@ -357,7 +353,7 @@ export default `
                     const placeDetails = {
                         id: '',
                         name: '',
-                        address: (clickedAddress) ? clickedAddress.freeformAddress : '',
+                        address: (clickedAddress) ? clickedAddress : '',
                         lnglat: event.lngLat
                     }
 

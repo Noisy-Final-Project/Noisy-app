@@ -18,18 +18,18 @@ exports.getLocationReviews = async (req, res) => {
 
 exports.addReview = async (req, res) => {
   const {
-    locationID,
-    uid,
+    locationDetails,
+    userDetails,
     textReview,
     soundLevel,
     soundOpinion,
     labels,
-    additionalDetails,
+    additionalDetails
   } = req.body;
   res.json(
     await inserter.insertReview(
-      locationID,
-      uid,
+      locationDetails,
+      userDetails,
       textReview,
       soundLevel,
       soundOpinion,
