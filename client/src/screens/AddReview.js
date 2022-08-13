@@ -13,7 +13,8 @@ import UserInput from "../components/UserInput";
 import getBells from "../helpers/Recorder.js";
 
 const AddReview = ({ navigation, route }) => {
-  const { locationID, locationName, locationAddress, lnglat } = route.params;
+  const locationDetails = route.params;
+  // locationDetails fields: id, name, address, lnglat
 
   const [loading, setLoading] = useState(false);
   const [loadingNoiseTest, setLoadingNoiseTest] = useState(false);
@@ -41,25 +42,26 @@ const AddReview = ({ navigation, route }) => {
 
   const submitReview = async () => {
     setLoading(true);
-    if (!soundLevel || !textReview || (!locationName && !newLocationName)) {
+    if (!soundLevel || !textReview || (!locationDetails.name && !newLocationName)) {
       alert("Mandatory fields are required");
       setLoading(false);
       return;
     }
     try {
+      // Check if locationDetails.name & locationDetails.address.freeformAddress exist
+      // Update them with name and address if necessary
+
       const { data } = await axios.post(SERVER_URL + "locations/add-review", {
-        locationID,
-        uid,
+        locationDetails,
+        userDetails : {
+          // TODO: add user id, name 
+        },
         textReview,
         soundLevel,
         soundOpinion,
         labels,
         additionalDetails: {
-          locationName: newLocationName,
-          reviewerName,
           ageGroup,
-          locationAddress,
-          lnglat
         }
       });
       if (data.error) {
