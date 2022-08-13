@@ -26,7 +26,7 @@ const ForgotPassword = ({ navigation }) => {
       return;
     }
     try {
-      const { data } = await axios.post(SERVER_URL + "/forgot-password", {
+      const { data } = await axios.post(SERVER_URL + "forgot-password", {
         email,
       });
       if (data.error) {
@@ -47,7 +47,7 @@ const ForgotPassword = ({ navigation }) => {
   const handlePasswordReset = async () => {
     // console.log("HANDLE PASSWORD RESET -> ", email, password, resetCode);
     try {
-      const { data } = await axios.post(SERVER_URL + "/reset-password", {
+      const { data } = await axios.post(SERVER_URL + "reset-password", {
         email,
         password,
         resetCode,

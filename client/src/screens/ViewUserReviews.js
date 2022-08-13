@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, } from "react";
 import { View, Text, Platform, FlatList } from "react-native";
 import { Card } from "react-native-elements";
 import { Rating } from "react-native-ratings";
@@ -33,7 +33,7 @@ const ViewUserReviews = ({ navigation, route }) => {
   const getReviews = async () => {
     try {
       const { data } = await axios.get(
-        SERVER_URL + "/locations/reviews/" + locationID);
+        SERVER_URL + "locations/reviews/" + locationID);
       setReviewList(data)
       console.log(data);
       if (data.error) {
@@ -148,10 +148,9 @@ const ViewUserReviews = ({ navigation, route }) => {
           Add New Review
         </Text>)} */}
 
-        < Text
+        <Text
           onPress={() => navigation.navigate("MainMenu")}
-          style={NoisyStyles.linkButton}
-        >
+          style={NoisyStyles.linkButton}>
           Main Menu
         </Text>
       </View>

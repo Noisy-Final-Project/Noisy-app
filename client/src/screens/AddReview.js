@@ -16,12 +16,14 @@ const AddReview = ({ navigation, route }) => {
   const locationDetails = route.params;
   // locationDetails fields: id, name, address, lnglat
 
+  const [uid, setUid] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [loadingNoiseTest, setLoadingNoiseTest] = useState(false);
   const [newLocationName, setNewLocationName] = useState('');
   const [soundLevel, setSoundLevel] = useState('');
   const [reviewerName, setReviewerName] = useState('');
-  const [ageGroup, setAgeGroup] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [soundOpinion, setSoundOpinion] = useState('');
   const [textReview, setTextReview] = useState('');
 
@@ -34,11 +36,17 @@ const AddReview = ({ navigation, route }) => {
     { label: "Business Meeting", value: "businessMeeting" },
   ]);
 
-  // useEffect(async () => {
-  //   const user = await AsyncStorage.getItem("@auth");
-  //   setUid(user.uid);
-  //   setReviewerName(user.name);
-  // }, []);
+  useEffect(() => {
+    async function fetchAuth() {
+      const auth = await AsyncStorage.getItem("@auth");
+      if (auth) {
+        const user = JSON.parse(auth);
+        setUid(user.doc._id);
+        setReviewerName(user.doc.name);
+      }
+    }
+    fetchAuth();
+  }, []);
 
   const submitReview = async () => {
     setLoading(true);
@@ -51,18 +59,25 @@ const AddReview = ({ navigation, route }) => {
       // Check if locationDetails.name & locationDetails.address.freeformAddress exist
       // Update them with name and address if necessary
 
+      const userDetails = {
+        uid, // Can be empty, not a registered user
+        name: reviewerName, // Can be empty, anonymous
+        dateOfBirth
+      };
+
+      const reviewDetails = {
+        locationID: locationDetails.id,
+        userID: uid,
+        userText: textReview,
+        soundOpinion,
+        soundLevel,
+        labels,
+      };
+
       const { data } = await axios.post(SERVER_URL + "locations/add-review", {
         locationDetails,
-        userDetails : {
-          // TODO: add user id, name 
-        },
-        textReview,
-        soundLevel,
-        soundOpinion,
-        labels,
-        additionalDetails: {
-          ageGroup,
-        }
+        userDetails,
+        reviewDetails
       });
       if (data.error) {
         alert(data.error);
@@ -78,7 +93,6 @@ const AddReview = ({ navigation, route }) => {
     }
   };
 
-  // TODO: Add Sound meter test
   const handleNoiseTest = () => {
     setLoadingNoiseTest(true);
     getBells()
@@ -100,8 +114,10 @@ const AddReview = ({ navigation, route }) => {
     >
       <Card>
         <View>
-          <Text style={NoisyStyles.title}>{locationName ? "Review " + locationName : "Add New Review"}</Text>
-          {!locationName && (
+          <Text style={NoisyStyles.title}>
+            {locationDetails.name ? "Review " + locationDetails.name : "Add New Review"}
+          </Text>
+          {!locationDetails.name && (
             <UserInput
               name="* Location Name"
               value={newLocationName}
@@ -136,14 +152,13 @@ const AddReview = ({ navigation, route }) => {
             setValue={setReviewerName}
             autoCompleteType="name"
             namePosition="text"
-            editable={(reviewerName) ? false : true}
+            editable={(uid) ? false : true}
           />
           <UserInput
-            name="Age"
-            value={ageGroup}
-            setValue={setAgeGroup}
+            name="Date of Birth"
+            value={dateOfBirth}
+            setValue={setDateOfBirth}
             namePosition="text"
-            keyboardType="numeric"
           />
           <UserInput
             name="Sound Opinion"
@@ -166,6 +181,7 @@ const AddReview = ({ navigation, route }) => {
               setItems={setLabelItems}
               multiple={true}
               mode="BADGE"
+              listMode="SCROLLVIEW"
               badgeDotColors={[
                 "#e76f51",
                 "#00b4d8",

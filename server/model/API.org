@@ -265,14 +265,15 @@ location1: {
 We describe the format for additional details:
 #+begin_src js
 userDetails = {
-        userName: <string>, //can be empty, anonymous
-        dob: <string>
+        uid: <string>,
+        name: <string>, //can be empty, anonymous
+        dateOfBirth: <string>
         }
 
 locationDetails = {
         name : <string>,
         id: <string>,
-        addres: <json, tomom object>,
+        address: <json, tomom object>,
         lnglat: [lang,lat],
         category:<string>
         }

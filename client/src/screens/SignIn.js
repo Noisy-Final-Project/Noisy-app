@@ -43,10 +43,10 @@ const SignIn = ({ navigation }) => {
         console.log("SIGN IN SUCCESS => ", data);
         alert("Sign In successful");
         // redirect
-        //navigation.navigate("Home");
+        navigation.navigate("MainMenu");
       }
     } catch (err) {
-      alert("Sign Up failed. Try again.");
+      alert("Sign In failed. Try again.");
       console.log(err);
       setLoading(false);
     }
