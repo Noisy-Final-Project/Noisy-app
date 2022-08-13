@@ -261,3 +261,28 @@ location1: {
 }}
 #+end_src
 
+* Format for additional details
+We describe the format for additional details:
+#+begin_src js
+userDetails = {
+        userName: <string>, //can be empty, anonymous
+        dob: <string>
+        }
+
+locationDetails = {
+        name : <string>,
+        id: <string>,
+        addres: <json, tomom object>,
+        lnglat: [lang,lat],
+        category:<string>
+        }
+reviewDetails = {
+        locationID: <string>,
+        userID: <string>,
+        userText: <string>,
+        soundOpinion: <double>,
+        soundLevel: <double>,
+        labels: <Array<string>>,
+        }
+#+end_src
+As for the tomtom address object[[https://developer.tomtom.com/search-api/documentation/geocoding-service/geocode#response-data][Link]]

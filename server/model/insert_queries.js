@@ -110,6 +110,7 @@ async function  insertReview(
   _uso,
   _labels,
   locationDetails,
+  userDetails,
   MC = MongoConnection
 ) {
   let LID = _lid
