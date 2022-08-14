@@ -4,10 +4,13 @@ const inserter = require("../model/insert_queries");
 exports.getLocationsInBounds = async (req, res) => {
   const { bounds } = req.query;
   const jsonBounds = JSON.parse(bounds);
+
   res.set('Access-Control-Allow-Origin', '*');
 
+  const answer = await fetcher.findLocationByRectangle(jsonBounds._sw, jsonBounds._ne)
+  console.log(JSON.stringify(answer));
   res.json(
-    await fetcher.findLocationByRectangle(jsonBounds._sw, jsonBounds._ne)
+    answer
   );
 };
 

@@ -174,17 +174,17 @@ export default `
         }
 
         // Creates a popup for a location marker containing these details:
-        function createPopup(placeDetails, numOfReviews) {
+        function createPopup(placeDetails, count) {
             var popupDOMElement = document.createElement('div');
             popupDOMElement.className = 'popup';
             popupDOMElement.innerHTML = "<h1>" + placeDetails.name + "</h1>" +
                 "<p>" + placeDetails.address + "</p>" +
-                "<p>" + numOfReviews + " Reviews</p>";
+                "<p>" + count + " Reviews</p>";
 
             var buttonDiv = document.createElement('div');
             buttonDiv.className = 'button-div';
 
-            if (numOfReviews > 0) {
+            if (count > 0) {
                 const btnRead = document.createElement("button");
                 btnRead.className = 'button'
 
@@ -319,10 +319,10 @@ export default `
                                 id: p.id,
                                 name: p.name,
                                 address: p.address,
-                                lnglat: p.location.coordinates
+                                lnglat: p.lnglat
                             }
 
-                            var popup = createPopup(placeDetails, p.numOfReviews)
+                            var popup = createPopup(placeDetails, p.count)
 
                             const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
                             currentMarkers[placeDetails.id] = createMarker(iconURL, placeDetails.id, '#41CEFE', placeDetails.lnglat, popup)

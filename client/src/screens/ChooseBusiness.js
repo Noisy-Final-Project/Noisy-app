@@ -100,7 +100,10 @@ const ChooseBusiness = ({ navigation }) => {
         }
         break;
       case "getReviews":
-        navigation.navigate("ViewUserReviews", { locationID: message.body.id });
+        navigation.navigate("ViewUserReviews", { 
+          locationID: message.body.id,
+          locationName: message.body.name  
+        });
         break;
       case "addReview":
         // params are: [id, name, address, lnglat]
