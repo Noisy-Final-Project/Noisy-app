@@ -107,7 +107,7 @@ async function testInsertReview1() {
   console.log(res);
 }
 
-// testInsertReview1()
+testInsertReview1();
 
 /** insert review to a location that doesn't exists, therefore creates it
  *
@@ -145,4 +145,4 @@ async function testInsertReview2() {
   console.log(res);
 }
 
-testInsertReview2();
+// testInsertReview2();

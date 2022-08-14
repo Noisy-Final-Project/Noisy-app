@@ -180,18 +180,17 @@ async function getReviews(
  */
 async function emailExists(email, MC = MongoConnection) {
   try {
-    console.log(MC)
     let db_emailExists = await MC.db(db_name)
       .collection("users")
       .findOne({ Email: email });
     // db_emailExists returns the document, if it exists.
     if (db_emailExists != null) {
-      return true;
+      return { status: true, userID: db_emailExists._id.toString() };
     }
-    return false;
+    return { status: false, err: "No user in DB with this email" };
   } catch (err) {
     // console.log(err);
-    return "Email checking failed: "+err;
+    return { status: false, err: "Email checking failed: \n" + err };
   }
 }
 
