@@ -34,16 +34,16 @@ async function insertUser(_name, _dob, _email, _hash, MC = MongoConnection) {
     };
     try {
       let p = await MC.db(db_name).collection("users").insertOne(doc);
-      return { res: true, userID: p.insertedId, err: "" };
+      return { res: true, userID: p.insertedId, error: "" };
     } catch (err) {
-      return { res: false, err: "User not in DB, but failed to add it" };
+      return { res: false, error: "User not in DB, but failed to add it" };
     }
   } else if (alreadyInDB.status == true) {
     // email is in DB
     return { res: false, userID: alreadyInDB.userID };
   } else {
     // Other problem
-    return { res: false, err: alreadyInDB.err };
+    return { res: false, error: alreadyInDB.err };
   }
 }
 
@@ -120,7 +120,7 @@ async function insertLocation(
      userDetails = {
             uid: <string>,
             name: <string>, //can be empty, anonymous
-            dateOfBirth: <string>
+            dob: <string>
             }
 
     locationDetails = {
@@ -151,15 +151,8 @@ async function insertReview(
   if (locationDetails.id == "") {
     // location is new, not in DB
     // add user to DB
-    const addUser = await insertUser(
-      userDetails.name,
-      userDetails.dob,
-      "anonymous",
-      ""
-    );
-    if (addUser.res == false && addUser.userID == undefined) {
-      return { success: false, err: addUser.err };
-    }
+    // TODO: dont add user to db.
+    // TODO review should contain ONLY the users's name.
 
     // create location
     const addLocation = await insertLocation(
@@ -173,7 +166,9 @@ async function insertReview(
     const _lid = addLocation.locationId;
     // add review
     const reviewDoc = {
-      uid: addUser.userID,
+      uid: "",
+      username: userDetails.name,
+      userDOB: userDetails.dob,
       lid: _lid,
       userText: reviewDetails.userText,
       objectiveSound: reviewDetails.soundLevel,
@@ -188,7 +183,7 @@ async function insertReview(
     if (db_insertion.insertedId) {
       return { success: true, reviewID: db_insertion.insertedId.toString() };
     } else {
-      return { success: false, err: "Error with inserting the review to DB" };
+      return { success: false, error: "Error with inserting the review to DB" };
     }
   } else {
     // location is in DB already
@@ -211,11 +206,14 @@ async function insertReview(
       let db_insertion = await MC.db(db_name)
         .collection("reviews")
         .insertOne(reviewDocument);
-      return { success: true, locationID: db_insertion.insertedId.toString() };
+        //TODO reviewID is not necessary
+      return { success: true, reviewID: db_insertion.insertedId.toString() };
     } else {
       // couldn't find the POI in DB
-      return { success: false, err: "Couldn't find the location ID in DB" };
+      return { success: false, error: "Couldn't find the location ID in DB" };
     }
   }
 }
+
+//TODO remove review
 module.exports = { insertUser, insertLocation, insertReview };

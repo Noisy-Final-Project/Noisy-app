@@ -93,10 +93,10 @@ async function testInsertReview1() {
   console.log(res);
 }
 
-testInsertReview1();
+// testInsertReview1();
 
 /** insert review to a location that doesn't exists, therefore creates it
- *
+ * //TODO needs to be tested with an anonymous user
  */
 async function testInsertReview2() {
   const review = {
