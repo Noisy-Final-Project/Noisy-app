@@ -15,7 +15,7 @@ exports.getLocationsInBounds = async (req, res) => {
 };
 
 exports.getLocationReviews = async (req, res) => {
-  const { id } = req.params.id;
+  const id = req.params.id;
   const page = req.query.page;
   console.log(req);
   console.log(req.params);
