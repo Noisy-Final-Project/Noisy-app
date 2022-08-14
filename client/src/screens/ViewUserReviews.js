@@ -1,4 +1,4 @@
-import React, { useState, } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Platform, FlatList } from "react-native";
 import { Card } from "react-native-elements";
 import { Rating } from "react-native-ratings";
@@ -33,7 +33,9 @@ const ViewUserReviews = ({ navigation, route }) => {
   const getReviews = async () => {
     try {
       const { data } = await axios.get(
-        SERVER_URL + "locations/reviews/" + locationID);
+        SERVER_URL + "locations/reviews/" + locationID,
+          {params: { page: 0 }});
+          
       setReviewList(data)
       console.log(data);
       if (data.error) {
@@ -54,37 +56,39 @@ const ViewUserReviews = ({ navigation, route }) => {
     getReviews();
   }, []);
 
-  const renderItem = ({ review }) => (
-    <Card key={i}>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={NoisyStyles.text}>Noise Level: </Text>
-                  <Rating
-                    imageSize={30}
-                    readonly
-                    startingValue={review.userSoundVolume}
-                    type="bell"
-                  />
-                </View>
-                <Text style={NoisyStyles.text}>
-                  Sound Opinion: {review.userSoundOpinion}
-                </Text>
-                <Text style={NoisyStyles.text}>
-                  Labels: {review.labelsAttached.join(", ")}
-                </Text>
-                <Text style={NoisyStyles.text}>
-                  More Info: {review.userText}
-                </Text>
-                <Text style={NoisyStyles.text}>
-                  Reviewer Name: {review.userName}
-                </Text>
-              </Card>
-  );
+  const renderItem = ({ item }) => {
+    console.log(item); return (
+      <Card>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={NoisyStyles.text}>Noise Level: </Text>
+          <Rating
+            imageSize={30}
+            readonly
+            startingValue={item.userSoundVolume}
+            type="bell"
+          />
+        </View>
+        <Text style={NoisyStyles.text}>
+          Sound Opinion: {item.userSoundOpinion}
+        </Text>
+        <Text style={NoisyStyles.text}>
+          Labels: {item.labelsAttached.join(", ")}
+        </Text>
+        <Text style={NoisyStyles.text}>
+          More Info: {item.userText}
+        </Text>
+        <Text style={NoisyStyles.text}>
+          Reviewer Name: {item.userName}
+        </Text>
+      </Card>
+    )
+  };
 
   return (
     <KeyboardAwareScrollView
