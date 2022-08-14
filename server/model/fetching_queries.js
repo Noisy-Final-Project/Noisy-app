@@ -89,7 +89,7 @@ async function getPerson(uid, MC = MongoConnection) {
       dob: db_person.dob,
       email: db_person.Email,
     };
-  } catch (err) {}
+  } catch (err) {return {error: err}}
 }
 async function getLocation(lid, MC = MongoConnection) {
   try {
@@ -131,6 +131,10 @@ async function getReviews(
   amountReviewsPerPage = 10,
   MC = MongoConnection
 ) {
+  const isValid = await getLocation(_lid)
+  if (!isValid) {
+    return {error: "Couldn't find location with id " + _lid + "in collection locations"}
+  }
   const startFrom = page * amountReviewsPerPage;
   const limit = startFrom + amountReviewsPerPage;
   const query = { lid: _lid };
@@ -148,10 +152,11 @@ async function getReviews(
     const doc = await reviews.next();
     const _uid = doc.uid;
     const userDetails = await getPerson(MC, _uid);
-    const _username =
-      typeof userDetails.name == "object"
-        ? userDetails.name.join(" ")
-        : userDetails.name;
+  
+    let _username = userDetails.name;
+    if (_username == undefined){
+      _username = "anonymous";
+    }
     const locationReview = {
       username: _username,
       userText: doc.userText,
@@ -162,9 +167,9 @@ async function getReviews(
     };
     result.push(locationReview);
   }
-  if (result.length == 0) {
-    return { error: "no reviews found for locationID" };
-  }
+  // if (result.length == 0) {
+  //   return {status:true ,error: "no reviews found for locationID" };
+  // }
   return result;
 }
 
@@ -187,10 +192,10 @@ async function emailExists(email, MC = MongoConnection) {
     if (db_emailExists != null) {
       return { status: true, userID: db_emailExists._id.toString() };
     }
-    return { status: false, err: "No user in DB with this email" };
+    return { status: false, error: "No user in DB with this email" };
   } catch (err) {
     // console.log(err);
-    return { status: false, err: "Email checking failed: \n" + err };
+    return { status: false, error: "Email checking failed: \n" + err };
   }
 }
 
