@@ -99,7 +99,7 @@ async function getLocation(lid, MC = MongoConnection) {
         lid: lid,
         name: db_location.name,
         coordinates: db_location.coordinates,
-        area: db_location.area,
+        address: db_location.address,
       };
       return res;
     } else {
@@ -282,11 +282,13 @@ async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
   let documents = await MC.db(db_name).collection("locations").find(query);
   let locations = [];
   for await (const doc of documents) {
+    const amountReviews = await amountReviewsLocation(doc._id.toString());
     locations.push({
-      id: doc._id,
+      id: doc._id.toString(),
       name: doc.name,
-      address: doc.area.join(" "),
+      address: doc.address,
       lnglat: [doc.location.coordinates[0], doc.location.coordinates[1]],
+      count: amountReviews,
     });
   }
   return locations;
