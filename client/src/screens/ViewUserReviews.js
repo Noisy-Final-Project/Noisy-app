@@ -9,6 +9,8 @@ import NoisyStyles from "../NoisyStyles";
 
 const ViewUserReviews = ({ navigation, route }) => {
   const { locationID, locationName } = route.params;
+  console.log(locationID);
+
   const list = [
     {
       userName: "Shani",
@@ -35,7 +37,6 @@ const ViewUserReviews = ({ navigation, route }) => {
       const { data } = await axios.get(
         SERVER_URL + "locations/reviews/" + locationID,
           {params: { page: 0 }});
-          
       setReviewList(data)
       console.log(data);
       if (data.error) {
@@ -70,21 +71,21 @@ const ViewUserReviews = ({ navigation, route }) => {
           <Rating
             imageSize={30}
             readonly
-            startingValue={item.userSoundVolume}
+            startingValue={item.soundLevel}
             type="bell"
           />
         </View>
         <Text style={NoisyStyles.text}>
-          Sound Opinion: {item.userSoundOpinion}
+          Sound Opinion: {item.soundOpinion}
         </Text>
         <Text style={NoisyStyles.text}>
-          Labels: {item.labelsAttached.join(", ")}
+          Labels: {item.labels.join(", ")}
         </Text>
         <Text style={NoisyStyles.text}>
           More Info: {item.userText}
         </Text>
         <Text style={NoisyStyles.text}>
-          Reviewer Name: {item.userName}
+          Reviewer Name: {item.username}
         </Text>
       </Card>
     )
@@ -101,7 +102,7 @@ const ViewUserReviews = ({ navigation, route }) => {
         <Text style={NoisyStyles.title}>Reviews of {locationName}</Text>
 
         <FlatList
-          data={list}
+          data={reviewList}
           renderItem={renderItem}
         />
 

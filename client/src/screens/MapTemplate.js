@@ -314,7 +314,7 @@ export default `
                                     return
                                 }
                             }
-
+                            console.log(p);
                             const placeDetails = {
                                 id: p.id,
                                 name: p.name,
