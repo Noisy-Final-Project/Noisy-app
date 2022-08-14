@@ -23,7 +23,7 @@ const AddReview = ({ navigation, route }) => {
   const [newLocationName, setNewLocationName] = useState('');
   const [soundLevel, setSoundLevel] = useState('');
   const [reviewerName, setReviewerName] = useState('');
-  const [dob, setDOB] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [soundOpinion, setSoundOpinion] = useState('');
   const [textReview, setTextReview] = useState('');
 
@@ -62,7 +62,7 @@ const AddReview = ({ navigation, route }) => {
       const userDetails = {
         uid, // Can be empty, not a registered user
         name: reviewerName, // Can be empty, anonymous
-        dob
+        dob: dateOfBirth
       };
 
       const reviewDetails = {
@@ -156,8 +156,8 @@ const AddReview = ({ navigation, route }) => {
           />
           <UserInput
             name="Date of Birth"
-            value={dob}
-            setValue={setDOB}
+            value={dateOfBirth}
+            setValue={setDateOfBirth}
             namePosition="text"
           />
           <UserInput
