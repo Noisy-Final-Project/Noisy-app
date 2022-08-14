@@ -261,9 +261,9 @@ async function findLocationByDist(
 async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
   // GeoJSON object type
 
-  const p3 = [p1.lang, p2.lat];
-  const p4 = [p2.lang, p1.lat];
-  let square = { type: "Polygon", coordinates: [[p1, p3, p2, p4, p1]] };
+  const p3 = [p1.lng, p2.lat];
+  const p4 = [p2.lng, p1.lat];
+  let square = { type: "Polygon", coordinates: [[Object.values(p1), p3, Object.values(p2), p4, Object.values(p1)]] };
   let query = {
     location: {
       $geoIntersects: { $geometry: square },

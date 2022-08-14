@@ -269,9 +269,9 @@
                         }
 
                         const placeDetails = {
-                            locationID: place.id,
-                            locationName: place.poi.name,
-                            locationAddress: place.address.freeformAddress,
+                            id: place.id,
+                            name: place.poi.name,
+                            address: place.address,
                             lnglat: [place.position.lng, place.position.lat]
                         }
 
@@ -297,11 +297,13 @@
                                 }
                             })
                         }
-
+                        if (response.length == 0){
+                            return
+                        }
+                        console.log(response);
                         // Create new places array and place markers on map
-                        const places = response.places
 
-                        places.forEach(p => {
+                        response.forEach(p => {
                             if (currentMarkers) {
                                 const alreadyAppear = Object.values(currentMarkers).some(marker =>
                                     marker.getElement().className === p.id + '-marker')
@@ -314,17 +316,13 @@
                                 id: p.id,
                                 name: p.name,
                                 address: p.address,
-                                lnglat: p.lnglat
+                                lnglat: p.location.coordinates
                             }
 
                             var popup = createPopup(placeDetails, p.numOfReviews)
 
-                            const details = {
-                                id: p.id,
-                            }
-
                             const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
-                            currentMarkers[p.id] = createMarker(iconURL, p.id, '#41CEFE', p.lnglat, popup)
+                            currentMarkers[placeDetails.id] = createMarker(iconURL, placeDetails.id, '#41CEFE', placeDetails.lnglat, popup)
                         })
                     }
                     catch (err) {
@@ -353,7 +351,7 @@
                     const placeDetails = {
                         id: '',
                         name: '',
-                        address: (clickedAddress) ? clickedAddress.freeformAddress : '',
+                        address: (clickedAddress) ? clickedAddress : '',
                         lnglat: event.lngLat
                     }
 
@@ -370,6 +368,7 @@
             }
             switch (message.type) {
                 case 'selfCenter':
+                    const lnglat = message.body.lnglat
                     if (window.ANDROID) {
                         removeSelfMarker()
                         selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
@@ -377,7 +376,7 @@
                 case 'center':
                     try {
                         const lnglat = message.body.lnglat
-                        map.flyTo({ center: lnglat, zoom: 15 })
+                        map.flyTo({ center: lnglat, zoom: 17 })
                     }
                     catch (err) {
                         alert(err.message)

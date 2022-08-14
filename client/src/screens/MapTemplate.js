@@ -301,11 +301,12 @@ export default `
                                 }
                             })
                         }
+                        if (response.length == 0){
+                            return
+                        }
 
                         // Create new places array and place markers on map
-                        const places = response.places
-
-                        places.forEach(p => {
+                        response.forEach(p => {
                             if (currentMarkers) {
                                 const alreadyAppear = Object.values(currentMarkers).some(marker =>
                                     marker.getElement().className === p.id + '-marker')
@@ -318,13 +319,13 @@ export default `
                                 id: p.id,
                                 name: p.name,
                                 address: p.address,
-                                lnglat: p.lnglat
+                                lnglat: p.location.coordinates
                             }
 
                             var popup = createPopup(placeDetails, p.numOfReviews)
 
                             const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
-                            currentMarkers[p.id] = createMarker(iconURL, p.id, '#41CEFE', p.lnglat, popup)
+                            currentMarkers[placeDetails.id] = createMarker(iconURL, placeDetails.id, '#41CEFE', placeDetails.lnglat, popup)
                         })
                     }
                     catch (err) {

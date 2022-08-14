@@ -16,7 +16,7 @@ const logFile = fs.createWriteStream('./log.txt', {flags: 'a'});
 // middlewares
 app.use(express.json({ limit: "4mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({origin: '*'}))
+app.use(cors())
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan('RemoteAddress::remote-addr , Method::method , URL::url , '+
                 'Status::status , ResTime::response-time ms , Body::body', { stream: logFile }))

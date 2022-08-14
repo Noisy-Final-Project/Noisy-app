@@ -42,6 +42,7 @@ const signIn = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
+  res.set('Access-Control-Allow-Origin', '*');
 
   res.json(await modelAuth.forgotPassword(email))
 };
@@ -49,6 +50,7 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async function(req, res){
   try {
     const { email, password, resetCode } = req.body;
+    res.set('Access-Control-Allow-Origin', '*');
 
     res.json(await modelAuth.resetPassword(email, password, resetCode))
 
