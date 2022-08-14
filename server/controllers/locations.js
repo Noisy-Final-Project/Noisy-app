@@ -17,9 +17,6 @@ exports.getLocationsInBounds = async (req, res) => {
 exports.getLocationReviews = async (req, res) => {
   const id = req.params.id;
   const page = req.query.page;
-  console.log(req);
-  console.log(req.params);
-  console.log(req.query);
   res.set('Access-Control-Allow-Origin', '*');
 
   res.json(await fetcher.getReviews(id, page));
