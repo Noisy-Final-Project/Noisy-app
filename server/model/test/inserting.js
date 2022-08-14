@@ -60,51 +60,89 @@ async function testInsertLocation() {
 /**
  * Adds a  review to a location that exists
  * */
-async function testInsertReview1(){
-  const poi =  {
-    name: "abc",
-    city: "modiin",
-    street: "df",
-    num: "243",
-    lid: '62f4e00d89bd801d8effbcaa',
-    uid: '62f4e00d89bd801d8effbc23',
-    usv: 4,
-    uso: 3.7,
-    ut: "Really should be able to change",
-    labels: ["For work","Cosy"],
-    lnglat: [35.01291827647526, 31.88937427045248]
-  }
+async function testInsertReview1() {
+  // const poi = {
+  //   name: "abc",
+  //   city: "modiin",
+  //   street: "df",
+  //   num: "243",
+  //   lid: "62f4e00d89bd801d8effbcaa",
+  //   uid: "62f4e00d89bd801d8effbc23",
+  //   usv: 4,
+  //   uso: 3.7,
+  //   ut: "Really should be able to change",
+  //   labels: ["For work", "Cosy"],
+  //   lnglat: [35.01291827647526, 31.88937427045248],
+  // };
+
+  const review = {
+    locationID: "62f4e00d89bd801d8effbcaa",
+    userID: "62f4e00d89bd801d8effbc23",
+    userText: "Really should be able to change",
+    soundOpinion: 3.7,
+    soundLevel: 2,
+    labels: ["For work", "Cosy"],
+  };
+  const location = {
+    name: "Kapara",
+    id: "62f4e00d89bd801d8effbcaa",
+    address: {
+      municipality: "test city",
+      streetName: "test street",
+      streetNumber: "7A",
+    },
+    lnglat: [35.01291827647526, 31.88937427045248],
+    category: "test category",
+  };
+  const user = {
+    uid: "62f4e00d89bd801d8effbc23",
+    name: "Anonymous",
+    dateOfBirth: [31, 7, 1995],
+  };
+
   await MongoConnection.connect().then(() => {
     console.log("Connected to MongoDB");
   });
-  const res = await inserter.insertReview(poi.lid,poi.uid,poi.ut,poi.usv,poi.uso,poi.labels,{})
+  const res = await inserter.insertReview(review, location, user);
   console.log(res);
 }
 
 // testInsertReview1()
 
 /** insert review to a location that doesn't exists, therefore creates it
- * 
-*/
-async function testInsertReview2(){
-  const poi =  {
-    name: "the best new location in town",
-    city: "tel aviv",
-    street: "df",
-    num: "243",
-    lid: '',
-    uid: '62f4e00d89bd801d8effbc23',
-    usv: 4,
-    uso: 3.7,
-    ut: "Really should be able to change",
-    labels: ["For work","Cosy"],
-    lnglat: [34.780709857880495, 32.07952541739681 ]
-  }
+ *
+ */
+async function testInsertReview2() {
+  const review = {
+    locationID: "",
+    userID: "",
+    userText: "Test review for a new location",
+    soundOpinion: 3.7,
+    soundLevel: 2,
+    labels: ["For work", "Cosy"],
+  };
+  const location = {
+    name: "Kapara",
+    id: "",
+    address: {
+      municipality: "test city",
+      streetName: "test street",
+      streetNumber: "7A",
+    },
+    lnglat: [35.012918276474, 31.889374270453],
+    category: "test category",
+  };
+  const user = {
+    uid: "",
+    name: "Anonymous",
+    dateOfBirth: [31, 7, 1995],
+  };
+
   await MongoConnection.connect().then(() => {
     console.log("Connected to MongoDB");
   });
-  const res = await inserter.insertReview(poi.lid,poi.uid,poi.ut,poi.usv,poi.uso,poi.labels,poi)
+  const res = await inserter.insertReview(review, location, user);
   console.log(res);
 }
 
-testInsertReview2()
+testInsertReview2();
