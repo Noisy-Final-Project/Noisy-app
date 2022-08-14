@@ -14,7 +14,7 @@ async function testSearch() {
 // testSearch()
 
 async function testGetReviews() {
-  const locationID = "62e23687e1389d1ba38c9eca";
+  const locationID = "62f9048b35dbaba85afdb671";
   await MongoConnection.connect();
 
   const results = await fetcher.getReviews(locationID, 0, 10, MongoConnection);

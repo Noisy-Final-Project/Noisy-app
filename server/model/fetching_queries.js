@@ -92,7 +92,7 @@ async function getLocation(lid, MC = MongoConnection) {
   try {
     let db_location = await MC.db(db_name)
       .collection("locations")
-      .findOne({ _id: ObjectId(lid) });
+      .findOne({ _id: new ObjectId(lid) });
 
     if (db_location != null) {
       let res = {
@@ -160,8 +160,8 @@ async function getReviews(
     const locationReview = {
       username: _username,
       userText: doc.userText,
-      objectiveSound: doc.objectiveSound,
-      soundOpinion: doc.userSoundOpinion,
+      soundLevel: doc.soundLevel,
+      soundOpinion: doc.soundOpinion,
       labels: doc.labels,
       reviewDate: doc.createdOn,
     };
