@@ -6,35 +6,23 @@ async function testInsertLocation() {
   const locations = [
     {
       name: "abc",
-      city: "modiin",
-      street: "df",
-      num: "243",
+      address: {freeformAddress: "modiin sd 234"},
       lnglat: [35.01291827647526, 31.88937427045248],
-      numOfReviews: 10,
     },
     {
-      name: "def",
-      city: "modiin",
-      street: "sd",
-      num: "23",
+      name: "avshi1",
+      address: {freeformAddress: "modiin vvvfe 33"},
       lnglat: [35.01055793254196, 31.891997777528616],
-      numOfReviews: 123,
     },
     {
-      name: "pizza",
-      city: "modiin",
-      street: "abs",
-      num: "16",
+      name: "avshi2",
+      address: {freeformAddress: "modiin 2346"},
       lnglat: [35.00635222880712, 31.890084810998772],
-      numOfReviews: 334,
     },
     {
-      name: "burger",
-      city: "modiin",
-      street: "abs",
-      num: "23",
+      name: "avshi3",
+      address: {freeformAddress: "modiin sd 4436"},
       lnglat: [35.006155492136685, 31.90585946670268],
-      numOfReviews: 78,
     },
   ];
   await MongoConnection.connect().then(() => {
@@ -46,16 +34,14 @@ async function testInsertLocation() {
       doc.name,
       doc.lnglat[1],
       doc.lnglat[0],
-      doc.city,
-      doc.street,
-      doc.name,
+      doc.address,
       "Restaurants"
     );
     console.log(res);
   }
 }
 
-// testInsertLocation();
+testInsertLocation();
 
 /**
  * Adds a  review to a location that exists

@@ -24,11 +24,11 @@ async function testGetReviews() {
 // testGetReviews();
 
 async function testAmountReviews() {
-  const locationID = "62e23687e1389d1ba38c9eca";
+  const locationID = "62f5209505a6f2c584846e6e";
   await MongoConnection.connect();
   const results = await fetcher.amountReviewsLocation(
-    MongoConnection,
-    locationID
+    locationID,
+    MongoConnection
   );
 
   console.log(`Amount of reviews : ${results}`);
@@ -40,9 +40,9 @@ async function testLocationPolygon() {
   const P2 = [-73.9113379760125, 40.84129692366408];
   await MongoConnection.connect();
   const geoQuery = await fetcher.findLocationByRectangle(
-    MongoConnection,
     P1,
-    P2
+    P2,
+    MongoConnection
   );
   for (const doc of geoQuery) {
     console.log(doc);

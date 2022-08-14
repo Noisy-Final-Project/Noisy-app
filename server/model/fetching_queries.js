@@ -16,15 +16,10 @@ const { MongoConnection } = require("./mongoUtils");
  * @returns {number} amount of reviews for that location id
  * */
 async function amountReviewsLocation(_lid, MC = MongoConnection) {
-  const pipeline = [{ $match: { lid: _lid } }, { $count: "amountReviews" }];
-
-  const amount = await MC.db(db_name).collection("reviews").aggregate(pipeline);
-  // Should return an integer
-
-  let result = undefined;
-  for await (const doc of amount) {
-    result = doc.amountReviews;
-  }
+  const amount = await MC.db(db_name)
+    .collection("reviews")
+    .countDocuments({ lid: _lid });
+  const result = amount;
   if (result == undefined) {
     return 0;
   }
@@ -89,7 +84,9 @@ async function getPerson(uid, MC = MongoConnection) {
       dob: db_person.dob,
       email: db_person.Email,
     };
-  } catch (err) {return {error: err}}
+  } catch (err) {
+    return { error: err };
+  }
 }
 async function getLocation(lid, MC = MongoConnection) {
   try {
@@ -131,9 +128,12 @@ async function getReviews(
   amountReviewsPerPage = 10,
   MC = MongoConnection
 ) {
-  const isValid = await getLocation(_lid)
+  const isValid = await getLocation(_lid);
   if (!isValid) {
-    return {error: "Couldn't find location with id " + _lid + "in collection locations"}
+    return {
+      error:
+        "Couldn't find location with id " + _lid + "in collection locations",
+    };
   }
   const startFrom = page * amountReviewsPerPage;
   const limit = startFrom + amountReviewsPerPage;
@@ -152,9 +152,9 @@ async function getReviews(
     const doc = await reviews.next();
     const _uid = doc.uid;
     const userDetails = await getPerson(MC, _uid);
-  
+
     let _username = userDetails.name;
-    if (_username == undefined){
+    if (_username == undefined) {
       _username = "anonymous";
     }
     const locationReview = {
@@ -268,14 +268,28 @@ async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
 
   const p3 = [p1.lng, p2.lat];
   const p4 = [p2.lng, p1.lat];
-  let square = { type: "Polygon", coordinates: [[Object.values(p1), p3, Object.values(p2), p4, Object.values(p1)]] };
+  let square = {
+    type: "Polygon",
+    coordinates: [
+      [Object.values(p1), p3, Object.values(p2), p4, Object.values(p1)],
+    ],
+  };
   let query = {
     location: {
       $geoIntersects: { $geometry: square },
     },
   };
   let documents = await MC.db(db_name).collection("locations").find(query);
-  return await documents.toArray();
+  let locations = [];
+  for await (const doc of documents) {
+    locations.push({
+      id: doc._id,
+      name: doc.name,
+      address: doc.area.join(" "),
+      lnglat: [doc.location.coordinates[0], doc.location.coordinates[1]],
+    });
+  }
+  return locations;
 }
 
 module.exports = {

@@ -51,9 +51,7 @@ async function insertLocation(
   _name,
   latitude,
   longtitude,
-  _city,
-  _street,
-  _num,
+  totomAddress,
   _category,
   MC = MongoConnection
 ) {
@@ -85,7 +83,7 @@ async function insertLocation(
   let document = {
     name: _name,
     location: geoObject,
-    area: [_city, _street, _num],
+    address: `${totomAddress.freeformAddress},`,
     category: _category,
     created_on: new Date(),
   };
@@ -101,71 +99,6 @@ async function insertLocation(
   }
 
   return { status: successful, locationId: locationID, message: errMsg };
-}
-
-async function insertReview_old(
-  reviewDetails,
-  locationDetails,
-  userDetails,
-  MC = MongoConnection
-) {
-  let LID = _lid;
-  // let statusInsertLocation = undefined
-  if (_lid === "") {
-    // adding a new location
-    const _name = locationDetails.name;
-    const _city = locationDetails.city;
-    const _street = locationDetails.street;
-    const _num = locationDetails.num;
-    const _lat = locationDetails.lnglat[1];
-    const _long = locationDetails.lnglat[0];
-    const _category = locationDetails.category;
-    const statusInsertLocation = await insertLocation(
-      _name,
-      _lat,
-      _long,
-      _city,
-      _street,
-      _num,
-      _category,
-      MC
-    );
-    if (statusInsertLocation.status == true) {
-      // location was added successfully
-      LID = statusInsertLocation.locationId;
-      console.log(`Location id ${LID}\nType: ${typeof LID}`);
-    } else {
-      // issue with creating the location
-      return statusInsertLocation;
-    }
-  }
-  // Check if location ID already exists in the location collection.
-  const findPOI = await MC.db(db_name)
-    .collection("locations")
-    .findOne({ _id: new ObjectId(LID) });
-
-  if (findPOI) {
-    // Location already exists in the location collection (checked by location ID)
-
-    let reviewDocument = {
-      uid: _uid,
-      lid: LID,
-      userText: _ut,
-      objectiveSound: _usv,
-      userSoundOpinion: _uso,
-      labels: _labels,
-      createdOn: new Date(),
-    };
-
-    let DB = await MC.db(db_name);
-    let reviews = await DB.collection("reviews");
-    let Q = await reviews.insertOne(reviewDocument);
-    return true;
-  }
-  return {
-    success: false,
-    err: "location id should be empty OR in the locations database. Check location ID",
-  };
 }
 
 /**
@@ -233,10 +166,7 @@ async function insertReview(
       locationDetails.name,
       locationDetails.lnglat[1],
       locationDetails.lnglat[0],
-      //TODO Is this enough to specify a new location
-      locationDetails.address.municipality,
-      locationDetails.address.streetName,
-      locationDetails.address.streetNumber,
+      locationDetails.address,
       locationDetails.category
     );
 
