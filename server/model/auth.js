@@ -61,8 +61,9 @@ async function signIn(_email, plain_password) {
   uid = doc._id.toString();
 
   const token = jwt.sign({ _id: uid }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "30",
   });
+
   doc.password = undefined;
   // doc.secret = undefined;
   return {

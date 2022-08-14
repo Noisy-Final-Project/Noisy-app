@@ -1,11 +1,6 @@
 
+const jwt = require("jsonwebtoken");
 const modelAuth = require('../model/auth')
-
-
-// sendgrid
-require("dotenv").config();
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 const signUp = async (req, res) => {
   console.log("Signup process started...");
@@ -59,7 +54,28 @@ const resetPassword = async function(req, res){
   }
 };
 
+const verifyToken = async function(req, res){
+  try {
+    console.log(req.headers.authorization)
+    const authHeader = req.headers.authorization;
+    const token = authHeader.replace('Bearer ', '')
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET)
+
+    res.set('Access-Control-Allow-Origin', '*');
+
+    res.json(verified)
+
+  } catch (err) {
+    if (err.message == 'jwt expired'){
+      res.json({error: err.message})
+    }
+    console.log(err);
+  }
+};
+
 exports.signIn = signIn
 exports.signUp = signUp
 exports.forgotPassword = forgotPassword
 exports.resetPassword = resetPassword
+exports.verifyToken = verifyToken
