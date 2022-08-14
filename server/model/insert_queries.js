@@ -228,7 +228,7 @@ async function insertReview(
     const addLocation = await insertLocation(
       locationDetails.name,
       locationDetails.lnglat[1],
-      lnglat[0],
+      locationDetails.lnglat[0],
       //TODO Is this enough to specify a new location
       locationDetails.address.municipality,
       locationDetails.address.streetName,
