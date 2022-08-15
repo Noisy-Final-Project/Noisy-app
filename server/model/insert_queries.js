@@ -104,19 +104,19 @@ async function insertLocation(
 /**
  * The insertReview function inserts a review into the database.
  * case locationDetails.id == "":
- * 1. Add the user details to users collection 
+ * 1. Add the user details to users collection
  * 2. Add the location details to locations collection (it checks if the location already exists)
  * 3. Add the review details to the review collection
  * case locationDetails.id != "":
  * 1. finds location in locations collection (checking the provided location id is valid)
  * 2. Adds review to reviews collection.
- * 
+ *
  *
  * @param reviewDetails Store the review details
  * @param locationDetails Specify the location details
  * @param userDetails Create a new user in the database if it doesn't exist already
  * @param MC mongo connection object
- * 
+ *
      userDetails = {
             uid: <string>,
             name: <string>, //can be empty, anonymous
@@ -150,10 +150,6 @@ async function insertReview(
 ) {
   if (locationDetails.id == "") {
     // location is new, not in DB
-    // add user to DB
-    // TODO: dont add user to db.
-    // TODO review should contain ONLY the users's name.
-
     // create location
     const addLocation = await insertLocation(
       locationDetails.name,
@@ -162,6 +158,7 @@ async function insertReview(
       locationDetails.address,
       locationDetails.category
     );
+
 
     const _lid = addLocation.locationId;
     // add review
@@ -206,7 +203,7 @@ async function insertReview(
       let db_insertion = await MC.db(db_name)
         .collection("reviews")
         .insertOne(reviewDocument);
-        //TODO reviewID is not necessary
+      //TODO reviewID is not necessary
       return { success: true, reviewID: db_insertion.insertedId.toString() };
     } else {
       // couldn't find the POI in DB
