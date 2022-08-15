@@ -109,7 +109,7 @@ export default `
             key: '${MAPS_API_KEY}',
             container: 'map',
             basePath: 'sdk/',
-            center: [35.20326327116519, 32.10054427042954], // Ariel
+            center: [35.00635222880712, 31.890084810998772], // Ariel
             zoom: 15,
             theme: {
                 style: 'buildings',
@@ -332,6 +332,7 @@ export default `
                         alert(err)
                         console.error("Failed with marker creation! " + err)
                     }
+                    console.log(currentMarkers)
                 })
         }
 
