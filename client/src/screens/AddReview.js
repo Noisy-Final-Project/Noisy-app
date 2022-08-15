@@ -30,7 +30,9 @@ const AddReview = ({ navigation, route }) => {
   const [openLabels, setOpenLabels] = useState(false);
   const [labels, setLabels] = useState([]);
   const [labelItems, setLabelItems] = useState([]);
-  axios
+  useEffect(() => {
+    // Initialize labels:
+    axios
       .get(SERVER_URL + 'locations/get-labels')
       .then(response => {
         const labelsToItems = response.data.labels.map((item)=>{
@@ -38,6 +40,8 @@ const AddReview = ({ navigation, route }) => {
         })
         setLabelItems(labelsToItems)
       })
+  }, [])
+  
 
   useEffect(() => {
     async function fetchAuth() {

@@ -22,7 +22,8 @@ const Map = React.forwardRef(({ onMessage }, ref) => {
             width: '100%',
             height: '100%',
             border: 0
-          }} />
+          }} 
+        />
       </View>
 
     )
@@ -31,11 +32,11 @@ const Map = React.forwardRef(({ onMessage }, ref) => {
   return (
     <View style={{ flex: 8, justifyContent: 'center'}}>
       <WebView
+        ref={ref}
         javaScriptEnabled={true}
         injectedJavaScriptBeforeContentLoaded={`(function() {
           window.ANDROID = true
       })();`}
-        ref={ref}
         onMessage={onMessage}
         style={{
           flex: 1,

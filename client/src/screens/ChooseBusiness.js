@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Platform } from "react-native";
 import { MAPS_API_KEY, SERVER_URL } from "../../ENV.json";
 import NoisyStyles from "../NoisyStyles";
@@ -119,19 +119,23 @@ const ChooseBusiness = ({ navigation }) => {
     }
   }
 
-  // Web iframe needs a listener:
-  if (Platform.OS === "web") {
-    window.addEventListener("message", messageHandler, { once: true });
-  }
+  useEffect(() => {
+    // Web iframe needs a listener:
+    if (Platform.OS === "web") {
+      window.addEventListener("message", messageHandler, { once: true });
+    }
+  }, [])
 
-  axios
+  useEffect(() => {
+    axios
       .get(SERVER_URL + 'locations/get-labels')
       .then(response => {
-        const labelsToItems = response.data.labels.map((item)=>{
+        const labelsToItems = response.data.labels.map((item) => {
           return { label: item, value: item }
         })
         setLabelItems(labelsToItems)
       })
+  }, [])
 
   return (
     <View
@@ -171,11 +175,14 @@ const ChooseBusiness = ({ navigation }) => {
           "#00b4d8",
           "#e9c46a",
         ]}
-        containerStyle={{ paddingHorizontal:"5%", alignItems:'center', paddingTop:10}}
-        
-        onChangeValue={(value) => {
-          sendToMap(webRef, 'labelFilter', {labels: value})
+        containerStyle={{ paddingHorizontal: "5%", alignItems: 'center', paddingTop: 10 }}
+
+        onChangeValue={(items) => {
+          const labelsArray = items.map(item => (item.label))
+          sendToMap(webRef, 'labelFilter', { labels: labelsArray })
         }}
+
+
         placeholder={"Filter by labels"}
       />
 

@@ -98,7 +98,7 @@ export default `
 
     <script id="mapScript">
         // Markers containers:
-        let currentMarkers = {};
+        let currentMarkers = new Map();
         let selfMarker = null;
         let tempMarker = null;
         let tempMarkerID = '';
@@ -161,7 +161,7 @@ export default `
                 markerContentElement.appendChild(iconElement);
 
                 // add marker to map
-                marker = new tt.Marker({ element: markerElement, anchor: 'bottom', offset: [0, -30] })
+                let marker = new tt.Marker({ element: markerElement, anchor: 'bottom', offset: [0, -30] })
                     .setLngLat(position)
                     .setPopup(popup)
                     .addTo(map);
@@ -185,6 +185,8 @@ export default `
             var buttonDiv = document.createElement('div');
             buttonDiv.className = 'button-div';
 
+            let popupDetails = { ...placeDetails }
+
             if (count > 0) {
                 const btnRead = document.createElement("button");
                 btnRead.className = 'button'
@@ -194,13 +196,13 @@ export default `
                 buttonDiv.appendChild(btnRead)
             }
             else {
-                placeDetails.id = ''
+                popupDetails.id = ''
             }
 
             const btnAdd = document.createElement("button");
             btnAdd.className = 'button'
             btnAdd.innerHTML = "Add";
-            btnAdd.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(placeDetails) + ")")
+            btnAdd.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(popupDetails) + ")")
             buttonDiv.appendChild(btnAdd)
 
 
@@ -221,6 +223,16 @@ export default `
             tempMarkerID = (placeDetails.id) ? placeDetails.id : 'temp';
         }
 
+        function removeMarker(id) {
+            if (currentMarkers.has(id)){
+                marker = currentMarkers.get(id)
+
+                marker.remove()
+                delete marker
+                currentMarkers.delete(id)
+            }
+        }
+
         function removeTempMarker() {
             if (tempMarkerID != '') {
                 tempMarkerID = '';
@@ -234,6 +246,14 @@ export default `
                 selfMarker.remove();
                 delete tempMarker;
             }
+        }
+
+        function clearCurrentMarkers() {
+            for (const [id, marker] of currentMarkers){
+                marker.remove()
+                delete marker
+            }
+            currentMarkers.clear()
         }
 
         /*
@@ -294,31 +314,26 @@ export default `
             const bounds = map.getBounds()
 
             fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds) +
-                    '&labels=' + labelsShown.toString())
+                '&labels=' + labelsShown.toString())
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
                         // Remove old markers
-                        if (currentMarkers) {
-                            Object.keys(currentMarkers).forEach(id => {
-                                if (!bounds.contains(currentMarkers[id].getLngLat())) {
-                                    currentMarkers[id].remove();
-                                    delete currentMarkers[id];
-                                }
-                            })
+                        for (const [id, marker] of currentMarkers) {
+                            if (!bounds.contains(marker.getLngLat())) {
+                                removeMarker(id)
+                            }
                         }
+
                         if (response.length == 0) {
                             return
                         }
 
                         // Create new places array and place markers on map
                         response.forEach(p => {
-                            if (currentMarkers) {
-                                const alreadyAppear = Object.values(currentMarkers).some(marker =>
-                                    marker.getElement().className === p.id + '-marker')
-                                if (alreadyAppear) {
-                                    return
-                                }
+                            const alreadyAppear = currentMarkers.has(p.id)
+                            if (alreadyAppear) {
+                                return
                             }
 
                             const placeDetails = {
@@ -328,10 +343,11 @@ export default `
                                 lnglat: p.lnglat
                             }
 
-                            var popup = createPopup(placeDetails, p.count)
+                            let popup = createPopup(placeDetails, p.count)
 
                             const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
-                            currentMarkers[placeDetails.id] = createMarker(iconURL, placeDetails.id, '#41CEFE', placeDetails.lnglat, popup)
+                            var marker = createMarker(iconURL, placeDetails.id, '#41CEFE', placeDetails.lnglat, popup)
+                            currentMarkers.set(placeDetails.id, marker)
                         })
                     }
                     catch (err) {
@@ -345,7 +361,7 @@ export default `
         function unknownPlaceHandler(event) {
             var feature = map.queryRenderedFeatures(event.point)[0];
 
-            if (feature.layer.id === 'POI') {
+            if (!feature || feature.layer.id === 'POI') {
                 return;
             }
 
@@ -394,6 +410,7 @@ export default `
                 case 'labelFilter':
                     try {
                         labelsShown = message.body.labels
+                        clearCurrentMarkers()
                         mapMoveHandler()
                     }
                     catch (err) {
