@@ -58,17 +58,27 @@ async function locationByText(_text, MC = MongoConnection) {
 }
 
 async function locationByLabel(lids, labelsArray, MC = MongoConnection) {
-
-  const locations = {
-    lid: { $in: lids }
+  const locations = {lid: { $in: lids }};
+  const containLabels = { labels: { $in: labelsArray } };
+  const query = { $and: [locations, containLabels] };
+  const groupby = { _id: "$lid" };
+  const filteredLids = await MC.db(db_name)
+    .collection("reviews")
+    .aggregate([{ $match: query }, { $group: groupby }])
+    .toArray();
+  console.log("Filtered lids:\n" + JSON.stringify(filteredLids));
+  const obj_ids = [];
+  for (const l of filteredLids) {
+    const o_lid = new ObjectId(l._id);
+    obj_ids.push(o_lid);
   }
-  const containLabels = { labels: { $in: labelsArray } }
-  const query = { $and: [locations, containLabels] }
-  const filteredLids = await MC.db(db_name).collection('reviews').find(query)
-  // for await (doc of filteredLids) {
-  //   console.log(doc);
-  // }
-  return await filteredLids.toArray()
+
+  console.log("After changing to ObjectId:\n" + obj_ids.toString());
+  const locationWithLabels = await MC.db(db_name)
+    .collection("locations")
+    .find({ _id: { $in: obj_ids } });
+  const labeledLocations = await locationWithLabels.toArray();
+  return labeledLocations;
 }
 
 async function getPerson(uid, MC = MongoConnection) {
@@ -267,7 +277,12 @@ async function findLocationByDist(
  
   */
 
-async function findLocationByRectangle(p1, p2, labelArray, MC = MongoConnection) {
+async function findLocationByRectangle(
+  p1,
+  p2,
+  labelArray,
+  MC = MongoConnection
+) {
   const p3 = [p1.lng, p2.lat];
   const p4 = [p2.lng, p1.lat];
   // GeoJSON object type
@@ -282,13 +297,21 @@ async function findLocationByRectangle(p1, p2, labelArray, MC = MongoConnection)
       $geoIntersects: { $geometry: square },
     },
   };
-  // console.log(`Query for geolocation: ${JSON.stringify(query, undefined, 4)} `);
+  
   let documents = await MC.db(db_name).collection("locations").find(query);
+
+
+  if (labelArray.length > 0) {
+    const lids = [];
+    for await (const doc of documents) {
+      lids.push(doc._id.toString())
+    }
+    documents = await locationByLabel(lids, labelArray);
+  }
+
   let locations = [];
-  const lids = []
   for await (const doc of documents) {
     const amountReviews = await amountReviewsLocation(doc._id.toString());
-    lids.push(doc._id.toString())
     locations.push({
       id: doc._id.toString(),
       name: doc.name,
@@ -297,13 +320,7 @@ async function findLocationByRectangle(p1, p2, labelArray, MC = MongoConnection)
       count: amountReviews,
     });
   }
-  if (labelArray.length == 0) {
-    return locations;
-  } else {
-    //filter by labels.
-    //Keep only locations that have at least one of the labels specified in the array.
-    return locationByLabel(lids, labelArray)
-  }
+  return locations
 }
 
 module.exports = {
