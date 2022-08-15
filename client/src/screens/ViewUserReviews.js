@@ -50,22 +50,29 @@ const ViewUserReviews = ({ navigation, route }) => {
   };
 
   const previousPage = async () => {
-    if (pageNumber == 0){
+    if (pageNumber == 0) {
       return
     }
 
     const { data } = await axios.get(
       SERVER_URL + "locations/reviews/" + locationID,
       { params: { page: pageNumber - 1 } });
-    
-    if (data.length > 0){
+
+    if (data.length > 0) {
       setReviewList(data)
-      setPageNumber(pageNumber + 1)
+      setPageNumber(pageNumber - 1)
     }
   }
 
   const nextPage = async () => {
-    //TODO: ...
+    const { data } = await axios.get(
+      SERVER_URL + "locations/reviews/" + locationID,
+      { params: { page: pageNumber + 1 } });
+
+    if (data.length > 0) {
+      setReviewList(data)
+      setPageNumber(pageNumber + 1)
+    }
   }
 
   useEffect(() => {
@@ -127,29 +134,45 @@ const ViewUserReviews = ({ navigation, route }) => {
             flex: 1,
             flexDirection: "row",
             justifyContent: "center",
+            paddingHorizontal: "5%",
             marginHorizontal: 15,
           }}
         >
           <Text
             onPress={() => previousPage()}
             style={NoisyStyles.linkButton}>
-            PREVIOUS
+            Prev
           </Text>
-          
+
+          <Text
+            style={NoisyStyles.linkButton}>
+            {pageNumber + 1}
+          </Text>
+
           <Text
             onPress={() => nextPage()}
             style={NoisyStyles.linkButton}>
-            NEXT
-          </Text>
-
-        </View>
-
-          <Text
-            onPress={() => navigation.navigate("MainMenu")}
-            style={NoisyStyles.linkButton}>
-            Main Menu
+            Next
           </Text>
         </View>
+
+        {!isWeb && (<Text
+          onPress={() => navigation.navigate("AddReview", {
+            locationID: 4,
+            locationName: "BBB",
+            uid: "userID",
+          })}
+          style={NoisyStyles.linkButton}
+        >
+          Add New Review
+        </Text>)}
+
+        <Text
+          onPress={() => navigation.navigate("MainMenu")}
+          style={NoisyStyles.linkButton}>
+          Main Menu
+        </Text>
+      </View>
     </KeyboardAwareScrollView >
   );
 };

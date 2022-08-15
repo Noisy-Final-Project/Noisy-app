@@ -41,7 +41,7 @@ const SignIn = ({ navigation }) => {
         await AsyncStorage.setItem("@auth", JSON.stringify(data));
         setLoading(false);
         console.log("SIGN IN SUCCESS => ", data);
-        alert("Sign In successful");
+        alert("Sign In Successful");
         // redirect
         navigation.navigate("MainMenu");
       }

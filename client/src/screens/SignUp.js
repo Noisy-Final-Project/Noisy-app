@@ -53,7 +53,8 @@ const SignUp = ({ navigation }) => {
         alert(data.error);
       } else {
         console.log("SIGN UP SUCCESS => ", data);
-        alert("Sign Up successful");
+        alert("Sign Up Successful");
+        navigation.navigate("SignIn");
       }
     } catch (err) {
       console.log(err);

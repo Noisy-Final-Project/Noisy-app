@@ -2,28 +2,35 @@ import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
+
+
 
 const MainMenu = ({ navigation }) => {
 
   const [userName, setUserName] = useState('');
 
+  const focus = useIsFocused();  // useIsFocused as shown
+
   useEffect(() => {
-    async function fetchAuth() {
-      const auth = await AsyncStorage.getItem("@auth");
+    AsyncStorage.getItem("@auth").then(auth => {
       if (auth) {
         const user = JSON.parse(auth);
         setUserName(user.doc.name);
       }
-    }
-    fetchAuth();
-  }, []);
+    })
+  }, [focus]);
 
   const handleSignIn = async () => {
-    //await AsyncStorage.removeItem("@auth");
-    alert("Sign Out successful");
     navigation.navigate("SignIn");
+  }
+
+  const handleSignOut = async () => {
+    await AsyncStorage.removeItem("@auth");
+    setUserName("");
+    alert("Sign Out Successful");
   }
 
   return (
@@ -47,9 +54,9 @@ const MainMenu = ({ navigation }) => {
         </Text>
 
         <Text
-          onPress={handleSignIn}
+          onPress={userName ? handleSignOut : handleSignIn}
           style={NoisyStyles.link}>
-          {(userName) ? "Sign Out" : "Sign In"}
+          {userName ? "Sign Out" : "Sign In"}
         </Text>
 
         <Text style={NoisyStyles.centerText}>
