@@ -28,14 +28,13 @@ exports.addReview = async (req, res) => {
     locationDetails,
     reviewDetails
   } = req.body;
-
   res.set('Access-Control-Allow-Origin', '*');
 
   res.json(
     await inserter.insertReview(
+      reviewDetails,
       locationDetails,
       userDetails,
-      reviewDetails
     )
   );
 };
