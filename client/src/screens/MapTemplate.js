@@ -292,14 +292,12 @@ export default `
         // update the Noisy markers when the map moves
         function mapMoveHandler() {
             const bounds = map.getBounds()
-            console.log('LABELS:::::')
-            console.log(labelsShown.toString());
+
             fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds) +
                     '&labels=' + labelsShown.toString())
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
-                        console.log(response);
                         // Remove old markers
                         if (currentMarkers) {
                             Object.keys(currentMarkers).forEach(id => {
