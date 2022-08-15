@@ -56,16 +56,20 @@ async function locationByText(_text, MC = MongoConnection) {
 
   return arr;
 }
-/**
- * Returns the location with certain lables
- *
- * @param {MongoClient} MC  connected mongo client
- * @param {Array<string>} labels labels to be searched for
- * @param {Array<string>} userLocation current GPS location of user
- * @param {double}  radius maximal radius to search in
- * @returns {Array<string>} locationID
- * */
-async function locationByLabel(MC, labels, userLocation, radius) {}
+
+async function locationByLabel(lids, labelsArray, MC = MongoConnection) {
+
+  const locations = {
+    lid: { $in: lids }
+  }
+  const containLabels = { labels: { $in: labelsArray } }
+  const query = { $and: [locations, containLabels] }
+  const filteredLids = await MC.db(db_name).collection('reviews').find(query)
+  // for await (doc of filteredLids) {
+  //   console.log(doc);
+  // }
+  return await filteredLids.toArray()
+}
 
 async function getPerson(uid, MC = MongoConnection) {
   try {
@@ -248,14 +252,14 @@ async function findLocationByDist(
 
 /**
  * The function finds all locations in the database that are within a polygon.
- * 
+ *
  * The coordinates of the polygon are like this:
  * p3  p2
  * p1  p4
  * returns all locations in DB in this polygon
  * further information https://www.mongodb.com/docs/manual/geospatial-queries/
  * for each point: [longitude,latitude]
- * 
+ *
  * @param MC Used to Connect to the mongodb database.
  * @param p1 Used to Specify the longitude and latitude of the first point.
  * @param p2 Used to Specify the longitude and latitude of the second point.
@@ -263,11 +267,10 @@ async function findLocationByDist(
  
   */
 
-async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
-  // GeoJSON object type
-
+async function findLocationByRectangle(p1, p2, labelArray, MC = MongoConnection) {
   const p3 = [p1.lng, p2.lat];
   const p4 = [p2.lng, p1.lat];
+  // GeoJSON object type
   let square = {
     type: "Polygon",
     coordinates: [
@@ -279,10 +282,13 @@ async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
       $geoIntersects: { $geometry: square },
     },
   };
+  // console.log(`Query for geolocation: ${JSON.stringify(query, undefined, 4)} `);
   let documents = await MC.db(db_name).collection("locations").find(query);
   let locations = [];
+  const lids = []
   for await (const doc of documents) {
     const amountReviews = await amountReviewsLocation(doc._id.toString());
+    lids.push(doc._id.toString())
     locations.push({
       id: doc._id.toString(),
       name: doc.name,
@@ -291,7 +297,13 @@ async function findLocationByRectangle(p1, p2, MC = MongoConnection) {
       count: amountReviews,
     });
   }
-  return locations;
+  if (labelArray.length == 0) {
+    return locations;
+  } else {
+    //filter by labels.
+    //Keep only locations that have at least one of the labels specified in the array.
+    return locationByLabel(lids, labelArray)
+  }
 }
 
 module.exports = {

@@ -42,6 +42,7 @@ async function testLocationPolygon() {
   const geoQuery = await fetcher.findLocationByRectangle(
     P1,
     P2,
+    ["Cosy"],
     MongoConnection
   );
   for (const doc of geoQuery) {
@@ -49,4 +50,11 @@ async function testLocationPolygon() {
   }
 }
 
-// testLocationPolygon();
+testLocationPolygon();
+
+async function testSearchLabels() {
+  const lids = ["62f5209505a6f2c584846e6e", "62f9048b35dbaba85afdb671"]
+  const labels = ["Cosy", "businessMeeting"]
+  fetcher.locationByLabel(lids, labels)
+}
+// testSearchLabels()
