@@ -27,7 +27,6 @@ const ViewUserReviews = ({ navigation, route }) => {
       labelsAttached: ["Dates", "Fun", "Music"],
     },
   ];
-  const [reviews, setReviews] = useState([]);
   const [isWeb, setIsweb] = useState(false);
   const [reviewList, setReviewList] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -36,21 +35,38 @@ const ViewUserReviews = ({ navigation, route }) => {
     try {
       const { data } = await axios.get(
         SERVER_URL + "locations/reviews/" + locationID,
-          {params: { page: 0 }});
-      setReviewList(data)
-      console.log(data);
+        { params: { page: 0 } });
       if (data.error) {
         alert(data.error);
       } else {
-        setReviews(data);
+        setReviewList(data)
         console.log("REVIEWS RES => ", data);
       }
     } catch (err) {
       alert("Error getting reviews. Try again.");
-      setReviews(list);
+      setReviewList(list);
       console.log(err);
     }
   };
+
+  const previousPage = async () => {
+    if (pageNumber == 0){
+      return
+    }
+
+    const { data } = await axios.get(
+      SERVER_URL + "locations/reviews/" + locationID,
+      { params: { page: pageNumber - 1 } });
+    
+    if (data.length > 0){
+      setReviewList(data)
+      setPageNumber(pageNumber + 1)
+    }
+  }
+
+  const nextPage = async () => {
+    //TODO: ...
+  }
 
   useEffect(() => {
     setIsweb(Platform.OS == "web");
@@ -106,59 +122,34 @@ const ViewUserReviews = ({ navigation, route }) => {
           renderItem={renderItem}
         />
 
-        {/* <View style={{ marginVertical: 50 }}>
-          {reviews.map((review, i) => {
-            return (
-              <Card key={i}>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={NoisyStyles.text}>Noise Level: </Text>
-                  <Rating
-                    imageSize={30}
-                    readonly
-                    startingValue={review.userSoundVolume}
-                    type="bell"
-                  />
-                </View>
-                <Text style={NoisyStyles.text}>
-                  Sound Opinion: {review.userSoundOpinion}
-                </Text>
-                <Text style={NoisyStyles.text}>
-                  Labels: {review.labelsAttached.join(", ")}
-                </Text>
-                <Text style={NoisyStyles.text}>
-                  More Info: {review.userText}
-                </Text>
-                <Text style={NoisyStyles.text}>
-                  Reviewer Name: {review.userName}
-                </Text>
-              </Card>
-            );
-          })}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            marginHorizontal: 15,
+          }}
+        >
+          <Text
+            onPress={() => previousPage()}
+            style={NoisyStyles.linkButton}>
+            PREVIOUS
+          </Text>
+          
+          <Text
+            onPress={() => nextPage()}
+            style={NoisyStyles.linkButton}>
+            NEXT
+          </Text>
+
         </View>
 
-        {!isWeb && (<Text
-          onPress={() => navigation.navigate("AddReview", {
-            locationID: 4,
-            locationName: "BBB",
-            uid: "userID",
-          })}
-          style={NoisyStyles.linkButton}
-        >
-          Add New Review
-        </Text>)} */}
-
-        <Text
-          onPress={() => navigation.navigate("MainMenu")}
-          style={NoisyStyles.linkButton}>
-          Main Menu
-        </Text>
-      </View>
+          <Text
+            onPress={() => navigation.navigate("MainMenu")}
+            style={NoisyStyles.linkButton}>
+            Main Menu
+          </Text>
+        </View>
     </KeyboardAwareScrollView >
   );
 };

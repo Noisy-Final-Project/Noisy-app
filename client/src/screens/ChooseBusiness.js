@@ -178,8 +178,7 @@ const ChooseBusiness = ({ navigation }) => {
         containerStyle={{ paddingHorizontal: "5%", alignItems: 'center', paddingTop: 10 }}
 
         onChangeValue={(items) => {
-          const labelsArray = items.map(item => (item.label))
-          sendToMap(webRef, 'labelFilter', { labels: labelsArray })
+          sendToMap(webRef, 'labelFilter', { labels: items })
         }}
 
 
