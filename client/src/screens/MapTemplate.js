@@ -102,6 +102,7 @@ export default `
         let selfMarker = null;
         let tempMarker = null;
         let tempMarkerID = '';
+        let labelsShown = [] // empty means ALL
 
         // Map Creation
         tt.setProductInfo('Noisy', '1.0');
@@ -253,6 +254,10 @@ export default `
         function generalClickHandler(event) {
             var feature = map.queryRenderedFeatures(event.point)[0];
 
+            if (!feature) {
+                return
+            }
+
             if (feature.layer.id !== 'POI' || feature.properties.id !== tempMarkerID) {
                 removeTempMarker()
             }
@@ -287,11 +292,14 @@ export default `
         // update the Noisy markers when the map moves
         function mapMoveHandler() {
             const bounds = map.getBounds()
-
-            fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds))
+            console.log('LABELS:::::')
+            console.log(labelsShown.toString());
+            fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds) +
+                    '&labels=' + labelsShown.toString())
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
+                        console.log(response);
                         // Remove old markers
                         if (currentMarkers) {
                             Object.keys(currentMarkers).forEach(id => {
@@ -301,7 +309,7 @@ export default `
                                 }
                             })
                         }
-                        if (response.length == 0){
+                        if (response.length == 0) {
                             return
                         }
 
@@ -332,7 +340,6 @@ export default `
                         alert(err)
                         console.error("Failed with marker creation! " + err)
                     }
-                    console.log(currentMarkers)
                 })
         }
 
@@ -381,6 +388,15 @@ export default `
                     try {
                         const lnglat = message.body.lnglat
                         map.flyTo({ center: lnglat, zoom: 17 })
+                    }
+                    catch (err) {
+                        alert(err.message)
+                    }
+                    break
+                case 'labelFilter':
+                    try {
+                        labelsShown = message.body.labels
+                        mapMoveHandler()
                     }
                     catch (err) {
                         alert(err.message)

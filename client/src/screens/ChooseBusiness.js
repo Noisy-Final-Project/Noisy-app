@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 import { View, Text, Platform } from "react-native";
-import { MAPS_API_KEY } from "../../ENV.json";
+import { MAPS_API_KEY, SERVER_URL } from "../../ENV.json";
 import NoisyStyles from "../NoisyStyles";
 import Map from "../components/Map";
 import { getLocation, sendToMap } from "../helpers/MapUtils";
 import axios from "axios";
 import { Suggestions } from "../components/Suggestions";
-import tt from '@tomtom-international/web-sdk-services'
+import DropDownPicker from "react-native-dropdown-picker";
 
 const ChooseBusiness = ({ navigation }) => {
   // Search bar variables:
@@ -14,6 +14,11 @@ const ChooseBusiness = ({ navigation }) => {
   let [showList, setShowList] = useState(false);
   let [suggestionListData, setSuggestionListData] = useState([]);
   const [location, setLocation] = useState(null);
+
+  // Filter by labels:
+  const [openLabels, setOpenLabels] = useState(false);
+  const [labels, setLabels] = useState([]);
+  const [labelItems, setLabelItems] = useState([]);
 
   // Map referese:
   let webRef = useRef(null);
@@ -33,7 +38,7 @@ const ChooseBusiness = ({ navigation }) => {
       setShowList(false);
       return;
     }
-    
+
 
     let baseUrl = `https://api.tomtom.com/search/2/search/${changedSearchText}.json?`;
     let searchUrl = baseUrl + `key=${MAPS_API_KEY}`;
@@ -47,7 +52,6 @@ const ChooseBusiness = ({ navigation }) => {
     axios
       .get(searchUrl)
       .then((response) => {
-        console.log(response);
         let addresses = response.data.results.map((v) => {
           let parts = v.address.freeformAddress.split(",");
           return {
@@ -100,9 +104,9 @@ const ChooseBusiness = ({ navigation }) => {
         }
         break;
       case "getReviews":
-        navigation.navigate("ViewUserReviews", { 
+        navigation.navigate("ViewUserReviews", {
           locationID: message.body.id,
-          locationName: message.body.name  
+          locationName: message.body.name
         });
         break;
       case "addReview":
@@ -119,6 +123,15 @@ const ChooseBusiness = ({ navigation }) => {
   if (Platform.OS === "web") {
     window.addEventListener("message", messageHandler, { once: true });
   }
+
+  axios
+      .get(SERVER_URL + 'locations/get-labels')
+      .then(response => {
+        const labelsToItems = response.data.labels.map((item)=>{
+          return { label: item, value: item }
+        })
+        setLabelItems(labelsToItems)
+      })
 
   return (
     <View
@@ -138,6 +151,33 @@ const ChooseBusiness = ({ navigation }) => {
         onPressItem={onPressItem}
         handleSearchTextChange={handleSearchTextChange}
       ></Suggestions>
+
+      <DropDownPicker
+        open={openLabels}
+        value={labels}
+        items={labelItems}
+        setOpen={setOpenLabels}
+        setValue={setLabels}
+        setItems={setLabelItems}
+        multiple={true}
+        mode="BADGE"
+        listMode="SCROLLVIEW"
+        badgeDotColors={[
+          "#e76f51",
+          "#00b4d8",
+          "#e9c46a",
+          "#e76f51",
+          "#8ac926",
+          "#00b4d8",
+          "#e9c46a",
+        ]}
+        containerStyle={{ paddingHorizontal:"5%", alignItems:'center', paddingTop:10}}
+        
+        onChangeValue={(value) => {
+          sendToMap(webRef, 'labelFilter', {labels: value})
+        }}
+        placeholder={"Filter by labels"}
+      />
 
       <Map onMessage={messageHandler} ref={webRef} />
 

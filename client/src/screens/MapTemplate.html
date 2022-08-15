@@ -98,6 +98,7 @@
         let selfMarker = null;
         let tempMarker = null;
         let tempMarkerID = '';
+        let labelsShown = [] // empty means ALL
 
         // Map Creation
         tt.setProductInfo('Noisy', '1.0');
@@ -105,7 +106,7 @@
             key: '${MAPS_API_KEY}',
             container: 'map',
             basePath: 'sdk/',
-            center: [35.20326327116519, 32.10054427042954], // Ariel
+            center: [35.00635222880712, 31.890084810998772], // Ariel
             zoom: 15,
             theme: {
                 style: 'buildings',
@@ -170,17 +171,17 @@
         }
 
         // Creates a popup for a location marker containing these details:
-        function createPopup(placeDetails, numOfReviews) {
+        function createPopup(placeDetails, count) {
             var popupDOMElement = document.createElement('div');
             popupDOMElement.className = 'popup';
             popupDOMElement.innerHTML = "<h1>" + placeDetails.name + "</h1>" +
                 "<p>" + placeDetails.address + "</p>" +
-                "<p>" + numOfReviews + " Reviews</p>";
+                "<p>" + count + " Reviews</p>";
 
             var buttonDiv = document.createElement('div');
             buttonDiv.className = 'button-div';
 
-            if (numOfReviews > 0) {
+            if (count > 0) {
                 const btnRead = document.createElement("button");
                 btnRead.className = 'button'
 
@@ -202,6 +203,7 @@
             popupDOMElement.appendChild(buttonDiv)
 
             var popup = new tt.Popup({ offset: 40 }).setDOMContent(popupDOMElement);
+            console.log('created popup for ' + placeDetails.name + ' in ' + placeDetails.lnglat.toString());
 
             return popup
         }
@@ -249,6 +251,10 @@
         function generalClickHandler(event) {
             var feature = map.queryRenderedFeatures(event.point)[0];
 
+            if (!feature) {
+                return
+            }
+
             if (feature.layer.id !== 'POI' || feature.properties.id !== tempMarkerID) {
                 removeTempMarker()
             }
@@ -284,7 +290,8 @@
         function mapMoveHandler() {
             const bounds = map.getBounds()
 
-            fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds))
+            fetch('${SERVER_URL}' + 'locations?bounds=' + JSON.stringify(bounds) +
+                    '&labels=' + labelsShown.toString())
                 .then(httpresponse => httpresponse.json())
                 .then((response) => {
                     try {
@@ -297,12 +304,11 @@
                                 }
                             })
                         }
-                        if (response.length == 0){
+                        if (response.length == 0) {
                             return
                         }
-                        console.log(response);
-                        // Create new places array and place markers on map
 
+                        // Create new places array and place markers on map
                         response.forEach(p => {
                             if (currentMarkers) {
                                 const alreadyAppear = Object.values(currentMarkers).some(marker =>
@@ -316,10 +322,10 @@
                                 id: p.id,
                                 name: p.name,
                                 address: p.address,
-                                lnglat: p.location.coordinates
+                                lnglat: p.lnglat
                             }
 
-                            var popup = createPopup(placeDetails, p.numOfReviews)
+                            var popup = createPopup(placeDetails, p.count)
 
                             const iconURL = 'https://uxwing.com/wp-content/themes/uxwing/download/controller-and-music/speaker-sound-icon.png'
                             currentMarkers[placeDetails.id] = createMarker(iconURL, placeDetails.id, '#41CEFE', placeDetails.lnglat, popup)
@@ -329,6 +335,7 @@
                         alert(err)
                         console.error("Failed with marker creation! " + err)
                     }
+                    console.log(currentMarkers)
                 })
         }
 
@@ -377,6 +384,15 @@
                     try {
                         const lnglat = message.body.lnglat
                         map.flyTo({ center: lnglat, zoom: 17 })
+                    }
+                    catch (err) {
+                        alert(err.message)
+                    }
+                    break
+                case 'labelsFilter':
+                    try {
+                        labelsShown = message.body.labels
+                        mapMoveHandler()
                     }
                     catch (err) {
                         alert(err.message)

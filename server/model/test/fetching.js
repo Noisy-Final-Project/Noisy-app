@@ -42,7 +42,7 @@ async function testLocationPolygon() {
   const geoQuery = await fetcher.findLocationByRectangle(
     P1,
     P2,
-    ["Cosy"],
+    [],
     MongoConnection
   );
   for (const doc of geoQuery) {

@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
       height: 40, 
       paddingLeft: 10, 
       paddingRight: 10, 
-      borderWidth: 1 
+      borderWidth: 1,
+      backgroundColor: "#FFFFFF"
     }, 
     suggestionListContainer: { 
       width: "90%", 
