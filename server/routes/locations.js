@@ -5,11 +5,12 @@ const router = express.Router();
 
 // controllers
 const {
-    addReview, getLocationsInBounds, getLocationReviews
+    addReview, getLocationsInBounds, getLocationReviews, getLabels
 } = require("../controllers/locations");
 
 router.post("/add-review", addReview);
 router.get("/", getLocationsInBounds);
 router.get("/reviews/:id", getLocationReviews);
+router.get("/get-labels", getLabels)
 
 module.exports = router;
