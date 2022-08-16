@@ -13,7 +13,8 @@ import UserInput from "../components/UserInput";
 import getBells from "../helpers/Recorder.js";
 
 const AddReview = ({ navigation, route }) => {
-  const locationDetails = route.params;
+
+    const locationDetails = route.params;
   // locationDetails fields: id, name, address, lnglat
 
   const [uid, setUid] = useState('');
@@ -92,12 +93,16 @@ const AddReview = ({ navigation, route }) => {
       } else {
         setLoading(false);
         console.log("ADD REVIEW RES => ", data);
+        alert("Review Added Successfully!")
+        
+        navigation.navigate('ViewUserReviews', locationDetails)
       }
     } catch (err) {
       setLoading(false);
       alert("Error adding review. Try again.");
       console.log(err);
     }
+
   };
 
   const handleNoiseTest = () => {
@@ -106,7 +111,7 @@ const AddReview = ({ navigation, route }) => {
       .then((res) => {
         // here res is the amount of bells (float)
         setLoadingNoiseTest(false);
-        alert("sound level: " + res);
+        alert("Sound Level: " + res);
         setSoundLevel(res);
       })
       .catch((err) => console.log(err));

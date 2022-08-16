@@ -49,7 +49,7 @@ function analyzeAverage() {
   decibels.forEach((element) => (sum += element));
 
   const average = sum / decibels.length;
-  const amount = Math.abs(average / 32.5);
+  const amount = Math.abs(average / 8.125);
   return 5 - amount;
 }
 

@@ -114,7 +114,7 @@ const ViewUserReviews = ({ navigation, route }) => {
         </View>
 
         {!isWeb && (<Text
-          onPress={() => navigation.navigate("AddReview", locationDetails)}
+          onPress={() => navigation.push("AddReview", locationDetails)}
           style={NoisyStyles.linkButton}
         >
           Add New Review
