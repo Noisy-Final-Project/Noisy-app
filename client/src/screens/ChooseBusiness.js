@@ -196,28 +196,6 @@ const ChooseBusiness = ({ navigation }) => {
         }}
       >
         <Text
-          onPress={() =>
-            navigation.navigate("AddReview", {
-              locationID: 4,
-              locationName: "",
-              uid: "userID",
-            })
-          }
-          style={NoisyStyles.linkButton}
-        >
-          Add Review
-        </Text>
-        <Text
-          onPress={() =>
-            navigation.navigate("ViewUserReviews", {
-              locationID: 4,
-            })
-          }
-          style={NoisyStyles.linkButton}
-        >
-          View Reviews
-        </Text>
-        <Text
           onPress={() => navigation.navigate("MainMenu")}
           style={NoisyStyles.linkButton}
         >

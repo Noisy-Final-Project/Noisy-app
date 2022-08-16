@@ -199,11 +199,13 @@ export default `
                 popupDetails.id = ''
             }
 
-            const btnAdd = document.createElement("button");
-            btnAdd.className = 'button'
-            btnAdd.innerHTML = "Add";
-            btnAdd.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(popupDetails) + ")")
-            buttonDiv.appendChild(btnAdd)
+            if (window.ANDROID){
+                const btnAdd = document.createElement("button");
+                btnAdd.className = 'button'
+                btnAdd.innerHTML = "Add";
+                btnAdd.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(popupDetails) + ")")
+                buttonDiv.appendChild(btnAdd)
+            }
 
             popupDOMElement.appendChild(buttonDiv)
 
