@@ -66,14 +66,14 @@ async function locationByLabel(lids, labelsArray, MC = MongoConnection) {
     .collection("reviews")
     .aggregate([{ $match: query }, { $group: groupby }])
     .toArray();
-  console.log("Filtered lids:\n" + JSON.stringify(filteredLids));
+  // console.log("Filtered lids:\n" + JSON.stringify(filteredLids));
   const obj_ids = [];
   for (const l of filteredLids) {
     const o_lid = new ObjectId(l._id);
     obj_ids.push(o_lid);
   }
 
-  console.log("After changing to ObjectId:\n" + obj_ids.toString());
+  // console.log("After changing to ObjectId:\n" + obj_ids.toString());
   const locationWithLabels = await MC.db(db_name)
     .collection("locations")
     .find({ _id: { $in: obj_ids } });
@@ -165,10 +165,9 @@ async function getReviews(
   while (await reviews.hasNext()) {
     const doc = await reviews.next();
     const _uid = doc.uid;
-    const userDetails = await getPerson(MC, _uid);
 
-    let _username = userDetails.name;
-    if (_username == undefined) {
+    let _username = doc.username;
+    if (!_username) {
       _username = "anonymous";
     }
     const locationReview = {

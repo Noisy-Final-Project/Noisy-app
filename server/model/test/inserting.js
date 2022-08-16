@@ -6,22 +6,22 @@ async function testInsertLocation() {
   const locations = [
     {
       name: "abc",
-      address: {freeformAddress: "modiin sd 234"},
+      address: { freeformAddress: "modiin sd 234" },
       lnglat: [35.01291827647526, 31.88937427045248],
     },
     {
       name: "avshi1",
-      address: {freeformAddress: "modiin vvvfe 33"},
+      address: { freeformAddress: "modiin vvvfe 33" },
       lnglat: [35.01055793254196, 31.891997777528616],
     },
     {
       name: "avshi2",
-      address: {freeformAddress: "modiin 2346"},
+      address: { freeformAddress: "modiin 2346" },
       lnglat: [35.00635222880712, 31.890084810998772],
     },
     {
       name: "avshi3",
-      address: {freeformAddress: "modiin sd 4436"},
+      address: { freeformAddress: "modiin sd 4436" },
       lnglat: [35.006155492136685, 31.90585946670268],
     },
   ];
@@ -64,7 +64,7 @@ async function testInsertReview1() {
   const review = {
     locationID: "62f4e00d89bd801d8effbcaa",
     userID: "62f4e00d89bd801d8effbc23",
-    userText: "Really should be able to change",
+    userText: "My test dean",
     soundOpinion: 3.7,
     soundLevel: 2,
     labels: ["For work", "Cosy"],
@@ -82,7 +82,7 @@ async function testInsertReview1() {
   };
   const user = {
     uid: "62f4e00d89bd801d8effbc23",
-    name: "Anonymous",
+    name: "Cool guy",
     dateOfBirth: [31, 7, 1995],
   };
 
@@ -93,7 +93,7 @@ async function testInsertReview1() {
   console.log(res);
 }
 
-// testInsertReview1();
+testInsertReview1();
 
 /** insert review to a location that doesn't exists, therefore creates it
  * //TODO needs to be tested with an anonymous user

@@ -192,6 +192,7 @@ async function insertReview(
 
       let reviewDocument = {
         uid: reviewDetails.userID,
+        username: userDetails.name,
         lid: reviewDetails.locationID,
         userText: reviewDetails.userText,
         soundLevel: reviewDetails.soundLevel,
@@ -203,7 +204,6 @@ async function insertReview(
       let db_insertion = await MC.db(db_name)
         .collection("reviews")
         .insertOne(reviewDocument);
-      //TODO reviewID is not necessary
       return { success: true, reviewID: db_insertion.insertedId.toString() };
     } else {
       // couldn't find the POI in DB

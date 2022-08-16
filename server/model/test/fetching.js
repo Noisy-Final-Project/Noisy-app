@@ -3,6 +3,15 @@ const fetcher = require("../fetching_queries");
 const inserter = require("../insert_queries");
 const { MongoConnection, connectedMongo } = require("../mongoUtils");
 
+async function testGetPerson() {
+  const userID = "62f7f3a001f3c119a96fa87b"
+  await MongoConnection.connect()
+  const userDB = await fetcher.getPerson(userID)
+  console.log(JSON.stringify(userDB, undefined, 2));
+}
+
+testGetPerson()
+
 async function testSearch() {
   const textQuery = "park";
   await MongoConnection.connect();
@@ -14,14 +23,14 @@ async function testSearch() {
 // testSearch()
 
 async function testGetReviews() {
-  const locationID = "62f9048b35dbaba85afdb671";
+  const locationID = "62f9048b35dbaba85afdb671"
   await MongoConnection.connect();
 
   const results = await fetcher.getReviews(locationID, 0, 10, MongoConnection);
   console.log(results);
 }
 
-// testGetReviews();
+testGetReviews();
 
 async function testAmountReviews() {
   const locationID = "62f4e00d89bd801d8effbcaa";
@@ -42,12 +51,11 @@ async function testLocationPolygon() {
   const geoQuery = await fetcher.findLocationByRectangle(
     P1,
     P2,
-    ['Cosy'],
+    ['Music'],
     MongoConnection
   );
-  for (const doc of geoQuery) {
-    console.log(doc);
-  }
+
+  console.log(JSON.stringify(geoQuery, undefined, 2));
 }
 
 // testLocationPolygon();
