@@ -2,20 +2,20 @@ import React, { useEffect } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import NoisyStyles from "../NoisyStyles";
 
-const Welcome = ({navigation}) => {
+const Welcome = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       navigation.navigate("MainMenu");
     }, 3000);
   }, []);
   return (
-    <View style={ NoisyStyles.welcomeContainer }>
-      <Text style={ NoisyStyles.header }>Noisy</Text>
+    <View style={NoisyStyles.welcomeContainer}>
+      <Text style={NoisyStyles.header}>Noisy</Text>
       <Image
         source={require("../../assets/logo.png")}
-        style={ NoisyStyles.logo }
+        style={NoisyStyles.logo}
       />
-      <Text style={ NoisyStyles.footer }>A social network for sharing noise levels</Text>
+      <Text style={NoisyStyles.footer}>A social network for sharing noise levels</Text>
     </View>
   );
 };

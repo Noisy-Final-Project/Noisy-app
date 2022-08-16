@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
+import { validateToken } from "../helpers/AuthUtils";
+
 
 
 
@@ -15,12 +17,10 @@ const MainMenu = ({ navigation }) => {
   const focus = useIsFocused();  // useIsFocused as shown
 
   useEffect(() => {
-    AsyncStorage.getItem("@auth").then(auth => {
-      if (auth) {
-        const user = JSON.parse(auth);
-        setUserName(user.doc.name);
-      }
-    })
+    const userDetails = validateToken();
+    if (userDetails) {
+      setUserName(userDetails.name);
+    }
   }, [focus]);
 
   const handleSignIn = async () => {

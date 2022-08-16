@@ -30,7 +30,7 @@ const NoisyStyles = StyleSheet.create({
         fontFamily: "serif",
         fontSize: 18,
         fontWeight: "bold",
-        width: "90%",
+        marginBottom: "25%"
     },
     container: {
         marginVertical: 100,
