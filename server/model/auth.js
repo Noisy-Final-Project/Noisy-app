@@ -25,18 +25,13 @@ async function signUp(_email, _name, _dob, password) {
     return { error: userdb.err };
   }
 
-  // create signed token
-  const token = jwt.sign({ _id: userdb._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
-
   let userDetails = {
     name: _name,
     dob: _dob,
     Email: _email,
     userID: userdb.userID,
   };
-  return { token, userDetails };
+  return { userDetails };
 }
 
 async function signIn(_email, plain_password) {
@@ -61,7 +56,7 @@ async function signIn(_email, plain_password) {
   uid = doc._id.toString();
 
   const token = jwt.sign({ _id: uid }, process.env.JWT_SECRET, {
-    expiresIn: "30",
+    expiresIn: "7d",
   });
 
   doc.password = undefined;

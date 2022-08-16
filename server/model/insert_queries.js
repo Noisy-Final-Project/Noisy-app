@@ -212,4 +212,5 @@ async function insertReview(
   }
 }
 
+//TODO remove review
 module.exports = { insertUser, insertLocation, insertReview };
