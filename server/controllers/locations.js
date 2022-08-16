@@ -11,7 +11,6 @@ exports.getLocationsInBounds = async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
 
   const answer = await fetcher.findLocationByRectangle(jsonBounds._sw, jsonBounds._ne, labelsToSend)
-  console.log(JSON.stringify(answer));
   res.json(
     answer
   );
