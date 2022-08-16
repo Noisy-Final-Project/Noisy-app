@@ -80,55 +80,29 @@ const ViewUserReviews = ({ navigation, route }) => {
     getReviews();
   }, []);
 
-  const renderItem = ({ item }) => {
-    console.log(item); return (
-      <Card>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text style={NoisyStyles.text}>Noise Level: </Text>
-          <Rating
-            imageSize={30}
-            readonly
-            startingValue={item.soundLevel}
-            type="bell"
-          />
-        </View>
-        <Text style={NoisyStyles.text}>
-          Sound Opinion: {item.soundOpinion}
-        </Text>
-        <Text style={NoisyStyles.text}>
-          Labels: {item.labels.join(", ")}
-        </Text>
-        <Text style={NoisyStyles.text}>
-          More Info: {item.userText}
-        </Text>
-        <Text style={NoisyStyles.text}>
-          Reviewer Name: {item.username}
-        </Text>
-      </Card>
-    )
-  };
 
-  return (
-    <KeyboardAwareScrollView
-      contentCotainerStyle={{
-        flex: 1,
-        justifyContent: "center",
-      }}
-    >
-      <View style={{ marginVertical: 100 }}>
+  const getHeader = () => {
+    return (
+      <KeyboardAwareScrollView
+        contentCotainerStyle={{
+          flex: 1,
+          justifyContent: "center",
+        }}
+      >
+      <View style={{ marginTop: 30 }}>
         <Text style={NoisyStyles.title}>Reviews of {locationName}</Text>
+      </View></KeyboardAwareScrollView>
+    )
+  }
 
-        <FlatList
-          data={reviewList}
-          renderItem={renderItem}
-        />
-
+  const getFooter = () => {
+    return (
+      <KeyboardAwareScrollView
+        contentCotainerStyle={{
+          flex: 1,
+          justifyContent: "center",
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -172,9 +146,54 @@ const ViewUserReviews = ({ navigation, route }) => {
           style={NoisyStyles.linkButton}>
           Main Menu
         </Text>
+</KeyboardAwareScrollView >
+    )
+  }
+
+const renderItem = ({ item }) => {
+  console.log(item); return (
+    <Card>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={NoisyStyles.text}>Noise Level: </Text>
+        <Rating
+          imageSize={30}
+          readonly
+          startingValue={item.soundLevel}
+          type="bell"
+        />
       </View>
-    </KeyboardAwareScrollView >
-  );
+      <Text style={NoisyStyles.text}>
+        Sound Opinion: {item.soundOpinion}
+      </Text>
+      <Text style={NoisyStyles.text}>
+        Labels: {item.labels.join(", ")}
+      </Text>
+      <Text style={NoisyStyles.text}>
+        More Info: {item.userText}
+      </Text>
+      <Text style={NoisyStyles.text}>
+        Reviewer Name: {item.username}
+      </Text>
+    </Card>
+  )
+};
+
+return (
+
+  <FlatList
+    data={reviewList}
+    renderItem={renderItem}
+    ListHeaderComponent={ getHeader() }
+    ListFooterComponent={ getFooter() }
+  />
+
+);
 };
 
 export default ViewUserReviews;

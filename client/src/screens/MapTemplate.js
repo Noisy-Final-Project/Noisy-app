@@ -301,7 +301,7 @@ export default `
                         const placeDetails = {
                             id: place.id,
                             name: place.poi.name,
-                            address: place.address,
+                            address: place.address.freeformAddress,
                             lnglat: [place.position.lng, place.position.lat]
                         }
 
@@ -372,7 +372,9 @@ export default `
                 language: 'he-IL'
             })
                 .then(function (response) {
-                    let clickedAddress = (response.addresses.length > 0) ? response.addresses[0].address : '';
+                    let clickedAddress = (response.addresses.length > 0) ?
+                                         response.addresses[0].address.freeformAddress 
+                                         : '';
 
                     const placeDetails = {
                         id: '',
