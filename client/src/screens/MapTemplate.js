@@ -205,7 +205,6 @@ export default `
             btnAdd.setAttribute("onclick", "sendToApp('addReview'," + JSON.stringify(popupDetails) + ")")
             buttonDiv.appendChild(btnAdd)
 
-
             popupDOMElement.appendChild(buttonDiv)
 
             var popup = new tt.Popup({ offset: 40 }).setDOMContent(popupDOMElement);
