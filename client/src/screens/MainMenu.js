@@ -17,10 +17,11 @@ const MainMenu = ({ navigation }) => {
   const focus = useIsFocused();  // useIsFocused as shown
 
   useEffect(() => {
-    const userDetails = validateToken();
-    if (userDetails) {
-      setUserName(userDetails.name);
-    }
+    validateToken().then((userDetails) => {
+      if (userDetails) {
+        setUserName(userDetails.name);
+      }
+    })
   }, [focus]);
 
   const handleSignIn = async () => {

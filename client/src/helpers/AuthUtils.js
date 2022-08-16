@@ -15,8 +15,10 @@ const validateToken = async () => {
     if (!data.error && parsedAuth.doc._id == data._id) {
       return parsedAuth.doc;
     }
+
     await AsyncStorage.removeItem("@auth");
   }
+  
 }
 
-exports.validateToken = validateToken
+export { validateToken }

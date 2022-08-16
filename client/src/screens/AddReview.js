@@ -4,17 +4,16 @@ import { Rating } from "react-native-ratings";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Card } from "react-native-elements";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { SERVER_URL } from "../../ENV.json";
 import NoisyStyles from "../NoisyStyles";
 import SubmitButton from "../components/SubmitButton";
 import UserInput from "../components/UserInput";
 import getBells from "../helpers/Recorder.js";
+import { validateToken } from "../helpers/AuthUtils";
 
 const AddReview = ({ navigation, route }) => {
-
-    const locationDetails = route.params;
+  const locationDetails = route.params;
   // locationDetails fields: id, name, address, lnglat
 
   const [uid, setUid] = useState('');
@@ -36,24 +35,20 @@ const AddReview = ({ navigation, route }) => {
     axios
       .get(SERVER_URL + 'locations/get-labels')
       .then(response => {
-        const labelsToItems = response.data.labels.map((item)=>{
+        const labelsToItems = response.data.labels.map((item) => {
           return { label: item, value: item }
         })
         setLabelItems(labelsToItems)
       })
   }, [])
-  
 
   useEffect(() => {
-    async function fetchAuth() {
-      const auth = await AsyncStorage.getItem("@auth");
-      if (auth) {
-        const user = JSON.parse(auth);
-        setUid(user.doc._id);
-        setReviewerName(user.doc.name);
+    validateToken().then(userDetails => {
+      if (userDetails) { 
+        setUid(userDetails._id);
+        setReviewerName(userDetails.name);
       }
-    }
-    fetchAuth();
+    })
   }, []);
 
   const submitReview = async () => {
@@ -93,16 +88,12 @@ const AddReview = ({ navigation, route }) => {
       } else {
         setLoading(false);
         console.log("ADD REVIEW RES => ", data);
-        alert("Review Added Successfully!")
-        
-        navigation.navigate('ViewUserReviews', locationDetails)
       }
     } catch (err) {
       setLoading(false);
       alert("Error adding review. Try again.");
       console.log(err);
     }
-
   };
 
   const handleNoiseTest = () => {
@@ -111,7 +102,7 @@ const AddReview = ({ navigation, route }) => {
       .then((res) => {
         // here res is the amount of bells (float)
         setLoadingNoiseTest(false);
-        alert("Sound Level: " + res);
+        alert("sound level: " + res);
         setSoundLevel(res);
       })
       .catch((err) => console.log(err));

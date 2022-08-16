@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image } from "react-native";
 import NoisyStyles from "../NoisyStyles";
 
 const Welcome = ({ navigation }) => {

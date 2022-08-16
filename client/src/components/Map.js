@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
-import { View, Platform, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Platform } from "react-native";
 import { WebView } from 'react-native-webview';
 import MapTemplate from '../screens/MapTemplate';
-import { useEffect } from 'react';
-import * as Location from 'expo-location';
-import { PermissionsAndroid } from 'react-native';
-import { IconButton, Colors } from 'react-native-paper'
-import { sendToMap, getLocation } from '../helpers/MapUtils';
+import { IconButton } from 'react-native-paper'
 
 const Map = React.forwardRef(({ onMessage }, ref) => {
   if (Platform.OS === 'web') {
