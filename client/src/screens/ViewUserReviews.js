@@ -8,25 +8,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import NoisyStyles from "../NoisyStyles";
 
 const ViewUserReviews = ({ navigation, route }) => {
-  const { locationID, locationName } = route.params;
-  console.log(locationID);
+  const locationDetails = route.params;
 
-  const list = [
-    {
-      userName: "Shani",
-      userText: "Text",
-      userSoundVolume: 3,
-      userSoundOpinion: "Opinion",
-      labelsAttached: ["Dates", "Fun", "Music"],
-    },
-    {
-      userName: "Shani",
-      userText: "Text",
-      userSoundVolume: 5,
-      userSoundOpinion: "Opinion",
-      labelsAttached: ["Dates", "Fun", "Music"],
-    },
-  ];
   const [isWeb, setIsweb] = useState(false);
   const [reviewList, setReviewList] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -34,7 +17,7 @@ const ViewUserReviews = ({ navigation, route }) => {
   const getReviews = async () => {
     try {
       const { data } = await axios.get(
-        SERVER_URL + "locations/reviews/" + locationID,
+        SERVER_URL + "locations/reviews/" + locationDetails.id,
         { params: { page: 0 } });
       if (data.error) {
         alert(data.error);
@@ -55,7 +38,7 @@ const ViewUserReviews = ({ navigation, route }) => {
     }
 
     const { data } = await axios.get(
-      SERVER_URL + "locations/reviews/" + locationID,
+      SERVER_URL + "locations/reviews/" + locationDetails.id,
       { params: { page: pageNumber - 1 } });
 
     if (data.length > 0) {
@@ -66,7 +49,7 @@ const ViewUserReviews = ({ navigation, route }) => {
 
   const nextPage = async () => {
     const { data } = await axios.get(
-      SERVER_URL + "locations/reviews/" + locationID,
+      SERVER_URL + "locations/reviews/" + locationDetails.id,
       { params: { page: pageNumber + 1 } });
 
     if (data.length > 0) {
@@ -89,9 +72,9 @@ const ViewUserReviews = ({ navigation, route }) => {
           justifyContent: "center",
         }}
       >
-      <View style={{ marginTop: 30 }}>
-        <Text style={NoisyStyles.title}>Reviews of {locationName}</Text>
-      </View></KeyboardAwareScrollView>
+        <View style={{ marginTop: 30 }}>
+          <Text style={NoisyStyles.title}>Reviews of {locationDetails.name}</Text>
+        </View></KeyboardAwareScrollView>
     )
   }
 
@@ -131,11 +114,7 @@ const ViewUserReviews = ({ navigation, route }) => {
         </View>
 
         {!isWeb && (<Text
-          onPress={() => navigation.navigate("AddReview", {
-            locationID: 4,
-            locationName: "BBB",
-            uid: "userID",
-          })}
+          onPress={() => navigation.navigate("AddReview", locationDetails)}
           style={NoisyStyles.linkButton}
         >
           Add New Review
@@ -146,54 +125,54 @@ const ViewUserReviews = ({ navigation, route }) => {
           style={NoisyStyles.linkButton}>
           Main Menu
         </Text>
-</KeyboardAwareScrollView >
+      </KeyboardAwareScrollView >
     )
   }
 
-const renderItem = ({ item }) => {
-  console.log(item); return (
-    <Card>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={NoisyStyles.text}>Noise Level: </Text>
-        <Rating
-          imageSize={30}
-          readonly
-          startingValue={item.soundLevel}
-          type="bell"
-        />
-      </View>
-      <Text style={NoisyStyles.text}>
-        Sound Opinion: {item.soundOpinion}
-      </Text>
-      <Text style={NoisyStyles.text}>
-        Labels: {item.labels.join(", ")}
-      </Text>
-      <Text style={NoisyStyles.text}>
-        More Info: {item.userText}
-      </Text>
-      <Text style={NoisyStyles.text}>
-        Reviewer Name: {item.username}
-      </Text>
-    </Card>
-  )
-};
+  const renderItem = ({ item }) => {
+    return (
+      <Card>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={NoisyStyles.text}>Noise Level: </Text>
+          <Rating
+            imageSize={30}
+            readonly
+            startingValue={item.soundLevel}
+            type="bell"
+          />
+        </View>
+        <Text style={NoisyStyles.text}>
+          Sound Opinion: {item.soundOpinion}
+        </Text>
+        <Text style={NoisyStyles.text}>
+          Labels: {item.labels.join(", ")}
+        </Text>
+        <Text style={NoisyStyles.text}>
+          More Info: {item.userText}
+        </Text>
+        <Text style={NoisyStyles.text}>
+          Reviewer Name: {item.username}
+        </Text>
+      </Card>
+    )
+  };
 
-return (
+  return (
 
-  <FlatList
-    data={reviewList}
-    renderItem={renderItem}
-    ListHeaderComponent={ getHeader() }
-    ListFooterComponent={ getFooter() }
-  />
+    <FlatList
+      data={reviewList}
+      renderItem={renderItem}
+      ListHeaderComponent={getHeader()}
+      ListFooterComponent={getFooter()}
+    />
 
-);
+  );
 };
 
 export default ViewUserReviews;

@@ -369,7 +369,8 @@
             })
                 .then(function (response) {
                     let clickedAddress = (response.addresses.length > 0) ?
-                                         response.addresses[0].freeformAddress : '';
+                                         response.addresses[0].address.freeformAddress 
+                                         : '';
 
                     const placeDetails = {
                         id: '',
