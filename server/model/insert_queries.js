@@ -191,7 +191,7 @@ async function insertReview(
       // Location already exists in the location collection (checked by location ID)
 
       let reviewDocument = {
-        uid: reviewDetails.userID,
+        uid: userDetails.uid,
         username: userDetails.name,
         lid: reviewDetails.locationID,
         userText: reviewDetails.userText,
@@ -212,5 +212,4 @@ async function insertReview(
   }
 }
 
-//TODO remove review
 module.exports = { insertUser, insertLocation, insertReview };

@@ -47,43 +47,26 @@ testInsertLocation();
  * Adds a  review to a location that exists
  * */
 async function testInsertReview1() {
-  // const poi = {
-  //   name: "abc",
-  //   city: "modiin",
-  //   street: "df",
-  //   num: "243",
-  //   lid: "62f4e00d89bd801d8effbcaa",
-  //   uid: "62f4e00d89bd801d8effbc23",
-  //   usv: 4,
-  //   uso: 3.7,
-  //   ut: "Really should be able to change",
-  //   labels: ["For work", "Cosy"],
-  //   lnglat: [35.01291827647526, 31.88937427045248],
-  // };
 
   const review = {
-    locationID: "62f4e00d89bd801d8effbcaa",
-    userID: "62f4e00d89bd801d8effbc23",
+    locationID: "62fb7cd4719deed459de7874",
+    userID: "62fb3c5f59e2bed72d32954c",
     userText: "My test dean",
     soundOpinion: 3.7,
     soundLevel: 2,
     labels: ["For work", "Cosy"],
   };
   const location = {
-    name: "Kapara",
-    id: "62f4e00d89bd801d8effbcaa",
-    address: {
-      municipality: "test city",
-      streetName: "test street",
-      streetNumber: "7A",
-    },
-    lnglat: [35.01291827647526, 31.88937427045248],
+    name: "אולם ספורט השבטים",
+    id: "62fb7cd4719deed459de7874",
+    address: "רחוב יהודה 71 מודיעין מכבים רעות",
+    lnglat: [35.00581, 31.89072],
     category: "test category",
   };
   const user = {
-    uid: "62f4e00d89bd801d8effbc23",
-    name: "Cool guy",
-    dateOfBirth: [31, 7, 1995],
+    uid: "62fb3c5f59e2bed72d32954c",
+    name: "Red Orbach manual",
+    dob: "2/2/2",
   };
 
   await MongoConnection.connect().then(() => {

@@ -14,3 +14,9 @@ ENV.json
 
 # macOS
 .DS_Store
+client/.log/ti-115932.log
+client/.log/tsserver.log
+server/.log/ti-104011.log
+server/.log/tsserver.log
+client/.log/ti-239931.log
+server/.log/ti-163044.log
