@@ -62,6 +62,10 @@ const AddReview = ({ navigation, route }) => {
       // Check if locationDetails.name & locationDetails.address.freeformAddress exist
       // Update them with name and address if necessary
 
+      if (!locationDetails.name){
+        locationDetails.name = newLocationName
+      }
+
       const userDetails = {
         uid, // Can be empty, not a registered user
         name: reviewerName, // Can be empty, anonymous
@@ -89,9 +93,6 @@ const AddReview = ({ navigation, route }) => {
         setLoading(false);
         console.log("ADD REVIEW RES => ", data);
         
-        if (!locationDetails.name){
-          locationDetails.name = newLocationName
-        }
         if (!locationDetails.id){
           locationDetails.id = data.locationID
         }

@@ -176,10 +176,14 @@ export default `
 
         // Creates a popup for a location marker containing these details:
         function createPopup(placeDetails, count) {
+            const address = (placeDetails.address.freeformAddress) ?
+                            placeDetails.address.freeformAddress :
+                            placeDetails.address
+
             var popupDOMElement = document.createElement('div');
             popupDOMElement.className = 'popup';
             popupDOMElement.innerHTML = "<h1>" + placeDetails.name + "</h1>" +
-                "<p>" + placeDetails.address + "</p>" +
+                "<p>" + address + "</p>" +
                 "<p>" + count + " Reviews</p>";
 
             var buttonDiv = document.createElement('div');
@@ -301,7 +305,7 @@ export default `
                         const placeDetails = {
                             id: place.id,
                             name: place.poi.name,
-                            address: place.address.freeformAddress,
+                            address: place.address,
                             lnglat: [place.position.lng, place.position.lat]
                         }
 
@@ -373,13 +377,13 @@ export default `
             })
                 .then(function (response) {
                     let clickedAddress = (response.addresses.length > 0) ?
-                                         response.addresses[0].address.freeformAddress 
+                                         response.addresses[0].address 
                                          : '';
 
                     const placeDetails = {
                         id: '',
                         name: '',
-                        address: (clickedAddress) ? clickedAddress : '',
+                        address: (clickedAddress) ? clickedAddress : {freeformAddress: ''},
                         lnglat: event.lngLat.toArray()
                     }
 
