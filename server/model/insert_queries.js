@@ -98,7 +98,7 @@ async function insertLocation(
     errMsg = errors;
   }
 
-  return { status: successful, locationId: locationID, message: errMsg };
+  return { status: successful, locationID: locationID, message: errMsg };
 }
 
 /**
@@ -160,7 +160,7 @@ async function insertReview(
     );
 
 
-    const _lid = addLocation.locationId;
+    const _lid = addLocation.locationID;
     // add review
     const reviewDoc = {
       uid: "",
@@ -178,7 +178,7 @@ async function insertReview(
       .insertOne(reviewDoc);
 
     if (db_insertion.insertedId) {
-      return { success: true, reviewID: db_insertion.insertedId.toString() };
+      return { success: true, locationID: _lid, reviewID: db_insertion.insertedId.toString() };
     } else {
       return { success: false, error: "Error with inserting the review to DB" };
     }
@@ -204,7 +204,7 @@ async function insertReview(
       let db_insertion = await MC.db(db_name)
         .collection("reviews")
         .insertOne(reviewDocument);
-      return { success: true, reviewID: db_insertion.insertedId.toString() };
+      return { success: true, locationID: reviewDetails.locationID, reviewID: db_insertion.insertedId.toString() };
     } else {
       // couldn't find the POI in DB
       return { success: false, error: "Couldn't find the location ID in DB" };
