@@ -380,7 +380,7 @@ export default `
                         id: '',
                         name: '',
                         address: (clickedAddress) ? clickedAddress : '',
-                        lnglat: event.lngLat
+                        lnglat: event.lngLat.toArray()
                     }
 
                     createTempMarker(placeDetails)

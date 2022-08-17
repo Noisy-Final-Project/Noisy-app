@@ -27,8 +27,7 @@ const ViewUserReviews = ({ navigation, route }) => {
       }
     } catch (err) {
       alert("Error getting reviews. Try again.");
-      setReviewList(list);
-      console.log(err);
+      console.log('ERROR: '+err.message);
     }
   };
 

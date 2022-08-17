@@ -88,6 +88,14 @@ const AddReview = ({ navigation, route }) => {
       } else {
         setLoading(false);
         console.log("ADD REVIEW RES => ", data);
+        
+        if (!locationDetails.name){
+          locationDetails.name = newLocationName
+        }
+        if (!locationDetails.id){
+          locationDetails.id = data.locationID
+        }
+
         alert('Review Added Successfully!')
         navigation.push('ViewUserReviews', locationDetails)
       }
