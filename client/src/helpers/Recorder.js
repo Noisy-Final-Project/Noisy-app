@@ -48,21 +48,64 @@ async function stopRecording() {
 function analyzeAverage() {
   console.log(decibels);
   let sum = 0;
-  const min = -120
-  console.log('MIN ' + min)
+  const min = -120;
+  console.log("MIN " + min);
   decibels.forEach((element) => (sum += element));
-  console.log('SUM ' + sum)
+  console.log("SUM " + sum);
   const average = sum / decibels.length;
-  console.log('AVERAGE ' + average)
+  console.log("AVERAGE " + average);
 
   const amount = Math.abs(average / (min / 5));
-  const result = 5 - amount
+  const result = 5 - amount;
   if (result < 0) {
-    return 0
+    return 0;
   } else if (result > 5) {
-    return 5
+    return 5;
   }
   return result;
+}
+
+/**
+ * The EV function takes an array of decibels and returns the expected value
+ * of the decibel values in that array.
+ *
+ * How it works:
+ * the decibel values are stored in 6 partitions based on their values.
+ * We calculate the sum of each partition number multiplied by partition size divided by the total decibels stored.
+ * 
+ * The result gives a more concrete evalutation of the sound level after the recording.
+ * 
+ * @return The expected value of the decibels array.
+ * 
+ */
+function EV() {
+  // values of decibels in [-160,0]
+  const partitions = 6;
+  const minimalValue = -120;
+
+  const totalSamples = decibels.length;
+  // create an array of "partitions" amount of empty arrays
+  let Partition = [];
+  for (let i = 0; i < partitions; i += 1) {
+    Partition[i] = [];
+  }
+
+  // console.log(`Partitions before: ${Partition.toString()}`);
+  const m = minimalValue / partitions;
+  for (let d of decibels) {
+    let i = Math.floor(partitions - d / m);
+    if (i >= partitions) {
+      i = partitions;
+    } else if (i < 0) {
+      i = 0;
+    }
+    Partition[i].push(d);
+  }
+  let res = 0;
+  Partition.forEach((part, ind) => {
+    res += ind * (part.length / totalSamples);
+  });
+  return res;
 }
 
 async function getBells() {
@@ -75,7 +118,7 @@ async function getBells() {
 
   await stopRecording();
 
-  return analyzeAverage();
+  return EV();
 }
 
 export default getBells;
