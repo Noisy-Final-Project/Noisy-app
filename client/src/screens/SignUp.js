@@ -74,27 +74,27 @@ const SignUp = ({ navigation }) => {
         <Text style={NoisyStyles.title}>Sign Up</Text>
 
         <UserInput
-          name="Name"
+          name=" Name"
           value={name}
           setValue={setName}
           autoCapitalize="words"
           autoCorrect={false}
         />
         <UserInput
-          name="Date of Birth"
+          name=" Date of Birth"
           value={dob}
           setValue={setDOB}
           autoCorrect={false}
         />
         <UserInput
-          name="Email"
+          name=" Email"
           value={email}
           setValue={setEmail}
           autoCompleteType="email"
           keyboardType="email-address"
         />
         <UserInput
-          name="Password"
+          name=" Password"
           value={password}
           setValue={setPassword}
           secureTextEntry={true}
