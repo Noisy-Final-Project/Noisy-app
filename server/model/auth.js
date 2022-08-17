@@ -67,8 +67,7 @@ async function signIn(_email, plain_password) {
   };
 }
 
-async function forgotPassword(_email) {
-  // add a field of
+async function forgotPassword(_email) {  // add a field of
   let dbUser = await MongoConnection.db(db_name)
     .collection("users")
     .findOne({ Email: _email });
@@ -111,7 +110,7 @@ async function forgotPassword(_email) {
 }
 
 async function resetPassword(_email, _password, _resetCode) {
-  const dbUser = await MongoConnection.db(db_name).collection.findOne({
+  const dbUser = await MongoConnection.db(db_name).collection("users").findOne({
     Email: _email,
     resetCode: _resetCode,
   });
