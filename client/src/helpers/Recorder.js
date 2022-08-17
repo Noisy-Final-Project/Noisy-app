@@ -48,14 +48,20 @@ async function stopRecording() {
 function analyzeAverage() {
   let sum = 0;
   const min = -120
-  console.log('MIN '+min)
+  console.log('MIN ' + min)
   decibels.forEach((element) => (sum += element));
-  console.log('SUM '+sum)
+  console.log('SUM ' + sum)
   const average = sum / decibels.length;
-  console.log('AVERAGE '+average)
+  console.log('AVERAGE ' + average)
 
-  const amount = Math.abs(average / (min/5));
-  return 5 - amount;
+  const amount = Math.abs(average / (min / 5));
+  const result = 5 - amount
+  if (result < 0) {
+    return 0
+  } else if (result > 5) {
+    return 5
+  }
+  return result;
 }
 
 async function getBells() {
