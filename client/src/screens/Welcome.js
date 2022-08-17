@@ -5,7 +5,10 @@ import NoisyStyles from "../NoisyStyles";
 const Welcome = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate("MainMenu");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainMenu' }],
+        });
     }, 3000);
   }, []);
   return (

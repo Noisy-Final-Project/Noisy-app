@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import MapTemplate from '../screens/MapTemplate';
 import { IconButton } from 'react-native-paper'
 
-const Map = React.forwardRef(({ onMessage }, ref) => {
+const Map = React.forwardRef(({ onMessage, myLocation }, ref) => {
   if (Platform.OS === 'web') {
     return (
       <View style={{ flex: 4, flexDirection: 'row', justifyContent: 'center', marginHorizontal: 100, paddingHorizontal: '15%' }}>
@@ -32,6 +32,7 @@ const Map = React.forwardRef(({ onMessage }, ref) => {
         javaScriptEnabled={true}
         injectedJavaScriptBeforeContentLoaded={`(function() {
           window.ANDROID = true
+          window.myLocation = ${myLocation}
       })();`}
         onMessage={onMessage}
         style={{
@@ -41,7 +42,9 @@ const Map = React.forwardRef(({ onMessage }, ref) => {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: 'transparent',
-          marginTop: 10
+          marginTop: 10,
+          opacity: 0.99,
+          overflow: "hidden"
         }}
         originWhitelist={['*']}
         source={{ html: MapTemplate }}

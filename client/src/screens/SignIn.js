@@ -43,7 +43,7 @@ const SignIn = ({ navigation }) => {
         console.log("SIGN IN SUCCESS => ", data.doc);
         alert("Sign In Successful");
         // redirect
-        navigation.navigate("MainMenu");
+        navigation.popToTop();
       }
     } catch (err) {
       alert("Sign In failed. Try again.");
@@ -102,7 +102,7 @@ const SignIn = ({ navigation }) => {
         </Text>
 
         <Text
-          onPress={() => navigation.navigate("MainMenu")}
+          onPress={() => navigation.popToTop()}
           style={NoisyStyles.linkButton}
         >
           Main Menu

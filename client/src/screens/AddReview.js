@@ -11,6 +11,8 @@ import SubmitButton from "../components/SubmitButton";
 import UserInput from "../components/UserInput";
 import getBells from "../helpers/Recorder.js";
 import { validateToken } from "../helpers/AuthUtils";
+import DateInput from "../components/DateInput";
+import { validateDate } from "../helpers/validation";
 
 const AddReview = ({ navigation, route }) => {
   const locationDetails = route.params;
@@ -53,10 +55,17 @@ const AddReview = ({ navigation, route }) => {
 
   const submitReview = async () => {
     setLoading(true);
+
     if (!soundLevel || !textReview || (!locationDetails.name && !newLocationName)) {
       alert("Mandatory fields are required");
       setLoading(false);
       return;
+    }
+
+    if (!validateDate(dateOfBirth)){
+      alert(dateOfBirth + " should be a valid date in this format: DD/MM/YYYY");
+      setLoading(false);
+      return
     }
     try {
       // Check if locationDetails.name & locationDetails.address.freeformAddress exist
@@ -98,7 +107,7 @@ const AddReview = ({ navigation, route }) => {
         }
 
         alert('Review Added Successfully!')
-        navigation.push('ViewUserReviews', locationDetails)
+        navigation.push('ViewUserReviews', { locationDetails, formSource: true })
       }
     } catch (err) {
       setLoading(false);
@@ -168,12 +177,14 @@ const AddReview = ({ navigation, route }) => {
             namePosition="text"
             editable={(uid) ? false : true}
           />
-          <UserInput
-            name="Date of Birth"
-            value={dateOfBirth}
-            setValue={setDateOfBirth}
-            namePosition="text"
+
+          <DateInput
+          name="Date of Birth"
+          value={dateOfBirth}
+          setValue={setDateOfBirth}
+          namePosition={"text"}
           />
+
           <UserInput
             name="Sound Opinion"
             value={soundOpinion}
@@ -222,7 +233,7 @@ const AddReview = ({ navigation, route }) => {
         />
 
         <Text
-          onPress={() => navigation.navigate("MainMenu")}
+          onPress={() => navigation.popToTop()}
           style={NoisyStyles.linkButton}
         >
           Main Menu

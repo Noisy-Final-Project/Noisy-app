@@ -120,7 +120,7 @@ const ForgotPassword = ({ navigation }) => {
         </Text>
 
         <Text
-          onPress={() => navigation.navigate("MainMenu")}
+          onPress={() => navigation.popToTop()}
           style={NoisyStyles.linkButton}
         >
           Main Menu

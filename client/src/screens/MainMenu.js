@@ -8,10 +8,7 @@ import NoisyStyles from "../NoisyStyles";
 import { validateToken } from "../helpers/AuthUtils";
 
 
-
-
 const MainMenu = ({ navigation }) => {
-
   const [userName, setUserName] = useState('');
 
   const focus = useIsFocused();  // useIsFocused as shown
@@ -45,7 +42,7 @@ const MainMenu = ({ navigation }) => {
         <NoisyLogo style={NoisyStyles.logo} />
 
         <Text
-          onPress={() => navigation.navigate("ChooseBusiness")}
+          onPress={() => navigation.push("ChooseBusiness")}
           style={NoisyStyles.link}>
           Choose a Business
         </Text>

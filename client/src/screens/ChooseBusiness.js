@@ -7,8 +7,9 @@ import { getLocation, sendToMap } from "../helpers/MapUtils";
 import axios from "axios";
 import { Suggestions } from "../components/Suggestions";
 import DropDownPicker from "react-native-dropdown-picker";
+import { CommonActions } from "@react-navigation/native";
 
-const ChooseBusiness = ({ navigation }) => {
+const ChooseBusiness = ({ navigation, route }) => {
   // Search bar variables:
   let [placeholder, setPlaceholder] = useState("Search by Name or Address");
   let [showList, setShowList] = useState(false);
@@ -20,7 +21,7 @@ const ChooseBusiness = ({ navigation }) => {
   const [labels, setLabels] = useState([]);
   const [labelItems, setLabelItems] = useState([]);
 
-  // Map referese:
+  // Map reference:
   let webRef = useRef(null);
 
   /*
@@ -96,6 +97,9 @@ const ChooseBusiness = ({ navigation }) => {
       case "getLocation":
         try {
           getLocation().then((currentLocation) => {
+            if (currentLocation.length == 0){
+              return
+            }
             setLocation(currentLocation);
             sendToMap(webRef, "selfCenter", { lnglat: currentLocation });
           });
@@ -104,12 +108,12 @@ const ChooseBusiness = ({ navigation }) => {
         }
         break;
       case "getReviews":
-        navigation.navigate("ViewUserReviews", message.body);
+        navigation.push("ViewUserReviews", { locationDetails: message.body });
         break;
       case "addReview":
         // params are: [id, name, address, lnglat]
 
-        navigation.navigate("AddReview", message.body);
+        navigation.push("AddReview", message.body);
         break;
       default:
         break;
@@ -173,12 +177,9 @@ const ChooseBusiness = ({ navigation }) => {
           "#e9c46a",
         ]}
         containerStyle={{ paddingHorizontal: "5%", alignItems: 'center', paddingTop: 10 }}
-
         onChangeValue={(items) => {
           sendToMap(webRef, 'labelFilter', { labels: items })
         }}
-
-
         placeholder={"Filter by labels"}
       />
 
@@ -193,7 +194,7 @@ const ChooseBusiness = ({ navigation }) => {
         }}
       >
         <Text
-          onPress={() => navigation.navigate("MainMenu")}
+          onPress={() => navigation.popToTop()}
           style={NoisyStyles.linkButton}
         >
           Main Menu

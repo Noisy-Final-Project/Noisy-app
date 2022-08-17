@@ -110,7 +110,7 @@ export default `
             key: '${MAPS_API_KEY}',
             container: 'map',
             basePath: 'sdk/',
-            center: [35.00635222880712, 31.890084810998772], // Ariel
+            center: [34.76681755396254, 32.07720904541361], // Tel-Aviv
             zoom: 15,
             theme: {
                 style: 'buildings',
@@ -179,7 +179,7 @@ export default `
             const address = (placeDetails.address.freeformAddress) ?
                             placeDetails.address.freeformAddress :
                             placeDetails.address
-
+            
             var popupDOMElement = document.createElement('div');
             popupDOMElement.className = 'popup';
             popupDOMElement.innerHTML = "<h1>" + placeDetails.name + "</h1>" +
@@ -404,11 +404,19 @@ export default `
                     if (window.ANDROID) {
                         removeSelfMarker()
                         selfMarker = createMarker('https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/person-profile-image-icon.png', 'self', '#41DB41', lnglat, '')
+                        try {
+                            const lnglat = message.body.lnglat
+                            map.jumpTo({ center: lnglat, zoom: 15 })
+                        }
+                        catch (err) {
+                            alert(err.message)
+                        }
                     }
+                    break
                 case 'center':
                     try {
                         const lnglat = message.body.lnglat
-                        map.flyTo({ center: lnglat, zoom: 17 })
+                        map.flyTo({ center: lnglat, zoom: 15 })
                     }
                     catch (err) {
                         alert(err.message)

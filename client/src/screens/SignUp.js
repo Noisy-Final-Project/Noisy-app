@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, ToastAndroid } from "react-native";
+import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
+import DateInput from "../components/DateInput";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
 import { SERVER_URL } from "../../ENV.json";
 import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { validateEmail, validatePassword } from "../helpers/validation";
+import { validateDate, validateEmail, validatePassword } from "../helpers/validation";
 
 const SignUp = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -28,6 +29,12 @@ const SignUp = ({ navigation }) => {
       alert(email + " is not a valid email");
       setLoading(false);
       return;
+    }
+
+    if (!validateDate(dob)){
+      alert(dob + " should be a valid date in this format: DD/MM/YYYY");
+      setLoading(false);
+      return
     }
 
     if (!validatePassword(password)) {
@@ -80,12 +87,14 @@ const SignUp = ({ navigation }) => {
           autoCapitalize="words"
           autoCorrect={false}
         />
-        <UserInput
-          name=" Date of Birth"
+        
+        <DateInput
+          name="Date of Birth"
           value={dob}
           setValue={setDOB}
-          autoCorrect={false}
-        />
+          namePosition={"placeholder"}
+          />
+
         <UserInput
           name=" Email"
           value={email}
@@ -118,7 +127,7 @@ const SignUp = ({ navigation }) => {
         </Text>
 
         <Text
-          onPress={() => navigation.navigate("MainMenu")}
+          onPress={() => navigation.popToTop()}
           style={NoisyStyles.linkButton}
         >
           Main Menu

@@ -5,8 +5,8 @@ export async function getLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     
     if (status !== 'granted') {
-      alert('Location permissions required')
-      return;
+      console.log('Permission denied');
+      return [];
     }
   
     const currentLocation = await Location.getCurrentPositionAsync({});

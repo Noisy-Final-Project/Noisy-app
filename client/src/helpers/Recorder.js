@@ -46,6 +46,7 @@ async function stopRecording() {
  *
  * */
 function analyzeAverage() {
+  console.log(decibels);
   let sum = 0;
   const min = -120
   console.log('MIN ' + min)

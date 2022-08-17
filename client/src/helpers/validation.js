@@ -13,5 +13,13 @@ return String(password)
     )
 }
 
+const validateDate = (date) => {
+  return date === '' || String(date)
+  .match(
+    /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[\/\-]\d{4}$/
+  )
+}
+
 exports.validateEmail = validateEmail
 exports.validatePassword = validatePassword
+exports.validateDate = validateDate

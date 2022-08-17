@@ -8,7 +8,21 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import NoisyStyles from "../NoisyStyles";
 
 const ViewUserReviews = ({ navigation, route }) => {
-  const locationDetails = route.params;
+  useEffect(
+    () => {
+      if (route.params.formSource) {
+        navigation.addListener('beforeRemove', (e) => {
+          e.preventDefault();
+          navigation.push("ChooseBusiness")
+        })
+      }
+    }
+    ,
+    [navigation]
+  );
+
+
+  const { locationDetails } = route.params;
 
   const [isWeb, setIsweb] = useState(false);
   const [reviewList, setReviewList] = useState([]);
@@ -27,7 +41,7 @@ const ViewUserReviews = ({ navigation, route }) => {
       }
     } catch (err) {
       alert("Error getting reviews. Try again.");
-      console.log('ERROR: '+err.message);
+      console.log('ERROR: ' + err.message);
     }
   };
 
@@ -120,7 +134,7 @@ const ViewUserReviews = ({ navigation, route }) => {
         </Text>)}
 
         <Text
-          onPress={() => navigation.navigate("MainMenu")}
+          onPress={() => navigation.popToTop()}
           style={NoisyStyles.linkButton}>
           Main Menu
         </Text>
@@ -169,8 +183,8 @@ const ViewUserReviews = ({ navigation, route }) => {
       renderItem={renderItem}
       ListHeaderComponent={getHeader()}
       ListFooterComponent={getFooter()}
-      ListHeaderComponentStyle={{direction: "ltr"}}
-      ListFooterComponentStyle={{direction: "ltr"}}
+      ListHeaderComponentStyle={{ direction: "ltr" }}
+      ListFooterComponentStyle={{ direction: "ltr" }}
     />
 
   );
