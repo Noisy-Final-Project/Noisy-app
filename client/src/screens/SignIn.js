@@ -64,14 +64,14 @@ const SignIn = ({ navigation }) => {
         <Text style={NoisyStyles.title}>Sign In</Text>
 
         <UserInput
-          name="Email"
+          name=" Email"
           value={email}
           setValue={setEmail}
           autoCompleteType="email"
           keyboardType="email-address"
         />
         <UserInput
-          name="Password"
+          name=" Password"
           value={password}
           setValue={setPassword}
           secureTextEntry={true}

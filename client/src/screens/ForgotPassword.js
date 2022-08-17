@@ -40,6 +40,7 @@ const ForgotPassword = ({ navigation }) => {
       }
     } catch (err) {
       alert("Error sending email. Try again.");
+      setLoading(false);
       console.log(err);
     }
   };
@@ -79,7 +80,7 @@ const ForgotPassword = ({ navigation }) => {
         <Text style={NoisyStyles.title}>Forgot Password</Text>
 
         <UserInput
-          name="Email"
+          name=" Email"
           value={email}
           setValue={setEmail}
           autoCompleteType="email"
