@@ -87,9 +87,7 @@ async function forgotPassword(_email) {  // add a field of
   const result = await MongoConnection.db(db_name)
     .collection("users")
     .updateOne(filter, update);
-  result.then(() => {
-    console.log("Expiration Date: " + expirationDate);
-  });
+
 
   // prepare email
   const emailData = {
