@@ -170,6 +170,8 @@ const ViewUserReviews = ({ navigation, route }) => {
       renderItem={renderItem}
       ListHeaderComponent={getHeader()}
       ListFooterComponent={getFooter()}
+      ListHeaderComponentStyle={{direction: "ltr"}}
+      ListFooterComponentStyle={{direction: "ltr"}}
     />
 
   );

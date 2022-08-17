@@ -88,6 +88,8 @@ const AddReview = ({ navigation, route }) => {
       } else {
         setLoading(false);
         console.log("ADD REVIEW RES => ", data);
+        alert('Review Added Successfully!')
+        navigation.push('ViewUserReviews', locationDetails)
       }
     } catch (err) {
       setLoading(false);

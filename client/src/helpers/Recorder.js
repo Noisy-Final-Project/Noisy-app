@@ -6,7 +6,8 @@ let currentRecording = undefined;
 
 const onRecordingStatusUpdate = (playbackStatus) => {
   console.log("Current status: " + JSON.stringify(playbackStatus));
-  if (playbackStatus.metering) decibels.push(playbackStatus.metering);
+  if (playbackStatus.metering && playbackStatus.metering != -160)
+    decibels.push(playbackStatus.metering);
 };
 
 async function startRecording() {
@@ -46,10 +47,14 @@ async function stopRecording() {
  * */
 function analyzeAverage() {
   let sum = 0;
+  const min = -120
+  console.log('MIN '+min)
   decibels.forEach((element) => (sum += element));
-
+  console.log('SUM '+sum)
   const average = sum / decibels.length;
-  const amount = Math.abs(average / 8.125);
+  console.log('AVERAGE '+average)
+
+  const amount = Math.abs(average / (min/5));
   return 5 - amount;
 }
 

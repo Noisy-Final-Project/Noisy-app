@@ -32,8 +32,6 @@ exports.addReview = async (req, res) => {
   } = req.body;
   res.set('Access-Control-Allow-Origin', '*');
 
-
-  // console.log(`Adding a review for:\n userDetails:${JSON.stringify(userDetails,undefined, 2)}\n locationDetails: ${JSON.stringify(locationDetails,undefined, 2)}\nReviewDetails: ${JSON.stringify(reviewDetails,undefined, 2)}`);
   res.json(
     await inserter.insertReview(
       reviewDetails,

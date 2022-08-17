@@ -25,12 +25,8 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": [
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "FOREGROUND_SERVICE "
-      ],
-      "package": "com.Noisyapp.Noisy"
+      "package": "com.Noisyapp.Noisy",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
