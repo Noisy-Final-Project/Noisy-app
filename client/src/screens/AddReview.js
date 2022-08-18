@@ -15,20 +15,23 @@ import DateInput from "../components/DateInput";
 import { validateDate } from "../helpers/validation";
 
 const AddReview = ({ navigation, route }) => {
-  const locationDetails = route.params;
   // locationDetails fields: id, name, address, lnglat
+  const locationDetails = route.params;
 
-  const [uid, setUid] = useState('');
-
+  // Page properties
   const [loading, setLoading] = useState(false);
   const [loadingNoiseTest, setLoadingNoiseTest] = useState(false);
+
+  // Review details
   const [newLocationName, setNewLocationName] = useState('');
   const [soundLevel, setSoundLevel] = useState('');
   const [reviewerName, setReviewerName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [soundOpinion, setSoundOpinion] = useState('');
   const [textReview, setTextReview] = useState('');
+  const [uid, setUid] = useState('');
 
+  // Filter by labels:
   const [openLabels, setOpenLabels] = useState(false);
   const [labels, setLabels] = useState([]);
   const [labelItems, setLabelItems] = useState([]);
@@ -44,9 +47,10 @@ const AddReview = ({ navigation, route }) => {
       })
   }, [])
 
+  // Runs when component is loading
   useEffect(() => {
     validateToken().then(userDetails => {
-      if (userDetails) { 
+      if (userDetails) {
         setUid(userDetails._id);
         setDateOfBirth(userDetails.dob)
         setReviewerName(userDetails.name);
@@ -56,14 +60,13 @@ const AddReview = ({ navigation, route }) => {
 
   const submitReview = async () => {
     setLoading(true);
-
     if (!soundLevel || !textReview || (!locationDetails.name && !newLocationName)) {
       alert("Mandatory fields are required");
       setLoading(false);
       return;
     }
 
-    if (!validateDate(dateOfBirth)){
+    if (!validateDate(dateOfBirth)) {
       alert(dateOfBirth + " should be a valid date in this format: DD/MM/YYYY");
       setLoading(false);
       return
@@ -72,7 +75,7 @@ const AddReview = ({ navigation, route }) => {
       // Check if locationDetails.name & locationDetails.address.freeformAddress exist
       // Update them with name and address if necessary
 
-      if (!locationDetails.name){
+      if (!locationDetails.name) {
         locationDetails.name = newLocationName
       }
 
@@ -102,8 +105,8 @@ const AddReview = ({ navigation, route }) => {
       } else {
         setLoading(false);
         console.log("ADD REVIEW RES => ", data);
-        
-        if (!locationDetails.id){
+
+        if (!locationDetails.id) {
           locationDetails.id = data.locationID
         }
 
@@ -180,10 +183,10 @@ const AddReview = ({ navigation, route }) => {
           />
 
           <DateInput
-          name="Date of Birth"
-          value={dateOfBirth}
-          setValue={setDateOfBirth}
-          namePosition={"text"}
+            name="Date of Birth"
+            value={dateOfBirth}
+            setValue={setDateOfBirth}
+            namePosition={"text"}
           />
 
           <UserInput

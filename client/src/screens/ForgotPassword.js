@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
@@ -7,16 +7,16 @@ import { SERVER_URL } from "../../ENV.json";
 import NoisyLogo from "../components/NoisyLogo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import NoisyStyles from "../NoisyStyles";
-//import { AuthContext } from "../context/auth";
 
 const ForgotPassword = ({ navigation }) => {
+  // User details
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Page properties
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [resetCode, setResetCode] = useState('');
-  // context
-  //const [state, setState] = useContext(AuthContext);
 
   const handleRequestResetCode = async () => {
     setLoading(true);
@@ -46,7 +46,6 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   const handlePasswordReset = async () => {
-    // console.log("HANDLE PASSWORD RESET -> ", email, password, resetCode);
     try {
       const { data } = await axios.post(SERVER_URL + "reset-password", {
         email,

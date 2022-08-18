@@ -11,11 +11,14 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { validateDate, validateEmail, validatePassword } from "../helpers/validation";
 
 const SignUp = ({ navigation }) => {
+  // User details
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [dob, setDOB] = useState('');
+
+  // Page properties
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -25,13 +28,14 @@ const SignUp = ({ navigation }) => {
       return;
     }
 
+    // Input validations
     if (!validateEmail(email)) {
       alert(email + " is not a valid email");
       setLoading(false);
       return;
     }
 
-    if (!validateDate(dob)){
+    if (!validateDate(dob)) {
       alert(dob + " should be a valid date in this format: DD/MM/YYYY");
       setLoading(false);
       return
@@ -45,7 +49,6 @@ const SignUp = ({ navigation }) => {
       return;
     }
 
-    // console.log("SIGNUP REQUEST => ", name, email, password);
     try {
       const { data } = await axios.post(SERVER_URL + "signup", {
         name,
@@ -87,13 +90,13 @@ const SignUp = ({ navigation }) => {
           autoCapitalize="words"
           autoCorrect={false}
         />
-        
+
         <DateInput
           name="Date of Birth"
           value={dob}
           setValue={setDOB}
           namePosition={"placeholder"}
-          />
+        />
 
         <UserInput
           name=" Email"

@@ -10,7 +10,10 @@ import NoisyStyles from "../NoisyStyles";
 const ViewUserReviews = ({ navigation, route }) => {
   const { locationDetails } = route.params;
 
+  // Boolean to check if is in web
   const [isWeb, setIsweb] = useState(false);
+
+  // review list details and page number
   const [reviewList, setReviewList] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -57,6 +60,7 @@ const ViewUserReviews = ({ navigation, route }) => {
     }
   }
 
+  // Runs when component is loading
   useEffect(() => {
     setIsweb(Platform.OS == "web");
     getReviews();

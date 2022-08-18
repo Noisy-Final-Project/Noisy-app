@@ -13,6 +13,7 @@ const MainMenu = ({ navigation }) => {
 
   const focus = useIsFocused();  // useIsFocused as shown
 
+  // Runs each time when the component is in focus
   useEffect(() => {
     validateToken().then((userDetails) => {
       if (userDetails) {
@@ -26,6 +27,7 @@ const MainMenu = ({ navigation }) => {
   }
 
   const handleSignOut = async () => {
+    // Clear user auth data 
     await AsyncStorage.removeItem("@auth");
     setUserName("");
     alert("Sign Out Successful");

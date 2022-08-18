@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
 import UserInput from "../components/UserInput";
 import SubmitButton from "../components/SubmitButton";
@@ -8,14 +8,14 @@ import NoisyLogo from "../components/NoisyLogo";
 import NoisyStyles from "../NoisyStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//import { AuthContext } from "../context/auth";
 
 const SignIn = ({ navigation }) => {
+  // User details
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Page properties
   const [loading, setLoading] = useState(false);
-  // context
-  //const [state, setState] = useContext(AuthContext);
 
   const handleSignIn = async () => {
     setLoading(true);
@@ -24,9 +24,7 @@ const SignIn = ({ navigation }) => {
       setLoading(false);
       return;
     }
-    // console.log("SIGNINREQUEST => ", name, email, password);
     try {
-      // here needs to call controller function that checks sign in info
       const { data } = await axios.post(SERVER_URL + `signin`, {
         email,
         password,
@@ -35,14 +33,12 @@ const SignIn = ({ navigation }) => {
         alert(data.error);
         setLoading(false);
       } else {
-        // save in context
-        // setState(data);
-        // save response in async storage
+        // Save user auth data
         await AsyncStorage.setItem("@auth", JSON.stringify(data));
         setLoading(false);
         console.log("SIGN IN SUCCESS => ", data.doc);
         alert("Sign In Successful");
-        // redirect
+        // Redirect
         navigation.popToTop();
       }
     } catch (err) {
