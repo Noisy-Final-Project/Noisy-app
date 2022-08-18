@@ -94,7 +94,7 @@ async function forgotPassword(_email) {  // add a field of
     from: process.env.EMAIL_FROM,
     to: dbUser.Email,
     subject: "Password reset code",
-    html: "<h1>Your password  reset code is: {resetCode}</h1>",
+    html: "<h1>Your password  reset code is:" + resetCode + "</h1>",
   };
   // send email
   try {
