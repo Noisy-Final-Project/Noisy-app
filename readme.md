@@ -21,8 +21,7 @@
 Our project&rsquo;s architecture is based upon MVC architecture. The server side has two components - the Controller and the Model.
 In our project, the View (client) is represented by the React Native app and the Model and the controller are submodules of the server.
 
-The Controller purpose is the transfer information/requests between the client and the model, while the purpose of the
-Model is responsible for interacting with the database and setting a scaleable interface to process data intercepted by
+The Controller purpose is the transfer information/requests between the client and the model, while the Model is responsible for interacting with the database and setting a scaleable interface to process data intercepted by
 the database.
 
 
@@ -38,8 +37,8 @@ the database.
 Our development stack is composed by the following libraries:
 
 1.  `Express` - Intercepting and handling `HTTP` packets with `POST/GET` requests from the View, an HTTP server.
-2.  `CORS` - Managing the network connectivity policy to the server.
-3.  `Morgan` - Handling login/sign up processes securely.
+2.  `CORS` - Managing the Cross-Origin policy between the server and the client.
+3.  `Morgan` - Managing the logging system.
 
 Those tools helped us implement and deliver the basic and necessary conditions for a fully functioning application.
 
@@ -162,13 +161,13 @@ sound input on the client.
 
 While the creating a new review, a small button should appear with the label &ldquo;Test&rdquo;. That button creates a recording session of 15 seconds. From that recording we sample 75 times for decibel value which will go to further analysis.
 
-Those 75 samples are divided to 5 sets based on their decibel value. Each set contains samples within a certain range of decibels. Then we calculate the following:
+Those 75 samples are divided to 6 sets based on their decibel value. Each set contains samples within a certain range of decibels. Then we calculate the following:
 
-$$ \text{SoundValue} = \sum_{i=1}^{5} i \cdot \frac{|S_{i}|}{|S|}
+$$ \text{SoundValue} = \sum_{i=0}^{5} i \cdot \frac{|S_{i}|}{|S|}
 $$
 
 Where $S_i$ is a sample with a certain range of decibels, $S$ is the total sample sets.
 The motivation behind that calculation is giving more influence to the set of samples with most elements and less influence for sets with elements.
 
-The result is floating point number in range $[0,5]$, which represents the &ldquo;noise grade&rdquo; the location will get for that recording
+The result is floating point number in range $[0,5]$, which represents the &ldquo;noise grade&rdquo; the location will get for that recording.
 
