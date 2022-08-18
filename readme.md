@@ -171,3 +171,6 @@ The motivation behind that calculation is giving more influence to the set of sa
 
 The result is floating point number in range $[0,5]$, which represents the &ldquo;noise grade&rdquo; the location will get for that recording.
 
+## [Watch Demo](https://youtu.be/_R10kVTdyZY)
+
+
