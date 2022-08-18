@@ -12,6 +12,17 @@ require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
+/**
+ * The signUp function creates a new user in the database.
+ *
+ * 
+ * @param _email Used to Store the email of the user
+ * @param _name Used to Store the name of the user.
+ * @param _dob Used to Store the date of birth in a string format.
+ * @param password Used to Store the password entered by the user
+ * @return An object with a userid and name.
+ * 
+ */
 async function signUp(_email, _name, _dob, password) {
   const hashedPassword = await hashPassword(password);
   let userdb = await insertUser(
@@ -34,6 +45,16 @@ async function signUp(_email, _name, _dob, password) {
   return { userDetails };
 }
 
+/**
+ * The signIn function takes in an email and a password,
+ * checks if the email exists in the database,
+ * then compares the hashed password to that of what is stored in db.
+ * 
+ * @param _email Used to Check if the email exists in the database.
+ * @param plain_password Used to Check if the password is correct.
+ * @return A token and a user object.
+ * 
+ */
 async function signIn(_email, plain_password) {
   let uid = "";
   let inDB = await emailExists(_email);
@@ -67,6 +88,14 @@ async function signIn(_email, plain_password) {
   };
 }
 
+/**
+ * The forgotPassword function sends a reset code to the user's email address.
+ *
+ * 
+ * @param _email Used to Find the user in the database
+ * @return A promise.
+ * 
+ */
 async function forgotPassword(_email) {  // add a field of
   let dbUser = await MongoConnection.db(db_name)
     .collection("users")

@@ -57,6 +57,17 @@ async function locationByText(_text, MC = MongoConnection) {
   return arr;
 }
 
+/**
+ * The locationByLabel function takes in an array of location ids and an array of labels.
+ * It returns a list of locations that have the given labels.
+ *
+ * 
+ * @param lids Used to Filter out the locations that have been labeled
+ * @param labelsArray Used to Filter the locations
+ * @param MC=MongoConnection Used to Connect to the database
+ * @return A list of locations that have the labels.
+ * 
+ */
 async function locationByLabel(lids, labelsArray, MC = MongoConnection) {
   const locations = {lid: { $in: lids }};
   const containLabels = { labels: { $in: labelsArray } };
@@ -81,6 +92,16 @@ async function locationByLabel(lids, labelsArray, MC = MongoConnection) {
   return labeledLocations;
 }
 
+/**
+ * The getPerson function returns a person object with the following properties:
+ * userID, name, dob and email.
+ *
+ * 
+ * @param uid Used to Identify the user.
+ * @param MC=MongoConnection Used to Make the function more generic.
+ * @return A json represents a person.
+ * 
+ */
 async function getPerson(uid, MC = MongoConnection) {
   try {
     let db_person = await MC.db(db_name)

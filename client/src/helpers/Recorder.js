@@ -10,6 +10,13 @@ const onRecordingStatusUpdate = (playbackStatus) => {
     decibels.push(playbackStatus.metering);
 };
 
+/**
+ * The startRecording function starts the recording of audio.
+ *
+ * 
+ * @return A recording object.
+ * 
+ */
 async function startRecording() {
   try {
     decibels = [];

@@ -47,6 +47,19 @@ async function insertUser(_name, _dob, _email, _hash, MC = MongoConnection) {
   }
 }
 
+/**
+ * The insertLocation function inserts a new location into the database.
+ *
+ * 
+ * @param _name Used to Check if the location already exists in the database
+ * @param latitude Used to Find the location that is closest to it.
+ * @param longtitude Used to Find the location within a certain distance
+ * @param totomAddress Used to Get the address of the location
+ * @param _category Used to Determine the category of a location
+ * @param MC=MongoConnection Used to Access the mongodb database
+ * @return JSON with response
+ * 
+ */
 async function insertLocation(
   _name,
   latitude,
@@ -212,5 +225,4 @@ async function insertReview(
   }
 }
 
-//TODO remove review
 module.exports = { insertUser, insertLocation, insertReview };

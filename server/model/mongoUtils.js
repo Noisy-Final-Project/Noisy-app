@@ -10,6 +10,13 @@ const options = {
 };
 let MongoConnection = new MongoClient(uri, options);
 
+/**
+ * The connectedMongo function connects to the MongoDB server and returns a
+ * reference to the connection object.
+ * 
+ * @return A promise.
+ * 
+ */
 async function connectedMongo() {
   await MongoConnection.connect();
   console.log("Connected to Mongo Server");
