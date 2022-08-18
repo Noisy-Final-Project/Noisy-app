@@ -1,6 +1,14 @@
 const fetcher = require("../model/fetching_queries");
 const inserter = require("../model/insert_queries");
 
+/*
+* Authentication requests handling:
+* getLocationsInBounds - get all locations in a specified rectangle
+* getLocationReviews - get all reviews for a certain location
+* addReview - for adding a review for a specific location.
+* getLabels - get the currently used labels from the server.
+*/
+
 exports.getLocationsInBounds = async (req, res) => {
   const { bounds, labels } = req.query;
   const jsonBounds = JSON.parse(bounds);

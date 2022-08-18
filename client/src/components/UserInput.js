@@ -23,7 +23,7 @@ const UserInput = ({
         style={{
           borderWidth: 2,  // size/width of the border
           borderColor: 'lightgrey',  // color of the border
-          paddingLeft: 10,
+          paddingLeft: 15,
           height: 48,
           marginVertical: 10,
         }}

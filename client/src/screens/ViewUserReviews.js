@@ -8,20 +8,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import NoisyStyles from "../NoisyStyles";
 
 const ViewUserReviews = ({ navigation, route }) => {
-  useEffect(
-    () => {
-      if (route.params.formSource) {
-        navigation.addListener('beforeRemove', (e) => {
-          e.preventDefault();
-          navigation.push("ChooseBusiness")
-        })
-      }
-    }
-    ,
-    [navigation]
-  );
-
-
   const { locationDetails } = route.params;
 
   const [isWeb, setIsweb] = useState(false);

@@ -3,7 +3,7 @@ const express = require("express");
 
 const router = express.Router();
 
-// controllers
+// Location Controllers
 const {
     addReview, getLocationsInBounds, getLocationReviews, getLabels
 } = require("../controllers/locations");

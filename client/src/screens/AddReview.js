@@ -48,6 +48,7 @@ const AddReview = ({ navigation, route }) => {
     validateToken().then(userDetails => {
       if (userDetails) { 
         setUid(userDetails._id);
+        setDateOfBirth(userDetails.dob)
         setReviewerName(userDetails.name);
       }
     })
@@ -122,7 +123,7 @@ const AddReview = ({ navigation, route }) => {
       .then((res) => {
         // here res is the amount of bells (float)
         setLoadingNoiseTest(false);
-        alert("sound level: " + res);
+        alert("Sound Level: " + res.toFixed(2));
         setSoundLevel(res);
       })
       .catch((err) => console.log(err));
@@ -233,7 +234,7 @@ const AddReview = ({ navigation, route }) => {
         />
 
         <Text
-          onPress={() => navigation.popToTop()}
+          onPress={() => navigation.navigate("MainMenu")}
           style={NoisyStyles.linkButton}
         >
           Main Menu

@@ -1,7 +1,7 @@
 
 const express = require('express');
 
-// controllers
+// Auth controllers:
 const {
   signUp,
   signIn,
@@ -10,7 +10,7 @@ const {
   verifyToken
 } = require("../controllers/auth");
 
-// const model = new Model()
+// Using express router for http requests routing
 const router = express.Router();
 
 router.post("/signup", signUp);

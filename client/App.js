@@ -10,10 +10,16 @@ import ForgotPassword from "./src/screens/ForgotPassword";
 import ChooseBusiness from "./src/screens/ChooseBusiness";
 import ViewUserReviews from "./src/screens/ViewUserReviews";
 import AddReview from "./src/screens/AddReview";
+import { I18nManager } from "react-native";
+import { useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  useEffect(() => {
+    I18nManager.forceRTL(false)
+  }, [])
+  
   return (
     <NavigationContainer>
       <View>

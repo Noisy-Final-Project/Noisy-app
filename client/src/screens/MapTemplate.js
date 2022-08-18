@@ -268,10 +268,12 @@ export default `
         window.addEventListener("message", messageHandler, false);
 
         // Bind map events with handlers:
-        map.on('click', generalClickHandler)
         map.on('load', mapMoveHandler)
         map.on('moveend', mapMoveHandler)
-        map.on('dblclick', unknownPlaceHandler)
+        if (window.ANDROID){
+            map.on('click', generalClickHandler)
+            map.on('dblclick', unknownPlaceHandler)
+        }
 
         /*
             ####### HANDLERS: #######

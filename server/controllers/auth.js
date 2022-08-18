@@ -2,6 +2,13 @@
 const jwt = require("jsonwebtoken");
 const modelAuth = require('../model/auth')
 
+/*
+* Authentication requests handling:
+* signUp, signIn - including hashing and tokenization
+* forgotPassword, restPassword - for handling password reset by the user
+* verifyToken - for token verificattion and continous user connectivity to the app.
+*/
+
 const signUp = async (req, res) => {
   console.log("Signup process started...");
   try {
