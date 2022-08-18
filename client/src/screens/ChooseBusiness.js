@@ -7,7 +7,6 @@ import { getLocation, sendToMap } from "../helpers/MapUtils";
 import axios from "axios";
 import { Suggestions } from "../components/Suggestions";
 import DropDownPicker from "react-native-dropdown-picker";
-import { CommonActions } from "@react-navigation/native";
 
 const ChooseBusiness = ({ navigation, route }) => {
   // Search bar variables:
@@ -97,7 +96,7 @@ const ChooseBusiness = ({ navigation, route }) => {
       case "getLocation":
         try {
           getLocation().then((currentLocation) => {
-            if (currentLocation.length == 0){
+            if (currentLocation.length == 0) {
               return
             }
             setLocation(currentLocation);
