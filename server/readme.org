@@ -1,0 +1,117 @@
+#+title: Server Side
+
+* Introduction
+Our project's architecture is based upon MVC architecture. The server side has two components - the Controller and the Model.
+In our project, the View (client) is represented by the React Native app and the Model and the controller are submodules of the server.
+
+The Controller purpose is the transfer information/requests between the client and the model, while the purpose of the
+Model is responsible for interacting with the database and setting a scaleable interface to process data intercepted by
+the database.
+
+* Controller
+** Built With
+Our development stack is composed by the following libraries:
+1. =Express= - Intercepting and handling =HTTP= packets with =POST/GET= requests from the View, an HTTP server.
+2. =CORS= - Managing the network connectivity policy to the server.
+3. =Morgan= - Handling login/sign up processes securely.
+
+Those tools helped us implement and deliver the basic and necessary conditions for a fully functioning application.
+
+** Controller as a Router
+The essence of the controller is to serve as a "router" of information from the View to the Model.
+It does so by intercepting user requests, evaluating them and calls the corresponding functions from the Model.
+After the Model retrieves a result, the controller returns a response.
+
+* Model
+** The Database
+We use MongoDB as our database, which is hosted over at Atlas servers. The connection is made using the =NodeJS= driver
+for MongoDB.
+
+Our first task as database designers was to produce a conceptual data model that reflects the structure of
+the information to be held in the database. In the process, we asked our selves - "how can the database be scaleable" and
+in the same time we asked "How can we make it as simple enough to make complex queries in the future?".
+
+The result was a database with three base Collections:
+1. =Users= - The users that add reviews using their credentials.
+2. =Locations= - The locations that are enlisted as having reviews.
+3. =Reviews= - The details of each review.
+
+The =Users= collection is composed by documents with the following fields:
+#+begin_src js
+    {
+        id: <PK>,
+        name: <string>,
+        date of birth: <string>,
+        Email: <string>,
+        password (hash): <string>,
+        expiration date: <DateTime>
+    }
+#+end_src
+
+The =Locations= collection is composed by documents with the following fields:
+#+begin_src js
+    {
+        id: <PK>,
+        name: <string>,
+        location: <Location Object>,
+        address: <string>,
+        category: <string>,
+        creation date: <DateTime>
+    }
+#+end_src
+
+The =Reviews= collection is composed by documents with the following fields:
+#+begin_src js
+    {
+        id: <PK>,
+        userID: <string>,
+        locationID: <string>,
+        userText: <string>,
+        Objective Sound: <double>,
+        Sound Opinion: <string>,
+        Labels attached: <array<string>>,
+        creation date: <DateTime>
+    }
+#+end_src
+
+It is possible to see that structure is lean, intuitive and full - which was one of our goals.
+** Interaction with the DB
+The Model in our project is responsible of querying the database (utilizing the MongoDB API) and can be used further
+to analyze the data to give statistical information regarding the noise level of different location.
+
+In practice, the Model is receives a set of requests from the Controller. There function that are most used in the
+Model are finding all location by a specified area, getting reviews for display and insert a review for registered
+users and anonymous users.
+* View
+The View (equivalently, the client) is how the user interacts with our system. The client is based upon React Native
+utilizing different packages for sending HTTP requests and authentication. The client is also responsible for one
+of our main features: recording the sound in an enviroment and analyzing it.
+** User Interaction
+User interactions are divided to two sets of functions:
+1. Contribution
+   1. Adding a location to the database.
+   2. Writing a noise review for a location, whether it is in the database or not (resulting in adding it).
+   3. Recording a noise sample of a location, which gives an objective "feel" for the review.
+2. Consumption
+   1. View different location in a specified area with noise reviews. The user can even filter locations by the labels
+      attached to their reviews.
+   2. View detailed reviews of each location in a simplified, easy to read way.
+
+Since the application must be suitable for audiences from different age groups, we aimed at making the application
+as simple and information as concise as possible.
+
+** Sound Recording
+Analysis of sound can be a "heavy" task for the server, if we consider scaleability. We decided then to process the
+sound input on the client.
+
+While the creating a new review, a small button should appear with the label "Test". That button creates a recording session of 15 seconds. From that recording we sample 75 times for decibel value which will go to further analysis.
+
+Those 75 samples are divided to 5 sets based on their decibel value. Each set contains samples within a certain range of decibels. Then we calculate the following:
+
+\[ \text{SoundValue} = \sum_{i=1}^{5} i \cdot \frac{|S_{i}|}{|S|}
+\]
+
+Where $S_i$ is a sample with a certain range of decibels, $S$ is the total sample sets.
+The motivation behind that calculation is giving more influence to the set of samples with most elements and less influence for sets with elements.
+
+The result is floating point number in range $[0,5]$, which represents the "noise grade" the location will get for that recording
