@@ -159,8 +159,7 @@ Where $S_i$ is a sample with a certain range of decibels, $S$ is the total sampl
 The motivation behind that calculation is giving more influence to the set of samples with more elements and less influence for sets with less elements.
 
 The result is floating point number in range $[0,5]$, which represents the &ldquo;noise grade&rdquo; the location will get for that recording.
-<<<<<<< HEAD
-=======
+
 
 ## [Watch Demo](https://youtu.be/_R10kVTdyZY)
 
